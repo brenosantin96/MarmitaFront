@@ -1,4 +1,4 @@
-import {SVGProps} from '../../types/SVG';
+import {SVGProps} from '../../types/SVGType';
 
 
 const BackwardIcon = ({ width = 24, height = 24, color = "black" }: SVGProps) => {

@@ -1,18 +1,15 @@
-import Backward from './backward.svg';
-import DownArrow from './downarrow.svg';
-import LeftArrow from './leftarrow.svg';
-import RightArrow from './rightarrow.svg';
-import UpArrow from './uparrow.svg';
-import Login from './login.svg';
-import Key from './key.svg';
-import User from './user.svg';
-import Home from './home.svg';
-import Logo from './logo.svg'
-import Logo2 from './logo2.svg'
-import Logo3 from './logo3.svg'
-import Menu from './menusvg.svg'
-import Close from './close.svg'
-import Plus from './plus.svg'
+import BackwardIcon from '../Icons/BackwardIcon';
+import SearchIcon from '../Icons/SearchIcon';
+import MenuIcon from '../Icons/MenuIcon';
+import UserIcon from '../Icons/UserIcon';
+import CartIcon from '../Icons/CartIcon';
+import CartIcon2 from '../Icons/CartIcon2';
+import LogoIcon from '../Icons/LogoIcon';
+import LogoIcon2 from '../Icons/LogoIcon2';
+import CloseIcon from '../Icons/CloseIcon';
+import RightArrowIcon from '../Icons/RightArrowIcon';
+import LeftArrowIcon from '../Icons/LeftArrowIcon';
+
 
 type Props = {
     svg: string;
@@ -25,22 +22,18 @@ type Props = {
 export const Icon = ({svg, width, height, fillColor, strokeColor} : Props) => {
 
   return (
-    <div className='pr-3'>
-        {svg === "backward" && <Backward height={height} width={width} />}
-        {svg === "downarrow" && <DownArrow height={height} width={width} />}
-        {svg === "leftarrow" && <LeftArrow height={height} width={width} />}
-        {svg === "rightarrow" && <RightArrow height={height} width={width} />}
-        {svg === "uparrow" && <UpArrow height={height} width={width} />}
-        {svg === "login" && <Login height={height} width={width} />}
-        {svg === "key" && <Key height={height} width={width} />}
-        {svg === "user" && <User height={height} width={width} />}
-        {svg === "home" && <Home height={height} width={width} />}
-        {svg === "logo" && <Logo height={height} width={width} />}
-        {svg === "logo2" && <Logo2 height={height} width={width} />}
-        {svg === "logo3" && <Logo3 height={height} width={width} />}
-        {svg === "menu" && <Menu height={height} width={width} />}
-        {svg === "close" && <Close height={height} width={width} />}
-        {svg === "plus" && <Plus height={height} width={width} />}
+    <div>
+        {svg === "backward" && <BackwardIcon height={height} width={width} />}
+        {svg === "search" && <SearchIcon height={height} width={width} />}
+        {svg === "menu" && <MenuIcon height={height} width={width} />}
+        {svg === "user" && <UserIcon height={height} width={width} />}
+        {svg === "cart" && <CartIcon height={height} width={width} />}
+        {svg === "cart2" && <CartIcon2 height={height} width={width} />}
+        {svg === "logo" && <LogoIcon height={height} width={width} />}
+        {svg === "logo2" && <LogoIcon2 height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
+        {svg === "close" && <CloseIcon height={height} width={width} />}
+        {svg === "rightarrow" && <RightArrowIcon height={height} width={width} />}
+        {svg === "leftarrow" && <LeftArrowIcon height={height} width={width} />}
     </div>
   )
 }

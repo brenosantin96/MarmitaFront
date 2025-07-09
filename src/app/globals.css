@@ -1,26 +1,104 @@
+/* ===================== IMPORTS ===================== */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ===================== FONTS LOCAL ===================== */
+@font-face {
+  font-family: 'Amsi Pro';
+  src: url('/fonts/AmsiPro-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@font-face {
+  font-family: 'Amsi Pro';
+  src: url('/fonts/AmsiPro-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@font-face {
+  font-family: 'Amsi Pro';
+  src: url('/fonts/AmsiPro-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@font-face {
+  font-family: 'Amsi Pro';
+  src: url('/fonts/AmsiPro-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Amsi Pro';
+  src: url('/fonts/AmsiPro-Ultra.otf') format('opentype');
+  font-weight: 950;
+  font-style: normal;
+}
+
+/* Condensed Versions */
+@font-face {
+  font-family: 'Amsi Pro Condensed';
+  src: url('/fonts/AmsiProCond-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Amsi Pro Condensed';
+  src: url('/fonts/AmsiProCond-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Amsi Pro Condensed';
+  src: url('/fonts/AmsiProCond-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Amsi Pro Condensed';
+  src: url('/fonts/AmsiProCond-SemiBoldItalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Amsi Pro Condensed';
+  src: url('/fonts/AmsiProCond-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Amsi Pro Condensed';
+  src: url('/fonts/AmsiProCond-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Amsi Pro';
+  src: url('/fonts/AmsiPro-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@theme {
+  --font-oswald: 'Inter', sans-serif;
+  --font-tiktok: "TikTok Sans", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-amsi: 'Amsi Pro', sans-serif;
+  --font-hindmadurai: 'Hind Madurai', sans-serif;
+}
+
+/* ===================== RESET ===================== */
+html {
+  box-sizing: border-box;
 }
