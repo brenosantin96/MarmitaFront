@@ -10,7 +10,7 @@ type NavBarProps = {
 const Navbar = ({isMenuOpened, onMenuToggle} : NavBarProps) => {
 
   return (
-    <nav className="bg-white shadow-md h-[56px] flex items-center justify-around px-4">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-md h-[56px] flex items-center justify-around px-4" >
         <div onClick={(onMenuToggle)}>
             <Icon svg="menu" height='24' width='24'/>
         </div>

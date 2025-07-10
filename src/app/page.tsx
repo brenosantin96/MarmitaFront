@@ -1,6 +1,8 @@
 "use client"
 
 import SearchIcon from "@/components/Icons/SearchIcon";
+import Modal01 from "@/components/Modal01";
+import ModalAddress from "@/components/ModalAddress";
 import Navbar from "@/components/Navbar";
 import { SideMenu } from "@/components/SideMenu";
 import { Icon } from "@/components/svg/Icon";
@@ -10,6 +12,7 @@ const HomePage = () => {
 
 
   const [isMenuOpened, setIsMenuOpened] = useState(false);
+  const [isModalAddressOpened, setIsModalAddressOpened] = useState(false);
 
 
   const handleMenuToggle = () => {
@@ -18,15 +21,32 @@ const HomePage = () => {
     });
   }
 
+  const handleCloseModalAddress = () => {
+    setIsModalAddressOpened(false);
+  }
+
   return (
     <>
       <Navbar isMenuOpened={isMenuOpened} onMenuToggle={handleMenuToggle} />
       <SideMenu menuOpened={isMenuOpened} onClose={handleMenuToggle} />
-    </>
-  );
+
+      <div className="mt-14 bg-[#F8F5EC] flex items-center" onClick={() => setIsModalAddressOpened(prev => !prev)}>
+        <div className="px-2">
+          <Icon svg="location2" width="20px" height="20px" />
+        </div>
+        <div className="text-sm py-1">
+          <div>Endereço de entrega</div>
+          <div><strong>Será que entrega?</strong></div>
+        </div>
+      </div>
+
+      <ModalAddress handleClose={handleCloseModalAddress} isOpen={isModalAddressOpened} modalTitle="Será que entrega?"/>
+
+      </>
+      );
 }
 
-export default HomePage;
+      export default HomePage;
 
 //font-family: "Amsi Pro Normal", "Hind Madurai", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 

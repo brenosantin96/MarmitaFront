@@ -101,4 +101,5 @@
 /* ===================== RESET ===================== */
 html {
   box-sizing: border-box;
+  font-family: theme(font-amsi);
 }
