@@ -12,6 +12,7 @@ import RightArrowIcon from '../Icons/RightArrowIcon';
 import LeftArrowIcon from '../Icons/LeftArrowIcon';
 import LocationIcon from '../Icons/LocationIcon';
 import LocationIcon2 from '../Icons/LocationIcon2';
+import LittleXIcon from '../Icons/LittleXIcon';
 
 
 type Props = {
@@ -40,6 +41,7 @@ export const Icon = ({svg, width, height, fillColor, strokeColor} : Props) => {
         {svg === "leftarrow" && <LeftArrowIcon height={height} width={width} />}
         {svg === "location" && <LocationIcon height={height} width={width} />}
         {svg === "location2" && <LocationIcon2 height={height} width={width} />}
+        {svg === "littlex" && <LittleXIcon height={height} width={width} />}
     </div>
   )
 }

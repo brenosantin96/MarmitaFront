@@ -1,5 +1,6 @@
 "use client"
 
+import Button01 from "@/components/Button01";
 import SearchIcon from "@/components/Icons/SearchIcon";
 import Modal01 from "@/components/Modal01";
 import ModalAddress from "@/components/ModalAddress";
@@ -40,13 +41,17 @@ const HomePage = () => {
         </div>
       </div>
 
-      <ModalAddress handleClose={handleCloseModalAddress} isOpen={isModalAddressOpened} modalTitle="Será que entrega?"/>
+      <div className="flex justify-center items-center">
+        <Button01 width="w-3/4" disabled={true} classes=""> Teste </Button01>
+      </div>
 
-      </>
-      );
+      <ModalAddress handleClose={handleCloseModalAddress} isOpen={isModalAddressOpened} modalTitle="Será que entrega?" />
+
+    </>
+  );
 }
 
-      export default HomePage;
+export default HomePage;
 
 //font-family: "Amsi Pro Normal", "Hind Madurai", -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 

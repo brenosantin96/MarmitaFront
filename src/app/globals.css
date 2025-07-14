@@ -103,3 +103,7 @@ html {
   box-sizing: border-box;
   font-family: theme(font-amsi);
 }
+
+input:focus {
+  outline: none;
+}
