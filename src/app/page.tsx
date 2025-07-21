@@ -7,6 +7,8 @@ import ModalAddress from "@/components/ModalAddress";
 import Navbar from "@/components/Navbar";
 import { SideMenu } from "@/components/SideMenu";
 import { Icon } from "@/components/svg/Icon";
+import YoutubeForm from "@/components/YoutubeForm";
+import Link from "next/link";
 import { useState } from "react";
 
 const HomePage = () => {
@@ -41,11 +43,20 @@ const HomePage = () => {
         </div>
       </div>
 
+      <div id="newsBanner" className="mx-2.5 mt-2">
+        <img src="/images/bannerPerfomance.png" alt="banner" className="w-full rounded-lg" />
+      </div>
+
       <div className="flex justify-center items-center">
-        <Button01 width="w-3/4" disabled={true} classes=""> Teste </Button01>
+        <Link href={"/menu"} className="w-full mx-3 mt-5">
+          <Button01 disabled={false} classes=""> VER CARDÁPIO COMPLETO </Button01>
+        </Link>
       </div>
 
       <ModalAddress handleClose={handleCloseModalAddress} isOpen={isModalAddressOpened} modalTitle="Será que entrega?" />
+
+
+
 
     </>
   );

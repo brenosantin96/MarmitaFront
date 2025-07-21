@@ -7,7 +7,9 @@ type PropsModal01 = {
 };
 
 const Modal01 = ({ handleClose, isOpen, modalTitle }: PropsModal01) => {
-    if (!isOpen) return null;
+
+
+    if (!isOpen) return null; //essa linha deve ser corrigida!
 
     return (
 

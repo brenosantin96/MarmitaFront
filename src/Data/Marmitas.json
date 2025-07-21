@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "title": "Carne moída com arroz integral e feijão",
+    "urlImage": "/images/carne-moida-arroz-integral-e-feijao-carioca-0-300g-1751639194842.png",
+    "price": 18.9,
+    "portion": 300,
+    "oldPrice": 21.5
+  },
+  {
+    "id": "2",
+    "title": "Frango grelhado com legumes cozidos",
+    "urlImage": "/images/carne-moida-arroz-integral-e-feijao-carioca-0-300g-1751639194842.png",
+    "price": 17.5,
+    "portion": 280
+  },
+  {
+    "id": "3",
+    "title": "Tilápia com purê de batata e brócolis",
+    "urlImage": "/images/carne-moida-arroz-integral-e-feijao-carioca-0-300g-1751639194842.png",
+    "price": 22.0,
+    "portion": 320,
+    "oldPrice": 24.0
+  },
+  {
+    "id": "4",
+    "title": "Estrogonofe de frango com arroz branco",
+    "urlImage": "/images/carne-moida-arroz-integral-e-feijao-carioca-0-300g-1751639194842.png",
+    "price": 19.9,
+    "portion": 300
+  },
+  {
+    "id": "5",
+    "title": "Macarrão integral com almôndegas",
+    "urlImage": "/images/carne-moida-arroz-integral-e-feijao-carioca-0-300g-1751639194842.png",
+    "price": 20.5,
+    "portion": 310,
+    "oldPrice": 23.0
+  },
+  {
+    "id": "6",
+    "title": "Quinoa com frango desfiado e legumes",
+    "urlImage": "/images/carne-moida-arroz-integral-e-feijao-carioca-0-300g-1751639194842.png",
+    "price": 21.9,
+    "portion": 290
+  }
+]
