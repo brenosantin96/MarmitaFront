@@ -8,16 +8,18 @@ type Button01Props = {
   classes?: string;
   children: React.ReactNode;
   disabled?: boolean;
+  outline?: boolean
 };
 
 const Button01 = ({
-  backgroundColor = 'bg-green-700',
-  textColor = 'text-white',
+  backgroundColor = '',
+  textColor = '',
   width = 'w-full',
   fontWeight = 'semibold',
   classes = '',
   children,
-  disabled = false
+  disabled = false,
+  outline = false,
 }: Button01Props) => {
   const fontWeightClass = {
     regular: 'font-normal',
@@ -29,10 +31,14 @@ const Button01 = ({
     ? 'bg-[#ececec] text-[#5b5b5f] opacity-70 cursor-not-allowed'
     : `${backgroundColor} ${textColor} cursor-pointer`;
 
+  const outlineClasses = outline
+    ? 'bg-[#fff] text-green-700 border-2 border-green-700'
+    : `text-[#fff] bg-green-700`;
+
   return (
     <button
       disabled={disabled}
-      className={`p-3 rounded-md ${width} ${fontWeightClass} flex justify-center items-center text-sm transition-all ${disabledClasses} ${classes}`}
+      className={`p-3 rounded-md ${width} ${fontWeightClass} shadow-md flex justify-center items-center text-sm transition-all ${disabledClasses} ${outlineClasses} ${classes} `}
     >
       {children}
     </button>
