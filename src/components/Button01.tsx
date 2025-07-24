@@ -9,6 +9,8 @@ type Button01Props = {
   children: React.ReactNode;
   disabled?: boolean;
   outline?: boolean
+  onClick?: () => any; // opcional, com ou sem retorno
+
 };
 
 const Button01 = ({
@@ -20,6 +22,7 @@ const Button01 = ({
   children,
   disabled = false,
   outline = false,
+  onClick,
 }: Button01Props) => {
   const fontWeightClass = {
     regular: 'font-normal',
@@ -37,6 +40,7 @@ const Button01 = ({
 
   return (
     <button
+      onClick={onClick}
       disabled={disabled}
       className={`p-3 rounded-md ${width} ${fontWeightClass} shadow-md flex justify-center items-center text-sm transition-all ${disabledClasses} ${outlineClasses} ${classes} `}
     >

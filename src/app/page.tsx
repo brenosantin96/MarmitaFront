@@ -33,27 +33,31 @@ const HomePage = () => {
       <Navbar isMenuOpened={isMenuOpened} onMenuToggle={handleMenuToggle} />
       <SideMenu menuOpened={isMenuOpened} onClose={handleMenuToggle} />
 
-      <div className="mt-14 bg-[#F8F5EC] flex items-center" onClick={() => setIsModalAddressOpened(prev => !prev)}>
-        <div className="px-2">
-          <Icon svg="location2" width="20px" height="20px" />
+      <div id="homepage" className="container mx-auto bg-green-300">
+        <div className="mt-14 bg-[#F8F5EC] flex items-center sm:hidden" onClick={() => setIsModalAddressOpened(prev => !prev)}>
+          <div className="px-2">
+            <Icon svg="location2" width="20px" height="20px" />
+          </div>
+          <div className="text-sm py-1">
+            <div>Endereço de entrega</div>
+            <div><strong>Será que entrega?</strong></div>
+          </div>
         </div>
-        <div className="text-sm py-1">
-          <div>Endereço de entrega</div>
-          <div><strong>Será que entrega?</strong></div>
+
+        <div id="newsBanner" className="mt-2 sm:mt-20 flex justify-center w-full">
+          <img src="/images/bannerPerfomance.png" alt="banner" className="object-fit object-center w-full max-h-[280px] rounded-lg" />
         </div>
-      </div>
 
-      <div id="newsBanner" className="mx-2.5 mt-2">
-        <img src="/images/bannerPerfomance.png" alt="banner" className="w-full rounded-lg" />
-      </div>
+        <div className="flex justify-center items-center">
+          <Link href={"/menu"} className="w-full mx-3 mt-5 sm:w-2/3">
+            <Button01 disabled={false} classes=""> VER CARDÁPIO COMPLETO </Button01>
+          </Link>
+        </div>
 
-      <div className="flex justify-center items-center">
-        <Link href={"/menu"} className="w-full mx-3 mt-5">
-          <Button01 disabled={false} classes=""> VER CARDÁPIO COMPLETO </Button01>
-        </Link>
       </div>
 
       <ModalAddress handleClose={handleCloseModalAddress} isOpen={isModalAddressOpened} modalTitle="Será que entrega?" />
+
 
 
 

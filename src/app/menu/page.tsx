@@ -31,10 +31,23 @@ const MenuPage = () => {
             <Navbar isMenuOpened={isMenuOpened} onMenuToggle={handleMenuToggle} />
             <SideMenu menuOpened={isMenuOpened} onClose={handleMenuToggle} />
 
-            <div className='container mx-auto pt-20 grid md:grid-cols-4 gap-4 place-items-center md:mx-5 justify-center'>
-                {marmitas.map((item) => (
-                    <CardItem01 key={item.id} title={item.title} price={item.price} portion={item.portion} urlImage={item.urlImage} onAdd={addMarmita} onRemove={removeMarmita} />
-                ))}
+            <div id="menuPage" className="pt-20 px-4 w-full">
+                <div
+                    id="menuList"
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-screen-xl mx-auto justify-items-center"
+                >
+                    {marmitas.map((item) => (
+                        <CardItem01
+                            key={item.id}
+                            title={item.title}
+                            price={item.price}
+                            portion={item.portion}
+                            urlImage={item.urlImage}
+                            onAdd={addMarmita}
+                            onRemove={removeMarmita}
+                        />
+                    ))}
+                </div>
             </div>
 
 
