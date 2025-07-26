@@ -33,7 +33,7 @@ const HomePage = () => {
       <Navbar isMenuOpened={isMenuOpened} onMenuToggle={handleMenuToggle} />
       <SideMenu menuOpened={isMenuOpened} onClose={handleMenuToggle} />
 
-      <div id="homepage" className="container mx-auto bg-green-300">
+      <div id="homepage" className="hidden container mx-auto bg-green-300">
         <div className="mt-14 bg-[#F8F5EC] flex items-center sm:hidden" onClick={() => setIsModalAddressOpened(prev => !prev)}>
           <div className="px-2">
             <Icon svg="location2" width="20px" height="20px" />
@@ -55,6 +55,11 @@ const HomePage = () => {
         </div>
 
       </div>
+      
+        <div className="bg-color-2 text-black p-4 mt-14">
+          Testando bg-color-2
+        </div>
+      
 
       <ModalAddress handleClose={handleCloseModalAddress} isOpen={isModalAddressOpened} modalTitle="Será que entrega?" />
 
