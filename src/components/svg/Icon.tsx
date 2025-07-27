@@ -32,7 +32,7 @@ export const Icon = ({svg, width, height, fillColor, strokeColor} : Props) => {
         {svg === "menu" && <MenuIcon height={height} width={width} />}
         {svg === "user" && <UserIcon height={height} width={width} />}
         {svg === "cart" && <CartIcon height={height} width={width} />}
-        {svg === "cart2" && <CartIcon2 height={height} width={width} />}
+        {svg === "cart2" && <CartIcon2 height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
         {svg === "logo" && <LogoIcon height={height} width={width} />}
         {svg === "logo2" && <LogoIcon2 height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
         {svg === "close" && <CloseIcon height={height} width={width} />}
