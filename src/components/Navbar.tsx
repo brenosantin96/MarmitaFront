@@ -4,23 +4,25 @@ import { Icon } from './svg/Icon';
 import Link from 'next/link';
 import categoriesData from '../Data/Categories.json';
 import { useModalAddress } from '@/context/ModalAddressContext';
+import { useSideMenu } from '@/context/SideMenuContext';
+import { useCartContext } from '@/context/CartContext';
 
 type NavBarProps = {
-    isMenuOpened: boolean;
-    onMenuToggle: () => void;
 };
 
-const Navbar = ({ isMenuOpened, onMenuToggle }: NavBarProps) => {
+const Navbar = () => {
 
     const isScreenMDOrHigher = useBreakpoint('md');
     const { openModal } = useModalAddress();
+    const { openAndCloseSideMenu } = useSideMenu();
+    const { openAndCloseCart } = useCartContext();
 
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 font-hindmadurai bg-white shadow-md h-[56px] md:h-[96px] flex items-center justify-around px-4">
+        <nav className="fixed top-0 left-0 w-full z-40 font-hindmadurai bg-white shadow-md h-[56px] md:h-[96px] flex items-center justify-around px-4">
             {!isScreenMDOrHigher ? (
                 <>
-                    <div onClick={onMenuToggle} className="cursor-pointer">
+                    <div onClick={openAndCloseSideMenu} className="cursor-pointer">
                         <Icon svg="menu" height="24" width="24" />
                     </div>
                     <div className="cursor-pointer">
@@ -34,7 +36,7 @@ const Navbar = ({ isMenuOpened, onMenuToggle }: NavBarProps) => {
                     <div className="cursor-pointer">
                         <Icon svg="user" height="24" width="24" />
                     </div>
-                    <div className="cursor-pointer">
+                    <div onClick={openAndCloseCart} className="cursor-pointer">
                         <Icon svg="cart2" height="24" width="24" />
                     </div>
                 </>
@@ -70,25 +72,25 @@ const Navbar = ({ isMenuOpened, onMenuToggle }: NavBarProps) => {
 
                             <div className=' h-full flex items-center pr-10'>
                                 <button className='h-12 cursor-pointer'>
-                                    <div className='py-3 px-6'> 
-                                        <Icon svg='search' height='24' width='24'/>
+                                    <div className='py-3 px-6'>
+                                        <Icon svg='search' height='24' width='24' />
                                     </div>
                                 </button>
                                 <button className='h-12 cursor-pointer'
                                     onClick={openModal}
                                 >
-                                    <div className='py-3 px-6'> 
-                                        <Icon svg='location2' height='24' width='24'/>
+                                    <div className='py-3 px-6'>
+                                        <Icon svg='location2' height='24' width='24' />
                                     </div>
                                 </button>
                                 <button className='h-12 cursor-pointer'>
-                                    <div className='py-3 px-6'> 
-                                        <Icon svg='user' height='24' width='24'/>
+                                    <div className='py-3 px-6'>
+                                        <Icon svg='user' height='24' width='24' />
                                     </div>
                                 </button>
-                                <button className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
-                                    <div className='pr-2'> 
-                                        <Icon svg='cart2' height='24' width='24' fillColor='#fff' strokeColor='#fff'/>
+                                <button onClick={openAndCloseCart} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
+                                    <div className='pr-2'>
+                                        <Icon svg='cart2' height='24' width='24' fillColor='#fff' strokeColor='#fff' />
                                     </div>
                                     <div className='text-white'>
                                         Sua sacola

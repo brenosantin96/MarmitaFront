@@ -1,28 +1,17 @@
 "use client"
 
 import Button01 from "@/components/Button01";
-import SearchIcon from "@/components/Icons/SearchIcon";
-import Modal01 from "@/components/Modal01";
+import CartSideMenu from "@/components/CartSideMenu";
 import ModalAddress from "@/components/ModalAddress";
 import Navbar from "@/components/Navbar";
 import { SideMenu } from "@/components/SideMenu";
 import { Icon } from "@/components/svg/Icon";
-import YoutubeForm from "@/components/YoutubeForm";
 import Link from "next/link";
 import { useState } from "react";
 
 const HomePage = () => {
 
-
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
   const [isModalAddressOpened, setIsModalAddressOpened] = useState(false);
-
-
-  const handleMenuToggle = () => {
-    setIsMenuOpened(prev => {
-      return !prev
-    });
-  }
 
   const handleCloseModalAddress = () => {
     setIsModalAddressOpened(false);
@@ -30,10 +19,11 @@ const HomePage = () => {
 
   return (
     <>
-      <Navbar isMenuOpened={isMenuOpened} onMenuToggle={handleMenuToggle}  />
-      <SideMenu menuOpened={isMenuOpened} onClose={handleMenuToggle} />
+      <Navbar />
+      <SideMenu />
+      <CartSideMenu />
 
-      <div id="homepage" className="container mx-auto bg-green-300">
+      <div id="homepage" className="container mx-auto ">
         <div className="mt-14 bg-[#F8F5EC] flex items-center sm:hidden" onClick={() => setIsModalAddressOpened(prev => !prev)}>
           <div className="px-2">
             <Icon svg="location2" width="20px" height="20px" />
@@ -44,7 +34,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div id="newsBanner" className="mt-2 sm:mt-20 flex justify-center w-full">
+        <div id="newsBanner" className="mt-2 sm:mt-20 px-4 flex justify-center w-full">
           <img src="/images/bannerPerfomance.png" alt="banner" className="object-fit object-center w-full max-h-[280px] rounded-lg" />
         </div>
 

@@ -6,17 +6,12 @@ import { SideMenu } from '@/components/SideMenu';
 import React, { useState } from 'react'
 import MarmitasData from '../../Data/Marmitas.json';
 import { MarmitaType } from '@/types/MarmitaType';
+import { useSideMenu } from '@/context/SideMenuContext';
+import CartSideMenu from '@/components/CartSideMenu';
 
 const MenuPage = () => {
 
-    const [isMenuOpened, setIsMenuOpened] = useState(false);
     const [marmitas, setMarmitas] = useState<MarmitaType[]>(MarmitasData);
-
-    const handleMenuToggle = () => {
-        setIsMenuOpened(prev => {
-            return !prev
-        });
-    }
 
     const addMarmita = () => {
         console.log("Adding Marmita")
@@ -28,9 +23,9 @@ const MenuPage = () => {
 
     return (
         <>
-            <Navbar isMenuOpened={isMenuOpened} onMenuToggle={handleMenuToggle} />
-            <SideMenu menuOpened={isMenuOpened} onClose={handleMenuToggle} />
-
+            <Navbar />
+            <SideMenu />
+            
             <div id="menuPage" className="pt-20 px-4 w-full">
                 <div
                     id="menuList"

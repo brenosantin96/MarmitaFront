@@ -2,18 +2,22 @@ import React from 'react'
 import { Icon } from './svg/Icon';
 import Link from 'next/link';
 import SideMenuItem from './SideMenuItem';
+import { useSideMenu } from '@/context/SideMenuContext';
 
 type PropsSidedMenu = {
-  menuOpened: boolean;
-  onClose: () => void;
+
 }
 
-export const SideMenu = ({ menuOpened, onClose }: PropsSidedMenu) => {
+export const SideMenu = () => {
+
+
+  const { openAndCloseSideMenu, isOpen } = useSideMenu();
+
   return (
-    <div className={` ${menuOpened ? 'w-screen' : 'w-0'}  bg-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 ease-in overflow-hidden`}>
+    <div className={` ${isOpen ? 'w-screen' : 'w-0'}  bg-white fixed top-0 bottom-0 left-0 z-30 transition-all duration-200 ease-in overflow-hidden`}>
       <div className='flex justify-between pt-3 px-3'>
         <div className='font-amsi font-bold text-lg'>CATEGORIAS</div>
-        <div onClick={onClose} className="cursor-pointer bg-[#f6f3ea] rounded-full flex justify-center items-center w-8 h-8">
+        <div onClick={openAndCloseSideMenu} className="cursor-pointer bg-[#f6f3ea] rounded-full flex justify-center items-center w-8 h-8">
           <Icon svg='close' width='16' height='16' />
         </div>
       </div>
