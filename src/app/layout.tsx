@@ -6,6 +6,7 @@ import ModalAddress from '../components/ModalAddress';
 import ModalAddressGlobal from "@/components/ModalAddressGlobal";
 import { SideMenuProvider } from "../context/SideMenuContext"
 import { CartContextProvider } from "@/context/CartContext";
+import Navbar from "@/components/Navbar";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
@@ -14,6 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <CartContextProvider>
           <SideMenuProvider>
             <ModalAddressProvider>
+              <Navbar />
               {children}
               <ModalAddressGlobal />
             </ModalAddressProvider>

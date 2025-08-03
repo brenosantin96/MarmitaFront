@@ -13,35 +13,39 @@ import LeftArrowIcon from '../Icons/LeftArrowIcon';
 import LocationIcon from '../Icons/LocationIcon';
 import LocationIcon2 from '../Icons/LocationIcon2';
 import LittleXIcon from '../Icons/LittleXIcon';
+import FacebookIcon from '../Icons/FacebookIcon';
+import GoogleIcon from '../Icons/GoogleIcon';
 
 
 type Props = {
-    svg: string;
-    width: string;
-    height: string;
-    fillColor?: string;
-    strokeColor?: string;
+  svg: string;
+  width: string;
+  height: string;
+  fillColor?: string;
+  strokeColor?: string;
 };
 
-export const Icon = ({svg, width, height, fillColor, strokeColor} : Props) => {
+export const Icon = ({ svg, width, height, fillColor, strokeColor }: Props) => {
 
   return (
     <div>
-        {svg === "backward" && <BackwardIcon height={height} width={width} />}
-        {svg === "search" && <SearchIcon height={height} width={width} />}
-        {svg === "menu" && <MenuIcon height={height} width={width} />}
-        {svg === "user" && <UserIcon height={height} width={width} />}
-        {svg === "cart" && <CartIcon height={height} width={width} />}
-        {svg === "cart2" && <CartIcon2 height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
-        {svg === "logo" && <LogoIcon height={height} width={width} />}
-        {svg === "logo2" && <LogoIcon2 height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
-        {svg === "close" && <CloseIcon height={height} width={width} />}
-        {svg === "close2" && <CloseIcon2 height={height} width={width} />}
-        {svg === "rightarrow" && <RightArrowIcon height={height} width={width} />}
-        {svg === "leftarrow" && <LeftArrowIcon height={height} width={width} />}
-        {svg === "location" && <LocationIcon height={height} width={width} />}
-        {svg === "location2" && <LocationIcon2 height={height} width={width} />}
-        {svg === "littlex" && <LittleXIcon height={height} width={width} />}
+      {svg === "backward" && <BackwardIcon height={height} width={width} />}
+      {svg === "search" && <SearchIcon height={height} width={width} />}
+      {svg === "menu" && <MenuIcon height={height} width={width} />}
+      {svg === "user" && <UserIcon height={height} width={width} />}
+      {svg === "cart" && <CartIcon height={height} width={width} />}
+      {svg === "cart2" && <CartIcon2 height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
+      {svg === "logo" && <LogoIcon height={height} width={width} />}
+      {svg === "logo2" && <LogoIcon2 height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
+      {svg === "close" && <CloseIcon height={height} width={width} />}
+      {svg === "close2" && <CloseIcon2 height={height} width={width} />}
+      {svg === "rightarrow" && <RightArrowIcon height={height} width={width} />}
+      {svg === "leftarrow" && <LeftArrowIcon height={height} width={width} />}
+      {svg === "location" && <LocationIcon height={height} width={width} />}
+      {svg === "location2" && <LocationIcon2 height={height} width={width} />}
+      {svg === "littlex" && <LittleXIcon height={height} width={width} />}
+      {svg === "facebook" && <FacebookIcon height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
+      {svg === "google" && <GoogleIcon height={height} width={width} />}
     </div>
   )
 }

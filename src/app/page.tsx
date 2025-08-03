@@ -19,12 +19,11 @@ const HomePage = () => {
 
   return (
     <>
-      <Navbar />
       <SideMenu />
       <CartSideMenu />
 
-      <div id="homepage" className="container mx-auto ">
-        <div className="mt-14 bg-[#F8F5EC] flex items-center sm:hidden" onClick={() => setIsModalAddressOpened(prev => !prev)}>
+      <div id="homepage" className="container mx-auto pt-26 ">
+        <div className="bg-[#F8F5EC] flex items-center sm:hidden" onClick={() => setIsModalAddressOpened(prev => !prev)}>
           <div className="px-2">
             <Icon svg="location2" width="20px" height="20px" />
           </div>

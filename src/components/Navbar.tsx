@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { Icon } from './svg/Icon';
@@ -17,10 +19,12 @@ const Navbar = () => {
     const { openAndCloseSideMenu } = useSideMenu();
     const { openAndCloseCart } = useCartContext();
 
+    
 
     return (
         <nav className="fixed top-0 left-0 w-full z-40 font-hindmadurai bg-white shadow-md h-[56px] md:h-[96px] flex items-center justify-around px-4">
-            {!isScreenMDOrHigher ? (
+            {/*Se a screen NAO for maior que MD */}
+            {!isScreenMDOrHigher ? ( 
                 <>
                     <div onClick={openAndCloseSideMenu} className="cursor-pointer">
                         <Icon svg="menu" height="24" width="24" />
@@ -34,7 +38,9 @@ const Navbar = () => {
                         </Link>
                     </div>
                     <div className="cursor-pointer">
-                        <Icon svg="user" height="24" width="24" />
+                        <Link href="/signup">
+                            <Icon svg="user" height="24" width="24" />
+                        </Link>
                     </div>
                     <div onClick={openAndCloseCart} className="cursor-pointer">
                         <Icon svg="cart2" height="24" width="24" />
@@ -85,7 +91,9 @@ const Navbar = () => {
                                 </button>
                                 <button className='h-12 cursor-pointer'>
                                     <div className='py-3 px-6'>
+                                        <Link href="/signup">
                                         <Icon svg='user' height='24' width='24' />
+                                        </Link>
                                     </div>
                                 </button>
                                 <button onClick={openAndCloseCart} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
@@ -108,3 +116,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+//navbar device mobiles 56px
+//navbar medium devices 96px

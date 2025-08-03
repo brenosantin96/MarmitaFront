@@ -24,6 +24,7 @@ const Button01 = ({
   outline = false,
   onClick,
 }: Button01Props) => {
+  
   const fontWeightClass = {
     regular: 'font-normal',
     semibold: 'font-semibold',
@@ -36,7 +37,7 @@ const Button01 = ({
 
   const outlineClasses = outline
     ? 'bg-[#fff] text-green-700 border-2 border-green-700'
-    : `text-[#fff] bg-green-700`;
+    : `${textColor} ${backgroundColor}`;
 
   return (
     <button
