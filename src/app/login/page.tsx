@@ -1,9 +1,9 @@
 "use client"
-import FormUserPassword from '@/components/FormUserPassword'
-import { Icon } from '@/components/svg/Icon'
+import FormUserPassword from '@/components/FormUserPassword';
+import { Icon } from '@/components/svg/Icon';
 import React, { useState } from 'react'
 
-const SignUp = () => {
+const LoginPage = () => {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -16,11 +16,11 @@ const SignUp = () => {
             <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4'>
                 <div id="createUserDiv" className='flex flex-col w-full lg:w-1/2 mx-auto'>
                     <div className='font-amsi uppercase font-extrabold text-base text-center leading-6 my-4'>
-                        Crie sua conta e vamos às compras
+                        Já tem uma conta?
                     </div>
                     <div className='flex items-center justify-start mx-4'>
                         <div id="firstLine" className="border-b border-gray-200 grow shrink"></div>
-                        <p className='text-xs text-gray-500 text-left mx-2 py-3'>Use sua rede social para cadastrar sua conta</p>
+                        <p className='text-xs text-gray-500 text-left mx-2 py-3'>Use sua rede social para acessar sua conta</p>
                         <div id="secondLine" className="border-b border-gray-200 grow shrink"></div>
                     </div>
                     <div id="socialMedia" className='flex gap-2 items-center mx-4'>
@@ -33,7 +33,7 @@ const SignUp = () => {
                     </div>
                     <div className='flex items-center justify-start mx-4 '>
                         <div className="border-b border-gray-200 grow shrink"></div>
-                        <p className='text-xs text-gray-500 text-left mx-2 py-3'>Ou</p>
+                        <p className='text-xs text-gray-500 text-left mx-2 py-3'>ou</p>
                         <div className="border-b border-gray-200 grow shrink"></div>
                     </div>
 
@@ -46,7 +46,7 @@ const SignUp = () => {
                         onChangeUsername={setUsername}
                         onChangePassword={setPassword}
                         onChangePasswordConfirmation={setPasswordConfirmation}
-                        isInPageLogin={false}
+                        isInPageLogin={true}
                     />
                 </div>
             </div>
@@ -56,9 +56,7 @@ const SignUp = () => {
                 <div className='absolute inset-0 bg-[url(/images/foods2circle.png)] bg-cover bg-no-repeat bg-left h-full w-full' />
             </div>
         </div>
-
-
     )
 }
 
-export default SignUp
+export default LoginPage

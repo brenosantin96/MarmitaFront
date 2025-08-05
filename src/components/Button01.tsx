@@ -9,7 +9,7 @@ type Button01Props = {
   children: React.ReactNode;
   disabled?: boolean;
   outline?: boolean
-  onClick?: () => any; // opcional, com ou sem retorno
+  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;  // Recebendo o clique do botão
 
 };
 
