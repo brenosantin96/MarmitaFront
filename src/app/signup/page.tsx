@@ -2,13 +2,29 @@
 import FormUserPassword from '@/components/FormUserPassword'
 import { Icon } from '@/components/svg/Icon'
 import React, { useState } from 'react'
+import axios from 'axios';
+import axiosInstance from '@/lib/axiosInstance';
+//ALTERAR DINAMICAMENTE PRA USAR O REGISTERSERVICE NO FORM MAS VALIDAR SE ESTA NA PAGINA DE LOGIN OU REGISTER
 
 const SignUp = () => {
 
+    const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+
+    const handleRegister = async () => {
+        try {
+            const res1 = axiosInstance.post("/api/users/register", { name: name, email: username, password: password, isAdmin: false })
+            console.log("RES1: ", res1);
+        } catch (err) {
+            console.error("Erro ao registrar usuário:", err);
+        }
+    };
+
+
 
     return (
         <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
@@ -38,15 +54,18 @@ const SignUp = () => {
                     </div>
 
                     <FormUserPassword
+                        name={name}
                         username={username}
                         password={password}
                         passwordConfirmation={passwordConfirmation}
                         isPasswordVisible={isPasswordVisible}
                         setPasswordVisible={setIsPasswordVisible}
+                        onChangeName={setName}
                         onChangeUsername={setUsername}
                         onChangePassword={setPassword}
                         onChangePasswordConfirmation={setPasswordConfirmation}
                         isInPageLogin={false}
+                        onSubmit={handleRegister}
                     />
                 </div>
             </div>
