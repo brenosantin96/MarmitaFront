@@ -1,17 +1,8 @@
 // app/api/register/route.ts
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-import { cookies } from 'next/headers';
 
-const API_URL = "https://localhost:7127"; // URL da sua API backend
-
-// Configura o Axios para ignorar erros de certificado SSL em desenvolvimento
-const axiosConfig = {
-    httpsAgent: new (require('https').Agent)({
-        rejectUnauthorized: process.env.NODE_ENV === 'production', // Ignora apenas em desenvolvimento
-    }),
-};
-
+const API_URL = "https://localhost:7192"; // backend C#
 
 export async function POST(request: Request) {
   const { name, email, password, isAdmin } = await request.json();
@@ -20,19 +11,23 @@ export async function POST(request: Request) {
     const response = await axios.post(
       `${API_URL}/api/users/register`,
       { name, email, password, isAdmin },
-      axiosConfig
+      {
+        httpsAgent: new (require('https').Agent)({
+          rejectUnauthorized: process.env.NODE_ENV === 'production',
+        }),
+      }
     );
 
     return NextResponse.json(response.data, { status: 201 });
-
   } catch (error: any) {
-    console.error("Erro no registro:", error?.response?.data || error);
+    console.error("ROUTE HANDLER: Erro no registro:", error?.response?.data || error);
     return NextResponse.json(
-      { error: error?.response?.data || "Erro ao registrar usuário" },
+      { error: error?.response?.data || "ROUTE HANDLER Erro ao registrar usuário" },
       { status: error?.response?.status || 500 }
     );
   }
 }
+
 
 
 /* export async function POST(request: Request) {

@@ -3,7 +3,7 @@ import FormUserPassword from '@/components/FormUserPassword'
 import { Icon } from '@/components/svg/Icon'
 import React, { useState } from 'react'
 import axios from 'axios';
-import axiosInstance from '@/lib/axiosInstance';
+import Modal01 from '@/components/Modal01';
 //ALTERAR DINAMICAMENTE PRA USAR O REGISTERSERVICE NO FORM MAS VALIDAR SE ESTA NA PAGINA DE LOGIN OU REGISTER
 
 const SignUp = () => {
@@ -14,11 +14,20 @@ const SignUp = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+    const [isOpenModalConfirmationRegister, setIsOpenModalConfirmationRegister] = useState(false);
+
 
     const handleRegister = async () => {
         try {
-            const res1 = axiosInstance.post("/api/users/register", { name: name, email: username, password: password, isAdmin: false })
+            const res1 = await axios.post("/api/register", { name: name, email: username, password: password, isAdmin: false })
             console.log("RES1: ", res1);
+            if (res1.status === 201) {
+                setName("");
+                setUsername("");
+                setPassword("");
+                setPasswordConfirmation("");
+                setIsOpenModalConfirmationRegister(true);
+            }
         } catch (err) {
             console.error("Erro ao registrar usuário:", err);
         }
@@ -27,54 +36,62 @@ const SignUp = () => {
 
 
     return (
-        <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
-            {/* Coluna 1: Formulário - ocupa 5 colunas */}
-            <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4'>
-                <div id="createUserDiv" className='flex flex-col w-full lg:w-1/2 mx-auto'>
-                    <div className='font-amsi uppercase font-extrabold text-base text-center leading-6 my-4'>
-                        Crie sua conta e vamos às compras
-                    </div>
-                    <div className='flex items-center justify-start mx-4'>
-                        <div id="firstLine" className="border-b border-gray-200 grow shrink"></div>
-                        <p className='text-xs text-gray-500 text-left mx-2 py-3'>Use sua rede social para cadastrar sua conta</p>
-                        <div id="secondLine" className="border-b border-gray-200 grow shrink"></div>
-                    </div>
-                    <div id="socialMedia" className='flex gap-2 items-center mx-4'>
-                        <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
-                            <Icon svg='facebook' width="24px" height='24px' />
-                        </button>
-                        <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
-                            <Icon svg='google' width="24px" height='24px' />
-                        </button>
-                    </div>
-                    <div className='flex items-center justify-start mx-4 '>
-                        <div className="border-b border-gray-200 grow shrink"></div>
-                        <p className='text-xs text-gray-500 text-left mx-2 py-3'>Ou</p>
-                        <div className="border-b border-gray-200 grow shrink"></div>
-                    </div>
+        <>
+            <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
+                {/* Coluna 1: Formulário - ocupa 5 colunas */}
+                <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4'>
+                    <div id="createUserDiv" className='flex flex-col w-full lg:w-1/2 mx-auto'>
+                        <div className='font-amsi uppercase font-extrabold text-base text-center leading-6 my-4'>
+                            Crie sua conta e vamos às compras
+                        </div>
+                        <div className='flex items-center justify-start mx-4'>
+                            <div id="firstLine" className="border-b border-gray-200 grow shrink"></div>
+                            <p className='text-xs text-gray-500 text-left mx-2 py-3'>Use sua rede social para cadastrar sua conta</p>
+                            <div id="secondLine" className="border-b border-gray-200 grow shrink"></div>
+                        </div>
+                        <div id="socialMedia" className='flex gap-2 items-center mx-4'>
+                            <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
+                                <Icon svg='facebook' width="24px" height='24px' />
+                            </button>
+                            <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
+                                <Icon svg='google' width="24px" height='24px' />
+                            </button>
+                        </div>
+                        <div className='flex items-center justify-start mx-4 '>
+                            <div className="border-b border-gray-200 grow shrink"></div>
+                            <p className='text-xs text-gray-500 text-left mx-2 py-3'>Ou</p>
+                            <div className="border-b border-gray-200 grow shrink"></div>
+                        </div>
 
-                    <FormUserPassword
-                        name={name}
-                        username={username}
-                        password={password}
-                        passwordConfirmation={passwordConfirmation}
-                        isPasswordVisible={isPasswordVisible}
-                        setPasswordVisible={setIsPasswordVisible}
-                        onChangeName={setName}
-                        onChangeUsername={setUsername}
-                        onChangePassword={setPassword}
-                        onChangePasswordConfirmation={setPasswordConfirmation}
-                        isInPageLogin={false}
-                        onSubmit={handleRegister}
-                    />
+                        <FormUserPassword
+                            name={name}
+                            username={username}
+                            password={password}
+                            passwordConfirmation={passwordConfirmation}
+                            isPasswordVisible={isPasswordVisible}
+                            setPasswordVisible={setIsPasswordVisible}
+                            onChangeName={setName}
+                            onChangeUsername={setUsername}
+                            onChangePassword={setPassword}
+                            onChangePasswordConfirmation={setPasswordConfirmation}
+                            isInPageLogin={false}
+                            onSubmit={handleRegister}
+                        />
+                    </div>
+                </div>
+
+                {/* Coluna 2: Imagem - ocupa 7 colunas */}
+                <div className='hidden md:block col-span-7 lg:col-span-5 relative lg:mr-[-300px]'>
+                    <div className='absolute inset-0 bg-[url(/images/foods2circle.png)] bg-cover bg-no-repeat bg-left h-full w-full' />
                 </div>
             </div>
-
-            {/* Coluna 2: Imagem - ocupa 7 colunas */}
-            <div className='hidden md:block col-span-7 lg:col-span-5 relative lg:mr-[-300px]'>
-                <div className='absolute inset-0 bg-[url(/images/foods2circle.png)] bg-cover bg-no-repeat bg-left h-full w-full' />
-            </div>
-        </div>
+            <Modal01
+                handleClose={() => setIsOpenModalConfirmationRegister(false)}
+                isOpen={isOpenModalConfirmationRegister}
+                modalTitle="Usuário registrado com sucesso."
+                modalText="Favor conferir caixa de entrada ou pasta de SPAM no seu email para poder confirmar a criação de sua conta."
+            />
+        </>
 
 
     )

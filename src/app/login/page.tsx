@@ -1,14 +1,30 @@
 "use client"
 import FormUserPassword from '@/components/FormUserPassword';
 import { Icon } from '@/components/svg/Icon';
+import axios from 'axios';
 import React, { useState } from 'react'
 
 const LoginPage = () => {
 
+    const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const handleLogin = async () => {
+        try {
+            const res1 = await axios.post("/api/login", { email: username, password: password })
+            console.log("RES1: ", res1);
+            if (res1.status === 201) {
+                setUsername("");
+                setPassword("");
+            }
+        } catch (err) {
+            console.error("Erro ao realizar login", err);
+        }
+    };
+
 
     return (
         <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
@@ -38,6 +54,7 @@ const LoginPage = () => {
                     </div>
 
                     <FormUserPassword
+                        name={name}
                         username={username}
                         password={password}
                         passwordConfirmation={passwordConfirmation}
@@ -46,7 +63,10 @@ const LoginPage = () => {
                         onChangeUsername={setUsername}
                         onChangePassword={setPassword}
                         onChangePasswordConfirmation={setPasswordConfirmation}
+                        onChangeName={setName}
                         isInPageLogin={true}
+                        onSubmit={handleLogin}
+
                     />
                 </div>
             </div>

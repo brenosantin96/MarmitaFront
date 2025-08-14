@@ -1,12 +1,14 @@
 import React from 'react';
+import { Icon } from './svg/Icon';
 
 type PropsModal01 = {
     isOpen: boolean;
     handleClose: () => void;
     modalTitle : string;
+    modalText: string;
 };
 
-const Modal01 = ({ handleClose, isOpen, modalTitle }: PropsModal01) => {
+const Modal01 = ({ handleClose, isOpen, modalTitle, modalText }: PropsModal01) => {
 
 
     if (!isOpen) return null; //essa linha deve ser corrigida!
@@ -23,15 +25,12 @@ const Modal01 = ({ handleClose, isOpen, modalTitle }: PropsModal01) => {
             <div id="headerModal01" className="flex bg-green-300 p-4 justify-between items-center rounded-t-lg">
                 <div className="text-lg font-bold">{modalTitle}</div>
                 <div className="cursor-pointer text-3xl" onClick={handleClose}>
-                    X
+                    <Icon svg='close2' height='20px' width='20px' />
                 </div>
             </div>
 
             <div id="contentHeader" className="p-4">
-                <div>BLA</div>
-                <div>BLA</div>
-                <div>BLA</div>
-                <div>BLA</div>
+                <div>{modalText}</div>
             </div>
         </div>
         </>
