@@ -1,4 +1,5 @@
-// UserContext.tsx
+//src\context\UserContext.tsx
+"use client"
 
 import React, { createContext, useContext, useState } from 'react';
 import type { User } from '../types/User';
@@ -16,8 +17,9 @@ type ContextProviderUser = {
 
 // Estado inicial do usuário
 const initialUser: User = {
-  name: 'Breno',
-  email: 'breno@gmail.com',
+  id: 0,
+  name: '',
+  email: '',
   isAdmin: false,
 };
 

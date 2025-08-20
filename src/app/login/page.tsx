@@ -1,7 +1,9 @@
 "use client"
 import FormUserPassword from '@/components/FormUserPassword';
 import { Icon } from '@/components/svg/Icon';
+import { useUserContext } from '@/context/UserContext';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const LoginPage = () => {
@@ -12,13 +14,21 @@ const LoginPage = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+    const { setUser } = useUserContext(); // UserContext
+
+    const router = useRouter();
+
+
     const handleLogin = async () => {
         try {
-            const res1 = await axios.post("/api/login", { email: username, password: password })
-            console.log("RES1: ", res1);
-            if (res1.status === 201) {
+            const res1 = await axios.post("/api/login", { email: username, password: password });
+
+            if (res1.status === 200 && res1.data.user) {
+                const loggedUser = res1.data.user;
+                setUser(loggedUser); //Atualizando contexto
                 setUsername("");
                 setPassword("");
+                router.push("/signup")
             }
         } catch (err) {
             console.error("Erro ao realizar login", err);

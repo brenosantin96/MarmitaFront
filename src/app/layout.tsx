@@ -7,20 +7,23 @@ import ModalAddressGlobal from "@/components/ModalAddressGlobal";
 import { SideMenuProvider } from "../context/SideMenuContext"
 import { CartContextProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
+import { UserProvider } from "@/context/UserContext";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
       <body className={``}>
-        <CartContextProvider>
-          <SideMenuProvider>
-            <ModalAddressProvider>
-              <Navbar />
-              {children}
-              <ModalAddressGlobal />
-            </ModalAddressProvider>
-          </SideMenuProvider>
-        </CartContextProvider>
+        <UserProvider>
+          <CartContextProvider>
+            <SideMenuProvider>
+              <ModalAddressProvider>
+                <Navbar />
+                {children}
+                <ModalAddressGlobal />
+              </ModalAddressProvider>
+            </SideMenuProvider>
+          </CartContextProvider>
+        </UserProvider>
       </body>
     </html>
   );

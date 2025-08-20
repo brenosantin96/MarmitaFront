@@ -22,6 +22,9 @@ export async function POST(request: Request) {
         if (response.data && response.data.token) {
 
             const token = response.data.token;
+            const user = response.data.user; // <- dados do usuário vindo do backend
+
+            console.log(user.data);
 
             // Define um cookie HTTP seguro para o token
             (await cookies()).set("token", token, {
@@ -33,7 +36,7 @@ export async function POST(request: Request) {
 
 
             //sem necessidade de enviar token no json de resposta.
-            return NextResponse.json({ success: true }, { status: 200 });
+            return NextResponse.json({ success: true, user }, { status: 200 });
         } else {
             return NextResponse.json({ error: "No token received" }, { status: 401 });
         }

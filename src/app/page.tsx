@@ -39,7 +39,7 @@ const HomePage = () => {
 
         <div className="flex justify-center items-center">
           <Link href={"/menu"} className="w-full mx-3 mt-5 sm:w-2/3">
-            <Button01 disabled={false} classes=""> VER CARDÁPIO COMPLETO </Button01>
+            <Button01 disabled={false} classes=""> VER CARDÁPIO COMPLETO </Button01>n
           </Link>
         </div>
 
