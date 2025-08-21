@@ -1,5 +1,5 @@
 export type MarmitaType = {
-    id: string;
+    id: number;
     title: string;
     urlImage: string;
     price: number;

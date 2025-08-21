@@ -8,6 +8,8 @@ import categoriesData from '../Data/Categories.json';
 import { useModalAddress } from '@/context/ModalAddressContext';
 import { useSideMenu } from '@/context/SideMenuContext';
 import { useCartContext } from '@/context/CartContext';
+import { useUserContext } from '@/context/UserContext';
+import AdminButton from './AdminButton';
 
 type NavBarProps = {
 };
@@ -18,6 +20,8 @@ const Navbar = () => {
     const { openModal } = useModalAddress();
     const { openAndCloseSideMenu } = useSideMenu();
     const { openAndCloseCart } = useCartContext();
+
+    const { user } = useUserContext();
 
 
 
@@ -45,6 +49,11 @@ const Navbar = () => {
                     <div onClick={openAndCloseCart} className="cursor-pointer">
                         <Icon svg="cart2" height="24" width="24" />
                     </div>
+                    {user.id > 0 &&
+                        <div>
+                            <AdminButton />
+                        </div>
+                    }
                 </>
             ) : (
                 <div className='w-full grid grid-col-12'>
@@ -75,46 +84,49 @@ const Navbar = () => {
                                         ))}
                                     </ul>
                                 </li>
-                            <li className="cursor-pointer">Mais categorias</li>
-                            <li className="cursor-pointer">A Mimo Marmitas</li>
-                        </ul>
+                                <li className="cursor-pointer">Mais categorias</li>
+                                <li className="cursor-pointer">A Mimo Marmitas</li>
+                                {user.id > 0 &&
+                                    <li className="cursor-pointer"><AdminButton /></li>
+                                }
+                            </ul>
 
-                        <div className=' h-full flex items-center pr-10'>
-                            <button className='h-12 cursor-pointer'>
-                                <div className='py-3 px-6'>
-                                    <Icon svg='search' height='24' width='24' />
-                                </div>
-                            </button>
-                            <button className='h-12 cursor-pointer'
-                                onClick={openModal}
-                            >
-                                <div className='py-3 px-6'>
-                                    <Icon svg='location2' height='24' width='24' />
-                                </div>
-                            </button>
-                            <button className='h-12 cursor-pointer'>
-                                <div className='py-3 px-6'>
-                                    <Link href="/signup">
-                                        <Icon svg='user' height='24' width='24' />
-                                    </Link>
-                                </div>
-                            </button>
-                            <button onClick={openAndCloseCart} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
-                                <div className='pr-2'>
-                                    <Icon svg='cart2' height='24' width='24' fillColor='#fff' strokeColor='#fff' />
-                                </div>
-                                <div className='text-white'>
-                                    Sua sacola
-                                </div>
-                            </button>
+                            <div className=' h-full flex items-center pr-10'>
+                                <button className='h-12 cursor-pointer'>
+                                    <div className='py-3 px-6'>
+                                        <Icon svg='search' height='24' width='24' />
+                                    </div>
+                                </button>
+                                <button className='h-12 cursor-pointer'
+                                    onClick={openModal}
+                                >
+                                    <div className='py-3 px-6'>
+                                        <Icon svg='location2' height='24' width='24' />
+                                    </div>
+                                </button>
+                                <button className='h-12 cursor-pointer'>
+                                    <div className='py-3 px-6'>
+                                        <Link href="/signup">
+                                            <Icon svg='user' height='24' width='24' />
+                                        </Link>
+                                    </div>
+                                </button>
+                                <button onClick={openAndCloseCart} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
+                                    <div className='pr-2'>
+                                        <Icon svg='cart2' height='24' width='24' fillColor='#fff' strokeColor='#fff' />
+                                    </div>
+                                    <div className='text-white'>
+                                        Sua sacola
+                                    </div>
+                                </button>
+                            </div>
+
                         </div>
-
                     </div>
                 </div>
-                </div>
 
-    )
-}
+            )
+            }
         </nav >
     );
 };

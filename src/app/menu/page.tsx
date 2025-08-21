@@ -10,6 +10,7 @@ import { useSideMenu } from '@/context/SideMenuContext';
 import CartSideMenu from '@/components/CartSideMenu';
 import AdminButton from '@/components/AdminButton';
 import { useUserContext } from '@/context/UserContext';
+import Button01 from '@/components/Button01';
 
 const MenuPage = () => {
 
@@ -32,15 +33,8 @@ const MenuPage = () => {
 
     return (
         <>
-
-
             <SideMenu />
-
             <div id="menuPage" className="pt-28 px-4 w-full">
-
-
-
-
                 <div
                     id="menuList"
                     className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-screen-xl mx-auto justify-items-center"
@@ -59,7 +53,7 @@ const MenuPage = () => {
                 </div>
             </div>
 
-            <AdminButton />
+            
 
 
         </>

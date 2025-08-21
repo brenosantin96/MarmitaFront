@@ -40,8 +40,6 @@ const ModalAddress = ({ handleClose, isOpen, modalTitle }: PropsModal01) => {
         }
     });
 
-    const cep = watch("cep");
-
     if (!isOpen) return null;
 
     const onSubmit = (data: FormData) => {
