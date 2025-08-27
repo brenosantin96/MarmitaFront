@@ -1,44 +1,37 @@
-// src\app\api\lunchboxes\route.ts
-import axios, { AxiosError } from "axios";
+// src/app/api/lunchboxes/route.ts
+import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const API_URL = "https://localhost:7192"; // backend C#
 
-// Configura o Axios para ignorar erros de certificado SSL em desenvolvimento
 const axiosConfig = {
-    httpsAgent: new (require('https').Agent)({
-        rejectUnauthorized: process.env.NODE_ENV === 'production', // Ignora apenas em desenvolvimento
-    }),
+  httpsAgent: new (require("https").Agent)({
+    rejectUnauthorized: process.env.NODE_ENV === "production",
+  }),
 };
 
-
 export async function GET(request: Request) {
+  try {
+    // Pega o cookie enviado pelo browser
+    const token = (await cookies()).get("token")?.value;
 
-    try {
-        //Lê o token salvo no cookie HTTP-only
-        const token = (await cookies()).get("token")?.value;
-        if (!token) {
-            return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-        }
+    console.log("TOKEN: ", token) // ISSO AQUI AINDA SEGUE RETORNANDO UNDEFINED
 
-        //Chama o backend com o token no header
-        const response = await axios.get(`${API_URL}/api/Lunchboxes`, {
-            ...axiosConfig,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        //Retorna os dados
-        return NextResponse.json(response.data, { status: 200 });
+    if (!token) {
+      return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
-    catch (error) {
-        if(axios.isAxiosError(error)){
-            console.error("Error:", error?.response?.data || error);
-        } else {
-            console.error("Error", error)
-        }
-        return NextResponse.json({ error: "Erro ao buscar marmitas" }, { status: 500 });
-    }
+
+    // Chama backend com token
+    const response = await axios.get(`${API_URL}/api/Lunchboxes`, {
+      ...axiosConfig,
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true
+    });
+
+    return NextResponse.json(response.data, { status: 200 });
+  } catch (err) {
+    console.error("Erro ao buscar marmitas:", err);
+    return NextResponse.json({ error: "Erro ao buscar marmitas" }, { status: 500 });
+  }
 }

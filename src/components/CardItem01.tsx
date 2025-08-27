@@ -5,7 +5,7 @@ import { useUserContext } from '@/context/UserContext';
 
 type PropsCardItem01 = {
     title: string;
-    urlImage: string;
+    imageUrl: string;
     price: number;
     portion: number;
     oldPrice?: number;
@@ -13,7 +13,7 @@ type PropsCardItem01 = {
     onRemove: () => void;
 }
 
-const CardItem01 = ({ title, price, urlImage, portion, oldPrice, onAdd, onRemove }: PropsCardItem01) => {
+const CardItem01 = ({ title, price, imageUrl, portion, oldPrice, onAdd, onRemove }: PropsCardItem01) => {
 
     const userContext = useUserContext();
 
@@ -30,7 +30,7 @@ const CardItem01 = ({ title, price, urlImage, portion, oldPrice, onAdd, onRemove
 
         <div className='inline-flex flex-col rounded-lg font-hindmadurai border border-gray-400 mb-3 pb-5 max-w-fit'>
             <div className='overflow-hidden rounded-t-lg'>
-                <img src={urlImage} alt={title} className='object-cover' />
+                <img src={imageUrl} alt={title} className='object-cover' />
             </div>
             <div className='pt-2 px-5'>
                 <div className='pb-2'>{title}</div>

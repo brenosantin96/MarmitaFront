@@ -1,63 +1,70 @@
-"use client"
+"use client";
 
 import CardItem01 from '@/components/CardItem01';
-import Navbar from '@/components/Navbar';
 import { SideMenu } from '@/components/SideMenu';
-import React, { useEffect, useState } from 'react'
-import MarmitasData from '../../Data/Marmitas.json';
+import React, { useEffect, useState } from 'react';
 import { MarmitaType } from '@/types/MarmitaType';
-import { useSideMenu } from '@/context/SideMenuContext';
-import CartSideMenu from '@/components/CartSideMenu';
-import AdminButton from '@/components/AdminButton';
-import { useUserContext } from '@/context/UserContext';
-import Button01 from '@/components/Button01';
+import axios from 'axios';
 
 const MenuPage = () => {
+  const [marmitas, setMarmitas] = useState<MarmitaType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    const [marmitas, setMarmitas] = useState<MarmitaType[]>(MarmitasData);
+  // Função para buscar marmitas do backend
+  const getMarmitas = async () => {
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/lunchboxes`, {
+        withCredentials: true, // envia cookies HTTP-only
+      });
 
-    const { user } = useUserContext();
-
-    useEffect(() => {
-        console.log(user)
-    }, [user])
-
-
-    const addMarmita = () => {
-        console.log("Adding Marmita")
+      setMarmitas(res.data);
+    } catch (err) {
+      console.error("Erro ao buscar marmitas:", err);
+      setMarmitas([]);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const removeMarmita = () => {
-        console.log("Removing Marmita")
-    }
+  useEffect(() => {
+    getMarmitas();
+  }, []);
 
-    return (
-        <>
-            <SideMenu />
-            <div id="menuPage" className="pt-28 px-4 w-full">
-                <div
-                    id="menuList"
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-screen-xl mx-auto justify-items-center"
-                >
-                    {marmitas.map((item) => (
-                        <CardItem01
-                            key={item.id}
-                            title={item.title}
-                            price={item.price}
-                            portion={item.portion}
-                            urlImage={item.urlImage}
-                            onAdd={addMarmita}
-                            onRemove={removeMarmita}
-                        />
-                    ))}
-                </div>
-            </div>
+  // Funções temporárias
+  const addMarmita = () => console.log("Adding Marmita");
+  const removeMarmita = () => console.log("Removing Marmita");
 
-            
+  if (loading) {
+    return <div className="pt-28 px-4">Carregando marmitas...</div>;
+  }
 
+  if (marmitas.length === 0) {
+    return <div className="pt-28 px-4">Nenhuma marmita encontrada.</div>;
+  }
 
-        </>
-    )
-}
+  return (
+    <>
+      <SideMenu />
+      <div id="menuPage" className="pt-28 px-4 w-full">
+        <div
+          id="menuList"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-screen-xl mx-auto justify-items-center"
+        >
+          {marmitas.map((item) => (
+            <CardItem01
+              key={item.id}
+              title={item.name}
+              price={item.price}
+              portion={item.portion}
+              imageUrl={item.imageUrl}
+              onAdd={addMarmita}
+              onRemove={removeMarmita}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
 
-export default MenuPage
+export default MenuPage;

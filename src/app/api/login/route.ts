@@ -1,47 +1,76 @@
-// marmita_front\src\app\api\login\route.ts
+// src/app/api/login/route.ts
 import axios from "axios";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const API_URL = "https://localhost:7192"; // backend C#
 
-// Configura o Axios para ignorar erros de certificado SSL em desenvolvimento
 const axiosConfig = {
-    httpsAgent: new (require('https').Agent)({
-        rejectUnauthorized: process.env.NODE_ENV === 'production', // Ignora apenas em desenvolvimento
-    }),
+  httpsAgent: new (require("https").Agent)({
+    rejectUnauthorized: process.env.NODE_ENV === "production",
+  }),
 };
 
-
 export async function POST(request: Request) {
-
+  try {
     const { email, password } = await request.json();
 
-    try {
-        const response = await axios.post(`${API_URL}/api/users/login`, { email, password }, axiosConfig);
-        if (response.data && response.data.token) {
+    // Chamada ao backend
+    const response = await axios.post(`${API_URL}/api/users/login`, { email, password }, axiosConfig);
 
-            const token = response.data.token;
-            const user = response.data.user; // <- dados do usuário vindo do backend
+    const { token, user } = response.data;
 
-            console.log(user.data);
-
-            // Define um cookie HTTP seguro para o token
-            (await cookies()).set("token", token, {
-                httpOnly: true,   // Impede acesso no frontend
-                secure: process.env.NODE_ENV === "production", // Apenas HTTPS em produção
-                maxAge: 60 * 60 * 24 * 7,  // Expira em 7 dias
-                path: "/",
-            });
-
-
-            //sem necessidade de enviar token no json de resposta.
-            return NextResponse.json({ success: true, user }, { status: 200 });
-        } else {
-            return NextResponse.json({ error: "No token received" }, { status: 401 });
-        }
-    } catch (error) {
-        console.log("Error: ", error);
-        return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    if (!token) {
+      return NextResponse.json({ error: "No token received" }, { status: 401 });
     }
+
+    // Cria a resposta e seta cookie HTTP-only
+    const res = NextResponse.json({ success: true, user }, { status: 200 });
+    res.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 7, // 7 dias
+      path: "/",
+      sameSite: "lax", // permite envio do cookie em requests de frontend
+    });
+
+    console.log("TOKEN POST LOGIN: ", token); //AQUI APARECE COM NORMALIDADE
+
+    return res;
+
+
+  } catch (err) {
+    console.error("Login error:", err);
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+  }
 }
+
+
+/* 
+
+Explicação do fluxo do token HTTP-only:
+
+1 - O token é retornado pelo backend C# no login e enviado para o navegador via:
+   res.cookies.set("token", token, { httpOnly: true, ... });
+   - Isso gera um header HTTP `Set-Cookie` no response.
+   - O cookie fica armazenado localmente **no navegador** e não é acessível via JS por ser HTTP-only.
+
+2 - Quando o navegador faz requests futuras para o Next.js (ex: /api/lunchboxes), ele envia automaticamente o cookie armazenado.
+
+3 - No Next.js:
+   - `cookies().get("token")` **lê apenas os cookies que vieram no request atual que chegou ao servidor Next.js**.
+   - Ou seja, ele não “pega diretamente do navegador”; se o request não enviar o cookie (como em um fetch interno no servidor), será `undefined`.
+
+4 -  Para usar token em Server Components ou fetch interno autenticado:
+   - Pegue os cookies do browser no Server Component:
+     const cookieHeader = headers().get("cookie");
+   - Envie no header da requisição para o endpoint:
+     fetch('/api/lunchboxes', { headers: { cookie: cookieHeader || "" } });
+   - No route handler, extraia o token do header:
+     const token = request.headers.get("cookie")?.split(";").find(c => c.trim().startsWith("token="))?.split("=")[1];
+   - Agora você pode usar esse token para chamadas autenticadas ao backend.
+
+  Resumo: 
+- Client Components enviam cookies automaticamente, facilitando autenticação.
+- Server Components exigem repasse manual do cookie do navegador se você quiser usar HTTP-only tokens.
+
+*/

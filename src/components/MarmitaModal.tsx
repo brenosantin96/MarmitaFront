@@ -16,8 +16,11 @@ type PropsMarmitaModal = {
 
 // Schema de validação com Zod
 const schema = z.object({
-  title: z.string().min(3, "Título é obrigatório"),
-  urlImage: z.string().url("Deve ser uma URL válida"),
+  name: z.string().min(3, "Título é obrigatório"),
+  imageUrl: z.any()
+    .refine((files) => files?.length === 1, "Imagem é obrigatória")
+    .refine((files) => files?.[0] && ["image/jpeg", "image/jpg", "image/png"].includes(files[0].type),
+      "A imagem deve ser JPG, JPEG ou PNG"),
   price: z.number().positive("Preço deve ser maior que zero"),
   portion: z.number().positive("Porção deve ser maior que zero"),
   oldPrice: z.number().positive("Preço antigo deve ser positivo").optional(),
@@ -35,8 +38,8 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
     mode: "onChange",
     resolver: zodResolver(schema),
     defaultValues: {
-      title: "",
-      urlImage: "",
+      name: "",
+      imageUrl: "",
       price: undefined,
       portion: undefined,
       oldPrice: undefined,
@@ -55,6 +58,32 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
     if (onSubmitMarmita) onSubmitMarmita(newMarmita);
     handleClose();
   };
+
+  const onSubmit2 = (data: FormData) => {
+    // Pegando o arquivo
+    const file = data.imageUrl[0];
+
+    // Exemplo de como salvar no estado: no real você faria upload para o backend
+    const newMarmita: MarmitaType = {
+      id: Date.now(),
+      name: data.name,
+      imageUrl: URL.createObjectURL(file), // só preview local
+      price: data.price,
+      portion: data.portion,
+      oldPrice: data.oldPrice,
+    };
+
+    console.log("Marmita criada:", newMarmita);
+
+    if (onSubmitMarmita) {
+      onSubmitMarmita(newMarmita);
+    }
+
+
+
+    handleClose();
+  };
+
 
   return (
     <>
@@ -85,32 +114,38 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Title */}
             <div className="mb-4">
-              <label htmlFor="title">Título da Marmita</label>
+              <label htmlFor="name">Título da Marmita</label>
               <input
-                id="title"
-                {...register("title")}
+                id="name"
+                {...register("name")}
                 className="border-b py-3 px-2 block w-full border-gray-200"
                 placeholder="Ex: Frango grelhado com legumes"
               />
-              {errors.title && (
+              {errors.name && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.title.message}
+                  {errors.name.message}
                 </p>
               )}
             </div>
 
-            {/* URL da Imagem */}
+            {/* Upload de Imagem */}
             <div className="mb-4">
-              <label htmlFor="urlImage">URL da Imagem</label>
+              <label htmlFor="imageUrl">Imagem da Marmita</label>
               <input
-                id="urlImage"
-                {...register("urlImage")}
-                className="border-b py-3 px-2 block w-full border-gray-200"
-                placeholder="https://meusite.com/imagem.png"
+                id="imageUrl"
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                {...register("imageUrl")}
+                className="block w-full text-sm mt-2 text-gray-600
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-green-700 file:text-white
+                  hover:file:bg-green-800"
               />
-              {errors.urlImage && (
+              {errors.imageUrl && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.urlImage.message}
+                  {errors.imageUrl.message as string}
                 </p>
               )}
             </div>
@@ -169,9 +204,9 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
 
             {/* Botão */}
             <Button01
-            backgroundColor="bg-green-700"
-            textColor="text-white"
-            disabled={!isValid}>SALVAR</Button01>
+              backgroundColor="bg-green-700"
+              textColor="text-white"
+              disabled={!isValid}>SALVAR</Button01>
           </form>
         </div>
       </div>

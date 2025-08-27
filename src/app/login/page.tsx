@@ -25,7 +25,7 @@ const LoginPage = () => {
 
             if (res1.status === 200 && res1.data.user) {
                 const loggedUser = res1.data.user;
-                setUser(loggedUser); //Atualizando contexto
+                setUser(loggedUser); //ISSO VOU MUDAR DEPOIS para que SERVER COMPONENTS consigam acessar informacoes de CONTEXTS....
                 setUsername("");
                 setPassword("");
                 router.push("/signup")

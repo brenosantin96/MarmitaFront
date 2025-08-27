@@ -163,7 +163,7 @@ const FormUserPassword = ({ name, username, password, passwordConfirmation, isPa
                 </div>
             }
             <div className='my-3.5'>
-                <Button01 disabled={areThereErrors()} fontWeight='semibold' classes='mt-5 mb-5' onClick={(e) => {
+                <Button01 textColor='text-white' backgroundColor='bg-green-700' disabled={areThereErrors()} fontWeight='semibold' classes='mt-5 mb-5' onClick={(e) => {
                     e.preventDefault();
                     onSubmit();
                 }} >CONTINUAR</Button01>
