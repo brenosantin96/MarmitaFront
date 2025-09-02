@@ -6,30 +6,39 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "./svg/Icon";
 import Button01 from "./Button01";
 import { MarmitaType } from "@/types/MarmitaType";
+import { MarmitaCreateDto } from "@/types/MarmitaCreateDto";
+import { Category } from "@/types/Category";
 
 type PropsMarmitaModal = {
   isOpen: boolean;
   handleClose: () => void;
   modalTitle: string;
-  onSubmitMarmita?: (data: MarmitaType) => void;
+  categories: Category[];
+  onSubmitMarmita: (data: MarmitaCreateDto) => void;
+
 };
+
+//CORRIGIR ESSA PAGE
 
 // Schema de validação com Zod
 const schema = z.object({
   name: z.string().min(3, "Título é obrigatório"),
-  imageUrl: z.any()
-    .refine((files) => files?.length === 1, "Imagem é obrigatória")
-    .refine((files) => files?.[0] && ["image/jpeg", "image/jpg", "image/png"].includes(files[0].type),
-      "A imagem deve ser JPG, JPEG ou PNG"),
+  description: z.string().min(3, "Descrição é obrigatório"),
   price: z.number().positive("Preço deve ser maior que zero"),
-  portion: z.number().positive("Porção deve ser maior que zero"),
+  portionGram: z.number().positive("Porção deve ser maior que zero"),
   oldPrice: z.number().positive("Preço antigo deve ser positivo").optional(),
+  categoryId: z.number().int().positive(),
+  image: z.any()
+    .refine((files) => files?.length === 1, "Imagem é obrigatória")
+    .refine((files) => ["image/jpeg", "image/jpg", "image/png"].includes(files?.[0]?.type),
+      "A imagem deve ser JPG, JPEG ou PNG"),
+
 });
 
 // Inferindo a tipagem do schema
 type FormData = z.infer<typeof schema>;
 
-const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: PropsMarmitaModal) => {
+const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita, categories }: PropsMarmitaModal) => {
   const {
     register,
     handleSubmit,
@@ -39,38 +48,30 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      imageUrl: "",
+      image: "",
       price: undefined,
-      portion: undefined,
+      portionGram: undefined,
       oldPrice: undefined,
     },
   });
 
   if (!isOpen) return null;
 
-  const onSubmit = (data: FormData) => {
-    const newMarmita: MarmitaType = {
-      id: Date.now(), // apenas mock, no real seria gerado pelo backend
-      ...data,
-    };
-
-    console.log("Marmita criada:", newMarmita);
-    if (onSubmitMarmita) onSubmitMarmita(newMarmita);
-    handleClose();
-  };
-
   const onSubmit2 = (data: FormData) => {
+
     // Pegando o arquivo
-    const file = data.imageUrl[0];
+    const file = data.image[0];
 
     // Exemplo de como salvar no estado: no real você faria upload para o backend
-    const newMarmita: MarmitaType = {
-      id: Date.now(),
+    const newMarmita: MarmitaCreateDto = {
+
       name: data.name,
-      imageUrl: URL.createObjectURL(file), // só preview local
+      image: file,
       price: data.price,
-      portion: data.portion,
-      oldPrice: data.oldPrice,
+      portionGram: data.portionGram,
+      description: data.description,
+      categoryId: data.categoryId
+
     };
 
     console.log("Marmita criada:", newMarmita);
@@ -78,8 +79,6 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
     if (onSubmitMarmita) {
       onSubmitMarmita(newMarmita);
     }
-
-
 
     handleClose();
   };
@@ -111,7 +110,7 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
 
         {/* Body */}
         <div className="p-4 text-sm">
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit2)}>
             {/* Title */}
             <div className="mb-4">
               <label htmlFor="name">Título da Marmita</label>
@@ -128,14 +127,50 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
               )}
             </div>
 
+            {/* Description */}
+            <div className="mb-4">
+              <label htmlFor="description">Descrição da Marmita</label>
+              <input
+                id="description"
+                {...register("description")}
+                className="border-b py-3 px-2 block w-full border-gray-200"
+                placeholder="Ex: A mais pedida da região"
+              />
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
+
+            {/* Category */}
+            <div className="mb-3">
+              <label htmlFor="categoryId">Categorias</label>
+              <select
+                id="categoryId"
+                {...register("categoryId", { valueAsNumber: true })}
+                className="border-b py-3 px-2 block w-full border-gray-200"
+                defaultValue={""}
+              >
+
+                <option value="">Selecione...</option>
+                {categories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+              </select>
+              {errors.categoryId && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.categoryId.message}
+                </p>
+              )}
+            </div>
+
             {/* Upload de Imagem */}
             <div className="mb-4">
-              <label htmlFor="imageUrl">Imagem da Marmita</label>
+              <label htmlFor="image">Imagem da Marmita</label>
               <input
-                id="imageUrl"
+                id="image"
                 type="file"
                 accept=".jpg,.jpeg,.png"
-                {...register("imageUrl")}
+                {...register("image")}
                 className="block w-full text-sm mt-2 text-gray-600
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-full file:border-0
@@ -143,9 +178,9 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
                   file:bg-green-700 file:text-white
                   hover:file:bg-green-800"
               />
-              {errors.imageUrl && (
+              {errors.image && (
                 <p className="text-red-500 text-xs mt-1">
-                  {errors.imageUrl.message as string}
+                  {errors.image.message as string}
                 </p>
               )}
             </div>
@@ -170,36 +205,18 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita }: Prop
 
               <div className="w-1/2 mx-1">
                 <input
-                  id="portion"
+                  id="portionGram"
                   type="number"
-                  {...register("portion", { valueAsNumber: true })}
+                  {...register("portionGram", { valueAsNumber: true })}
                   className="border-b py-3 px-2 block w-full border-gray-200"
                   placeholder="Porção (g)"
                 />
-                {errors.portion && (
+                {errors.portionGram && (
                   <p className="text-red-500 text-xs mt-1">
-                    {errors.portion.message}
+                    {errors.portionGram.message}
                   </p>
                 )}
               </div>
-            </div>
-
-            {/* Preço antigo */}
-            <div className="mb-4">
-              <label htmlFor="oldPrice">Preço antigo (opcional)</label>
-              <input
-                id="oldPrice"
-                type="number"
-                step="0.01"
-                {...register("oldPrice", { valueAsNumber: true })}
-                className="border-b py-3 px-2 block w-full border-gray-200"
-                placeholder="Ex: 21.50"
-              />
-              {errors.oldPrice && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.oldPrice.message}
-                </p>
-              )}
             </div>
 
             {/* Botão */}

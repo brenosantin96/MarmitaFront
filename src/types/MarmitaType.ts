@@ -1,8 +1,9 @@
 export type MarmitaType = {
     id: number;
     name: string;
-    imageUrl: string;
+    description: string;
+    imageUrl: string | File;
     price: number;
-    portion: number;
+    portionGram: number;
     oldPrice?: number;
 }

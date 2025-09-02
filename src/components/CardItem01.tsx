@@ -7,13 +7,13 @@ type PropsCardItem01 = {
     title: string;
     imageUrl: string;
     price: number;
-    portion: number;
+    portionGram: number;
     oldPrice?: number;
     onAdd: () => void;
     onRemove: () => void;
 }
 
-const CardItem01 = ({ title, price, imageUrl, portion, oldPrice, onAdd, onRemove }: PropsCardItem01) => {
+const CardItem01 = ({ title, price, imageUrl, portionGram, oldPrice, onAdd, onRemove }: PropsCardItem01) => {
 
     const userContext = useUserContext();
 
@@ -36,7 +36,7 @@ const CardItem01 = ({ title, price, imageUrl, portion, oldPrice, onAdd, onRemove
                 <div className='pb-2'>{title}</div>
                 <div className='flex justify-between px-2 pb-2'>
                     <div id="price">{formatPriceToBRL(price)}</div>
-                    <div id="portion" className='text-gray-400'>{portion}g</div>
+                    <div id="portionGram" className='text-gray-400'>{portionGram}g</div>
                 </div>
             </div>
             <div className='px-5'>

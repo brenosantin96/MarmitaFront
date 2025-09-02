@@ -1,32 +1,107 @@
 "use client"
 import Button01 from '@/components/Button01'
+import CategorieModal from '@/components/CategorieModal';
 import MarmitaModal from '@/components/MarmitaModal';
-import React, { useState } from 'react'
+import { useUserContext } from '@/context/UserContext';
+import { Category } from '@/types/Category';
+import { CategoryCreateUpdateDto } from '@/types/CategoryCreateUpdateDto';
+import { MarmitaCreateDto } from '@/types/MarmitaCreateDto';
+import { MarmitaType } from '@/types/MarmitaType';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 
 const AdminPanelPage = () => {
 
   const [isMarmitaModalOpened, setIsMarmitaModalOpened] = useState(false);
+  const [isCategorieModalOpened, setIsCategorieModalOpened] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const { user } = useUserContext();
+  const router = useRouter();
+
+
+  useEffect(() => {
+    if (!user.isAdmin) {
+      // se não for admin, redireciona para home (ou login)
+      router.replace("/login");
+      return;
+    }
+
+    // só busca categorias se for admin
+    getAllCategories();
+  }, [user, router]);
+
+  const getAllCategories = async () => {
+
+    const res = await axios.get(`/api/categories`)
+    if (res.status !== 200) {
+      console.log("Algo ocorreu, nao foi possivel retornar as categorias")
+      return []
+    } else {
+      console.log(res.data);
+      setCategories(res.data)
+    }
+  }
 
   const handleCloseMarmitaModal = () => {
     setIsMarmitaModalOpened(false);
   }
 
-  const onSubmitMarmita = () => {
-    console.log("Teste onSubmitMarmita")
+  const handleCloseCategorieModal = () => {
+    setIsCategorieModalOpened(false);
+  }
+
+  const onSubmitMarmita = async (dto: MarmitaCreateDto) => {
+    try {
+      const fd = new FormData();
+      fd.append("name", dto.name);
+      fd.append("description", dto.description);
+      fd.append("price", String(dto.price));            // "15.99"
+      fd.append("portionGram", String(dto.portionGram));
+      fd.append("categoryId", String(dto.categoryId));  // 👈 dinâmico
+      fd.append("image", dto.image);
+
+      const res = await axios.post(
+        `/api/lunchboxes`,
+        fd,
+        {
+          withCredentials: true,
+          // não setar manualmente Content-Type; o browser define o boundary
+        }
+      );
+
+      console.log("Marmita criada:", res.data);
+    } catch (err) {
+      console.error("Erro ao criar marmita:", err);
+    }
+  };
+
+  const onSubmitCategory = async (dto: CategoryCreateUpdateDto) => {
+    try {
+      //implementar ainda
+    } catch (err) {
+    }
+  };
+
+  // Se não for admin, mostra só um loading (até o redirect acontecer)
+  if (!user.isAdmin) {
+    return <p className="text-center mt-20">Redirecionando...</p>;
   }
 
   return (
     <>
-      <MarmitaModal handleClose={handleCloseMarmitaModal} isOpen={isMarmitaModalOpened} modalTitle='Marmita' onSubmitMarmita={onSubmitMarmita} />
-     
+      <MarmitaModal handleClose={handleCloseMarmitaModal} categories={categories} isOpen={isMarmitaModalOpened} modalTitle='Marmita' onSubmitMarmita={onSubmitMarmita} />
+      <CategorieModal handleClose={handleCloseCategorieModal} isOpen={isCategorieModalOpened} modalTitle='Categoria' onSubmitCategorie={onSubmitCategory}  />
 
-        <div className="flex justify-center items-center pt-28 px-4 ">
-          <Button01
+
+      <div className="flex justify-center items-center pt-28 px-4 ">
+        <Button01
           width='w-1/2'
           classes="bg-green-700 text-white"
           onClick={() => setIsMarmitaModalOpened(true)}>Criar Marmita</Button01>
-        </div>
-     
+      </div>
+
     </>
   )
 }

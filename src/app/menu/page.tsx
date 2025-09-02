@@ -55,8 +55,8 @@ const MenuPage = () => {
               key={item.id}
               title={item.name}
               price={item.price}
-              portion={item.portion}
-              imageUrl={item.imageUrl}
+              portionGram={item.portionGram}
+              imageUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}${item.imageUrl}`}
               onAdd={addMarmita}
               onRemove={removeMarmita}
             />
