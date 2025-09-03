@@ -2,6 +2,7 @@
 import Button01 from '@/components/Button01'
 import CategorieModal from '@/components/CategorieModal';
 import MarmitaModal from '@/components/MarmitaModal';
+import { useCategorieContext } from '@/context/CategoryContext';
 import { useUserContext } from '@/context/UserContext';
 import { Category } from '@/types/Category';
 import { CategoryCreateUpdateDto } from '@/types/CategoryCreateUpdateDto';
@@ -15,7 +16,8 @@ const AdminPanelPage = () => {
 
   const [isMarmitaModalOpened, setIsMarmitaModalOpened] = useState(false);
   const [isCategorieModalOpened, setIsCategorieModalOpened] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories, fetchCategories } = useCategorieContext();
+
 
   const { user } = useUserContext();
   const router = useRouter();
@@ -40,7 +42,6 @@ const AdminPanelPage = () => {
       return []
     } else {
       console.log(res.data);
-      setCategories(res.data)
     }
   }
 
@@ -79,10 +80,19 @@ const AdminPanelPage = () => {
 
   const onSubmitCategory = async (dto: CategoryCreateUpdateDto) => {
     try {
-      //implementar ainda
+      const res = await axios.post("/api/categories", dto);
+
+      if (res.status !== 200 && res.status !== 201) {
+        console.log("Requisição nao foi bem sucedida: STATUS ", res.status);
+      }
+
+      fetchCategories();
+      console.log("Categoria criada:", res.data);
     } catch (err) {
+      console.log("ERRO: ", err);
     }
   };
+
 
   // Se não for admin, mostra só um loading (até o redirect acontecer)
   if (!user.isAdmin) {
@@ -92,7 +102,7 @@ const AdminPanelPage = () => {
   return (
     <>
       <MarmitaModal handleClose={handleCloseMarmitaModal} categories={categories} isOpen={isMarmitaModalOpened} modalTitle='Marmita' onSubmitMarmita={onSubmitMarmita} />
-      <CategorieModal handleClose={handleCloseCategorieModal} isOpen={isCategorieModalOpened} modalTitle='Categoria' onSubmitCategorie={onSubmitCategory}  />
+      <CategorieModal handleClose={handleCloseCategorieModal} isOpen={isCategorieModalOpened} modalTitle='Categoria' onSubmitCategorie={onSubmitCategory} />
 
 
       <div className="flex justify-center items-center pt-28 px-4 ">
@@ -100,6 +110,13 @@ const AdminPanelPage = () => {
           width='w-1/2'
           classes="bg-green-700 text-white"
           onClick={() => setIsMarmitaModalOpened(true)}>Criar Marmita</Button01>
+      </div>
+
+      <div className="flex justify-center items-center mt-3 px-4 ">
+        <Button01
+          width='w-1/2'
+          classes="bg-green-700 text-white"
+          onClick={() => setIsCategorieModalOpened(true)}>Criar Categoria</Button01>
       </div>
 
     </>

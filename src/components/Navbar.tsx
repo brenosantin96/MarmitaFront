@@ -1,15 +1,17 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useBreakpoint } from '@/hooks/useBreakpoint';
 import { Icon } from './svg/Icon';
 import Link from 'next/link';
-import categoriesData from '../Data/Categories.json';
 import { useModalAddress } from '@/context/ModalAddressContext';
 import { useSideMenu } from '@/context/SideMenuContext';
 import { useCartContext } from '@/context/CartContext';
 import { useUserContext } from '@/context/UserContext';
 import AdminButton from './AdminButton';
+import { Category } from '@/types/Category';
+import axios from 'axios';
+import { useCategorieContext } from '@/context/CategoryContext';
 
 type NavBarProps = {
 };
@@ -20,8 +22,26 @@ const Navbar = () => {
     const { openModal } = useModalAddress();
     const { openAndCloseSideMenu } = useSideMenu();
     const { openAndCloseCart } = useCartContext();
+    const { categories } = useCategorieContext();
+
 
     const { user } = useUserContext();
+
+    useEffect(() => {
+        getAllCategories();
+    }, [categories]);
+
+
+    const getAllCategories = async () => {
+
+        const res = await axios.get(`/api/categories`)
+        if (res.status !== 200) {
+            console.log("Algo ocorreu, nao foi possivel retornar as categorias")
+            return []
+        } else {
+            console.log(res.data);
+        }
+    }
 
 
 
@@ -74,7 +94,7 @@ const Navbar = () => {
                                 opacity-0 scale-95 pointer-events-none 
                                 group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto 
                                 transition-all duration-200 ease-out">
-                                        {categoriesData.map((category) => (
+                                        {categories.map((category) => (
                                             <li
                                                 key={category.id}
                                                 className="px-4 py-2 hover:bg-color-2 cursor-pointer whitespace-nowrap"

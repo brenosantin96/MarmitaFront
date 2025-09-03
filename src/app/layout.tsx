@@ -8,21 +8,24 @@ import { SideMenuProvider } from "../context/SideMenuContext"
 import { CartContextProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import { UserProvider } from "@/context/UserContext";
+import { CategoryProvider } from "@/context/CategoryContext";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
       <body className={``}>
         <UserProvider>
-          <CartContextProvider>
-            <SideMenuProvider>
-              <ModalAddressProvider>
-                <Navbar />
-                {children}
-                <ModalAddressGlobal />
-              </ModalAddressProvider>
-            </SideMenuProvider>
-          </CartContextProvider>
+          <CategoryProvider>
+            <CartContextProvider>
+              <SideMenuProvider>
+                <ModalAddressProvider>
+                  <Navbar />
+                  {children}
+                  <ModalAddressGlobal />
+                </ModalAddressProvider>
+              </SideMenuProvider>
+            </CartContextProvider>
+          </CategoryProvider>
         </UserProvider>
       </body>
     </html>

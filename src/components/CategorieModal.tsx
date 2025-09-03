@@ -15,10 +15,6 @@ type PropsCategorieModal = {
 
 };
 
-
-
-//CORRIGIR ESSA PAGE
-
 // Schema de validação com Zod
 const schema = z.object({
   name: z.string().min(3, "Nome da categoria é obrigatório"),

@@ -36,3 +36,43 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Erro ao buscar categorias" }, { status: 500 });
   }
 }
+
+export async function POST(request: Request) {
+
+  try {
+
+    const { name } = await request.json();
+
+    if (!name || name.trim() === "") {
+      return NextResponse.json(
+        { error: "O campo 'name' é obrigatório" },
+        { status: 400 }
+      );
+    }
+
+    const token = (await cookies()).get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+    }
+
+    const response = await axios.post(
+      `${API_URL}/api/Categories`, { name }, // body da request
+      {
+        ...axiosConfig,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+
+    return NextResponse.json(response.data, { status: 200 });
+
+  } catch (err) {
+    console.error("Erro ao buscar categorias:", err);
+    return NextResponse.json({ error: "Erro ao buscar categorias" }, { status: 500 });
+  }
+
+}
