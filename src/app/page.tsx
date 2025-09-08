@@ -3,7 +3,6 @@
 import Button01 from "@/components/Button01";
 import CartSideMenu from "@/components/CartSideMenu";
 import ModalAddress from "@/components/ModalAddress";
-import Navbar from "@/components/Navbar";
 import { SideMenu } from "@/components/SideMenu";
 import { Icon } from "@/components/svg/Icon";
 import Link from "next/link";

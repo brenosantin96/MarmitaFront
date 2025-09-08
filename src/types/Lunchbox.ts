@@ -3,6 +3,7 @@ export type Lunchbox = {
     name: string;
     description: string;
     price: number;
-    imageURL: string;
+    imageUrl: string | File;
     categoryId: number;
+    portionGram: number;
 }

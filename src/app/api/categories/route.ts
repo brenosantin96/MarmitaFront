@@ -15,18 +15,10 @@ const axiosConfig = {
 
 export async function GET(request: Request) {
   try {
-    // Pega o cookie enviado pelo browser
-    const token = (await cookies()).get("token")?.value;
-    console.log("TOKEN: ", token)
-
-    if (!token) {
-      return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-    }
-
+   
     // Chama backend com token
     const response = await axios.get(`${API_URL}/api/Categories`, {
       ...axiosConfig,
-      headers: { Authorization: `Bearer ${token}` },
       withCredentials: true
     });
 

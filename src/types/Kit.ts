@@ -3,6 +3,6 @@ export type Kit = {
     name: string;
     description: string;
     price: number;
-    imageURL: string;
+    ImageUrl: string;
     categoryId: number;
 }

@@ -3,11 +3,12 @@
 import CardItem01 from '@/components/CardItem01';
 import { SideMenu } from '@/components/SideMenu';
 import React, { useEffect, useState } from 'react';
-import { MarmitaType } from '@/types/MarmitaType';
 import axios from 'axios';
+import CartSideMenu from '@/components/CartSideMenu';
+import { Lunchbox } from '@/types/Lunchbox';
 
 const MenuPage = () => {
-  const [marmitas, setMarmitas] = useState<MarmitaType[]>([]);
+  const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Função para buscar marmitas do backend
@@ -45,6 +46,7 @@ const MenuPage = () => {
   return (
     <>
       <SideMenu />
+      <CartSideMenu />
       <div id="menuPage" className="pt-28 px-4 w-full">
         <div
           id="menuList"

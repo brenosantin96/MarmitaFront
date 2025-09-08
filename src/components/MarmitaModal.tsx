@@ -1,13 +1,13 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "./svg/Icon";
 import Button01 from "./Button01";
-import { MarmitaType } from "@/types/MarmitaType";
 import { MarmitaCreateDto } from "@/types/MarmitaCreateDto";
 import { Category } from "@/types/Category";
+import { Lunchbox } from "@/types/Lunchbox";
 
 type PropsMarmitaModal = {
   isOpen: boolean;
@@ -15,74 +15,84 @@ type PropsMarmitaModal = {
   modalTitle: string;
   categories: Category[];
   onSubmitMarmita: (data: MarmitaCreateDto) => void;
-
+  onEditMarmita?: (id: number, data: MarmitaCreateDto) => void; // 👈 opcional
+  marmita?: Lunchbox; // 👈 usado para edição
 };
 
-//CORRIGIR ESSA PAGE
-
-// Schema de validação com Zod
 const schema = z.object({
   name: z.string().min(3, "Título é obrigatório"),
-  description: z.string().min(3, "Descrição é obrigatório"),
+  description: z.string().min(3, "Descrição é obrigatória"),
   price: z.number().positive("Preço deve ser maior que zero"),
   portionGram: z.number().positive("Porção deve ser maior que zero"),
   oldPrice: z.number().positive("Preço antigo deve ser positivo").optional(),
   categoryId: z.number().int().positive(),
-  image: z.any()
-    .refine((files) => files?.length === 1, "Imagem é obrigatória")
-    .refine((files) => ["image/jpeg", "image/jpg", "image/png"].includes(files?.[0]?.type),
-      "A imagem deve ser JPG, JPEG ou PNG"),
-
+  image: z.any().optional(), // 👈 opcional na edição
 });
 
-// Inferindo a tipagem do schema
 type FormData = z.infer<typeof schema>;
 
-const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita, categories }: PropsMarmitaModal) => {
+const MarmitaModal = ({
+  handleClose,
+  isOpen,
+  modalTitle,
+  onSubmitMarmita,
+  onEditMarmita,
+  categories,
+  marmita,
+}: PropsMarmitaModal) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    reset,
   } = useForm<FormData>({
     mode: "onChange",
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      image: "",
+      description: "",
       price: undefined,
       portionGram: undefined,
       oldPrice: undefined,
+      categoryId: undefined,
     },
   });
+
+  // Sempre que abrir modal, reseta com valores atuais
+  useEffect(() => {
+    if (marmita) {
+      reset({
+        name: marmita.name,
+        description: marmita.description,
+        price: marmita.price,
+        categoryId: marmita.categoryId,
+      });
+    } else {
+      reset(); // formulário em branco
+    }
+  }, [marmita, reset, isOpen]);
 
   if (!isOpen) return null;
 
   const onSubmit2 = (data: FormData) => {
-
-    // Pegando o arquivo
-    const file = data.image[0];
-
-    // Exemplo de como salvar no estado: no real você faria upload para o backend
-    const newMarmita: MarmitaCreateDto = {
-
+    const file = data.image?.[0]; // pode ser undefined em edição
+    const dto: MarmitaCreateDto = {
       name: data.name,
-      image: file,
+      description: data.description,
       price: data.price,
       portionGram: data.portionGram,
-      description: data.description,
-      categoryId: data.categoryId
-
+      categoryId: data.categoryId,
+      image: file, // só manda se existir
     };
 
-    console.log("Marmita criada:", newMarmita);
-
-    if (onSubmitMarmita) {
-      onSubmitMarmita(newMarmita);
+    if (marmita && onEditMarmita) {
+      onEditMarmita(marmita.id, dto);
+    } else {
+      onSubmitMarmita(dto);
     }
 
     handleClose();
   };
-
 
   return (
     <>
@@ -101,9 +111,7 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita, catego
             className="cursor-pointer flex items-center"
             onClick={handleClose}
           >
-            <div className="font-bold px-3" style={{ fontSize: 10 }}>
-              FECHAR
-            </div>
+            <div className="font-bold px-3 text-xs">FECHAR</div>
             <Icon svg="close2" height="20px" width="20px" />
           </div>
         </div>
@@ -150,11 +158,14 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita, catego
                 id="categoryId"
                 {...register("categoryId", { valueAsNumber: true })}
                 className="border-b py-3 px-2 block w-full border-gray-200"
-                defaultValue={""}
+                defaultValue=""
               >
-
                 <option value="">Selecione...</option>
-                {categories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+                {categories.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
               {errors.categoryId && (
                 <p className="text-red-500 text-xs mt-1">
@@ -223,7 +234,10 @@ const MarmitaModal = ({ handleClose, isOpen, modalTitle, onSubmitMarmita, catego
             <Button01
               backgroundColor="bg-green-700"
               textColor="text-white"
-              disabled={!isValid}>SALVAR</Button01>
+              disabled={!isValid}
+            >
+              {marmita ? "EDITAR" : "SALVAR"}
+            </Button01>
           </form>
         </div>
       </div>

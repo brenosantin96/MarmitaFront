@@ -5,6 +5,10 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import Modal01 from '@/components/Modal01';
 import { useUserContext } from '@/context/UserContext';
+import { TokenResponse, useGoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
+import CartSideMenu from '@/components/CartSideMenu';
+import { SideMenu } from '@/components/SideMenu';
+
 //ALTERAR DINAMICAMENTE PRA USAR O REGISTERSERVICE NO FORM MAS VALIDAR SE ESTA NA PAGINA DE LOGIN OU REGISTER
 
 const SignUp = () => {
@@ -22,6 +26,7 @@ const SignUp = () => {
     useEffect(() => {
         console.log(user)
     }, [user])
+
 
 
     const handleRegister = async () => {
@@ -49,7 +54,7 @@ const SignUp = () => {
                 console.log("Logout feito com sucesso");
 
                 // Limpa o estado do usuário no frontend
-                setUser({id: 0, name: "", email: "", isAdmin: false });
+                setUser({ id: 0, name: "", email: "", isAdmin: false });
 
             }
 
@@ -59,9 +64,56 @@ const SignUp = () => {
     }
 
 
+    //GOOGLE AUTH
+    // Callback de sucesso
+    const handleGoogleSuccess = async (response: any) => {
+        try {
+            console.log("RESPONSE DO GOOGLE:", response);
+
+            // No flow "auth-code", o objeto vem com { code }
+            const { code } = response;
+
+            if (!code) {
+                console.error("Nenhum code retornado pelo Google");
+                return;
+            }
+
+            // Envia o code para o route handler do Next.js
+            const res = await axios.post("/api/loginGoogle", { code });
+
+            console.log("RESPOSTA DO NEXT:", res.data);
+
+            // Aqui o Next já cuida de setar o cookie HTTP-only
+            // Você só precisa salvar o usuário em contexto/estado
+            if (res.data.success) {
+                console.log("setando o res.data.user: ", res.data.user)
+                setUser(res.data.user);
+            }
+        } catch (err) {
+            console.error("Erro ao autenticar com backend via Next:", err);
+        }
+    };
+
+    const handleGoogleError = () => {
+        console.error("Erro no login com Google");
+    };
+
+    // Hook do Google para usar com botão customizado
+    const googleLogin = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: handleGoogleError,
+        flow: "auth-code",           // IMPORTANTE: flow auth-code retorna credential
+        scope: "openid profile email",
+
+    });
+
+
+
 
     return (
         <>
+            <CartSideMenu />
+            <SideMenu />
             <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
                 {/* Coluna 1: Formulário - ocupa 5 colunas */
                     !user || user.id == 0 &&
@@ -79,7 +131,9 @@ const SignUp = () => {
                                 <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
                                     <Icon svg='facebook' width="24px" height='24px' />
                                 </button>
-                                <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
+                                <button
+                                    onClick={() => googleLogin()}
+                                    className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
                                     <Icon svg='google' width="24px" height='24px' />
                                 </button>
                             </div>
