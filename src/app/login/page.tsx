@@ -4,6 +4,7 @@ import FormUserPassword from '@/components/FormUserPassword';
 import { SideMenu } from '@/components/SideMenu';
 import { Icon } from '@/components/svg/Icon';
 import { useUserContext } from '@/context/UserContext';
+import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
@@ -16,7 +17,7 @@ const LoginPage = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    const { setUser } = useUserContext(); // UserContext
+    const { user, setUser } = useUserContext(); // UserContext
 
     const router = useRouter();
 
@@ -36,6 +37,49 @@ const LoginPage = () => {
             console.error("Erro ao realizar login", err);
         }
     };
+
+    //GOOGLE AUTH
+    // Callback de sucesso
+    const handleGoogleSuccess = async (response: any) => {
+        try {
+            console.log("RESPONSE DO GOOGLE:", response);
+
+            // No flow "auth-code", o objeto vem com { code }
+            const { code } = response;
+
+            if (!code) {
+                console.error("Nenhum code retornado pelo Google");
+                return;
+            }
+
+            // Envia o code para o route handler do Next.js
+            const res = await axios.post("/api/loginGoogle", { code });
+
+            console.log("RESPOSTA DO NEXT:", res.data);
+
+            // Aqui o Next já cuida de setar o cookie HTTP-only
+            // Você só precisa salvar o usuário em contexto/estado
+            if (res.data.success) {
+                console.log("setando o res.data.user: ", res.data.user)
+                setUser(res.data.user);
+            }
+        } catch (err) {
+            console.error("Erro ao autenticar com backend via Next:", err);
+        }
+    };
+
+    const handleGoogleError = () => {
+        console.error("Erro no login com Google");
+    };
+
+    // Hook do Google para usar com botão customizado
+    const googleLogin = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: handleGoogleError,
+        flow: "auth-code",           // IMPORTANTE: flow auth-code retorna credential
+        scope: "openid profile email",
+
+    });
 
 
     return (
@@ -59,7 +103,7 @@ const LoginPage = () => {
                             <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
                                 <Icon svg='facebook' width="24px" height='24px' />
                             </button>
-                            <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
+                            <button onClick={() => googleLogin()} className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
                                 <Icon svg='google' width="24px" height='24px' />
                             </button>
                         </div>

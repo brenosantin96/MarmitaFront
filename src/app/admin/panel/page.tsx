@@ -35,8 +35,9 @@ const AdminPanelPage = () => {
 
   useEffect(() => {
     console.log("Marmitas: ", marmitas)
-   // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}${marmitas[1].ImageUrl}`)
-  }, [marmitas]);
+    // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}${marmitas[1].ImageUrl}`)
+    console.log("Editting marmita: ", editingMarmita)
+  }, [marmitas, editingMarmita]);
 
 
 
@@ -87,9 +88,18 @@ const AdminPanelPage = () => {
       fd.append("categoryId", String(dto.categoryId));
       if (dto.image) fd.append("image", dto.image);
 
-      const res = await axios.put(`/api/lunchboxes`, fd, { withCredentials: true });
+      //Log detalhado do FormData
+      console.log("FD enviado:");
+      for (const [key, value] of fd.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const res = await axios.put(`/api/lunchboxes/${id}`, fd, {
+        withCredentials: true,
+      });
 
       console.log("Marmita editada:", res.data);
+
       fetchMarmitas();
     } catch (err) {
       console.error("Erro ao editar marmita:", err);

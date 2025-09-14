@@ -69,7 +69,7 @@ const Navbar = () => {
                     <div onClick={openAndCloseCart} className="cursor-pointer">
                         <Icon svg="cart2" height="24" width="24" />
                     </div>
-                    {user.id > 0 &&
+                    {user !== null &&
                         <div>
                             <AdminButton />
                         </div>
@@ -106,7 +106,7 @@ const Navbar = () => {
                                 </li>
                                 <li className="cursor-pointer">Mais categorias</li>
                                 <li className="cursor-pointer">A Mimo Marmitas</li>
-                                {user.id > 0 &&
+                                {user !== null &&
                                     <li className="cursor-pointer"><AdminButton /></li>
                                 }
                             </ul>

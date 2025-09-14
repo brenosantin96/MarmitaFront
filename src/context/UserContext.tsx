@@ -1,13 +1,14 @@
 //src\context\UserContext.tsx
 "use client"
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User } from '../types/User';
+import axios from 'axios';
 
 // Tipo do contexto
 type ContextUser = {
-  user: User;
-  setUser: (user: User) => void;
+  user: User | null;
+  setUser: (user: User | null) => void;
 };
 
 // Tipo do provedor
@@ -16,23 +17,36 @@ type ContextProviderUser = {
 };
 
 // Estado inicial do usuário
-const initialUser: User = {
-  id: 0,
-  name: '',
-  email: '',
-  isAdmin: false,
-};
+const initialUser: User | null = null;
 
 // Criação do contexto com valor inicial **parcial**
 export const UserContext = createContext<ContextUser>({
   user: initialUser,
-  setUser: () => {}, // placeholder para função
+  setUser: () => { }, // placeholder para função
 });
 
 // Provedor do contexto
 export const UserProvider = ({ children }: ContextProviderUser) => {
-    
-  const [user, setUser] = useState<User>(initialUser);
+
+  const [user, setUser] = useState<User | null>(initialUser);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("/api/me", { withCredentials: true });
+        //console.log("RES.DATA.USER.USER: ", res.data.user.user);
+        if (res.data.user) {
+          setUser(res.data.user.user);
+        }
+      } catch {
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

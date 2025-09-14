@@ -23,11 +23,6 @@ const SignUp = () => {
 
     const { user, setUser } = useUserContext();
 
-    useEffect(() => {
-        console.log(user)
-    }, [user])
-
-
 
     const handleRegister = async () => {
         try {
@@ -116,7 +111,7 @@ const SignUp = () => {
             <SideMenu />
             <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
                 {/* Coluna 1: Formulário - ocupa 5 colunas */
-                    !user || user.id == 0 &&
+                    !user &&
                     <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4'>
                         <div id="createUserDiv" className='flex flex-col w-full lg:w-1/2 mx-auto'>
                             <div className='font-amsi uppercase font-extrabold text-base text-center leading-6 my-4'>
@@ -161,7 +156,7 @@ const SignUp = () => {
                     </div>
 
                 }
-                {user.id > 0 &&
+                {user !== null &&
                     <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4 text-2xl'>
                         <h2>Bem vindo {user.name}</h2>
                         <div className="text-base pt-4">

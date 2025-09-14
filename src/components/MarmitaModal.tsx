@@ -66,6 +66,7 @@ const MarmitaModal = ({
         description: marmita.description,
         price: marmita.price,
         categoryId: marmita.categoryId,
+        portionGram: marmita.portionGram
       });
     } else {
       reset(); // formulário em branco
