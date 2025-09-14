@@ -29,8 +29,8 @@ const CardItem01 = ({ title, price, imageUrl, portionGram, oldPrice, onAdd, onRe
     return (
 
         <div className='inline-flex flex-col rounded-lg font-hindmadurai border border-gray-400 mb-3 pb-5 max-w-fit'>
-            <div className='overflow-hidden rounded-t-lg'>
-                <img src={imageUrl} alt={title} className='object-cover' />
+            <div className='overflow-hidden rounded-t-lg h-[200px]'>
+                <img src={imageUrl} alt={title} className='max-h-[200px] object-contain w-auto' />
             </div>
             <div className='pt-2 px-5'>
                 <div className='pb-2'>{title}</div>

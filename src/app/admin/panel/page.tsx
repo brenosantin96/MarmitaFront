@@ -13,6 +13,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import CardItem01AdminPanel from '@/components/CardItem01AdminPanel';
+import Modal01 from '@/components/Modal01';
 
 const AdminPanelPage = () => {
   const [isMarmitaModalOpened, setIsMarmitaModalOpened] = useState(false);
@@ -20,33 +21,24 @@ const AdminPanelPage = () => {
   const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
   const [selectedMarmitaId, setSelectedMarmitaId] = useState<number | null>(null);
   const [editingMarmita, setEditingMarmita] = useState<Lunchbox | null>(null);
+  const [deletingMarmita, setDeletingMarmita] = useState(false);
 
   const { categories, fetchCategories } = useCategorieContext();
   const { user } = useUserContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user.isAdmin) {
+    if (user === null) {
       router.replace("/login");
       return;
     }
     fetchMarmitas();
   }, [user, router]);
 
-  useEffect(() => {
-    console.log("Marmitas: ", marmitas)
-    // console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}${marmitas[1].ImageUrl}`)
-    console.log("Editting marmita: ", editingMarmita)
-  }, [marmitas, editingMarmita]);
-
-
-
   // Buscar marmitas
   const fetchMarmitas = async () => {
     try {
       const res = await axios.get(`/api/lunchboxes`);
-
-      console.log("RES: ", res);
       if (res.status === 200) {
         setMarmitas(res.data);
       }
@@ -127,6 +119,38 @@ const AdminPanelPage = () => {
     }
   };
 
+  //Excluir marmita selecionada
+  const handleDeleteMarmita = async (id: number) => {
+    try {
+      const marmita = marmitas.find(m => m.id === selectedMarmitaId);
+      if (marmita) {
+
+        const res = await axios.delete(`/api/lunchboxes/${id}`, {
+          withCredentials: true,
+        });
+        if (res.status === 200) {
+          fetchMarmitas();
+        }
+        console.log(res);
+
+      }
+
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        //response do backend
+        console.log("Erro ao deletar:", error.response?.data);
+        if (error.response?.status === 400) {
+          alert(error.response.data.error); // por exemplo: "Não é possível deletar..."
+        } else {
+          alert("Erro inesperado ao deletar marmita.");
+        }
+
+      } else {
+        console.error("Erro desconhecido:", error);
+      }
+    }
+  };
+
   // Criar categoria
   const onSubmitCategory = async (dto: CategoryCreateUpdateDto) => {
     try {
@@ -139,7 +163,7 @@ const AdminPanelPage = () => {
     }
   };
 
-  if (!user.isAdmin) {
+  if (user === null) {
     return <p className="text-center mt-20">Redirecionando...</p>;
   }
 
@@ -147,6 +171,15 @@ const AdminPanelPage = () => {
     <>
       <CartSideMenu />
       <SideMenu />
+
+      <Modal01
+        handleClose={() => setDeletingMarmita(false)}
+        isOpen={deletingMarmita}
+        modalText={`Tem certeza que deseja excluir essa marmita?`}
+        modalTitle='Confirmação'
+        isModalForDelete={true}
+        handleConfirmDelete={() => handleDeleteMarmita(selectedMarmitaId as number)}
+      />
 
       <MarmitaModal
         handleClose={handleCloseMarmitaModal}
@@ -170,7 +203,8 @@ const AdminPanelPage = () => {
           <h2 className="text-xl font-bold mb-4 text-green-700">Marmitas</h2>
 
           {/* Listagem */}
-          <div className="flex flex-wrap gap-4">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto justify-items-center">
             {marmitas.length > 0 ? (
               marmitas.map((marmita) => (
                 <CardItem01AdminPanel
@@ -188,6 +222,8 @@ const AdminPanelPage = () => {
               <p className="text-gray-500">Nenhuma marmita cadastrada.</p>
             )}
           </div>
+
+
 
           {/* Rodapé com botões */}
           <div className="flex gap-3 mt-6 justify-end">
@@ -209,9 +245,12 @@ const AdminPanelPage = () => {
             <Button01
               classes="bg-red-600 text-white"
               disabled={!selectedMarmitaId}
+              onClick={() => setDeletingMarmita(true)}
             >
               Apagar Marmita
             </Button01>
+
+
           </div>
         </div>
       </div>

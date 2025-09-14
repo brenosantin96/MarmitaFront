@@ -13,8 +13,8 @@ const axiosConfig = {
 
 export async function PUT(request: Request, context: { params: { id: string } }) {
 
-  const params = context.params;
-  const id = params.id;
+    const params = context.params;
+    const id = params.id;
 
     // Pega o cookie enviado pelo browser
     const token = (await cookies()).get("token")?.value;
@@ -43,5 +43,43 @@ export async function PUT(request: Request, context: { params: { id: string } })
     }
 
     return NextResponse.json({ success: true, data: response.data });
+
+}
+
+export async function DELETE(request: Request, context: { params: { id: string } }) {
+
+    try {
+        const params = await context.params;
+        const id = params.id;
+
+        // Pega o cookie enviado pelo browser
+        const token = (await cookies()).get("token")?.value;
+
+        if (!token) {
+            return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+        }
+        // Chama backend com token
+        const response = await axios.delete(`${API_URL}/api/Lunchboxes/${id}`,
+            {
+                ...axiosConfig,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true
+            }
+        )
+
+        return NextResponse.json(response.data, { status: response.status });
+
+
+    } catch (err: any) {
+        // Axios coloca a resposta de erro em err.response
+        if (err.response) {
+            return NextResponse.json(err.response.data, { status: err.response.status });
+        }
+
+        // erro genérico (sem response do backend)
+        return NextResponse.json({ error: "Erro interno", msg: err.message }, { status: 500 });
+    }
 
 }

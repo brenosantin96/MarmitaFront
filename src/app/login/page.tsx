@@ -81,6 +81,24 @@ const LoginPage = () => {
 
     });
 
+    const handleLogout = async () => {
+        console.log("Entrou na funcao")
+        try {
+            const res2 = await axios.post("/api/logout")
+            console.log("RES2: ", res2);
+            if (res2.status === 200) {
+                console.log("Logout feito com sucesso");
+
+                // Limpa o estado do usuário no frontend
+                setUser({ id: 0, name: "", email: "", isAdmin: false });
+
+            }
+
+        } catch (err) {
+            console.log("Erro: ", err)
+        }
+    }
+
 
     return (
         <>
@@ -88,7 +106,8 @@ const LoginPage = () => {
             <SideMenu />
 
             <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
-                {/* Coluna 1: Formulário - ocupa 5 colunas */}
+                {/* Coluna 1: Formulário - ocupa 5 colunas */               
+                !user &&
                 <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4'>
                     <div id="createUserDiv" className='flex flex-col w-full lg:w-1/2 mx-auto'>
                         <div className='font-amsi uppercase font-extrabold text-base text-center leading-6 my-4'>
@@ -130,6 +149,15 @@ const LoginPage = () => {
                         />
                     </div>
                 </div>
+                }
+                {user !== null &&
+                    <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4 text-2xl'>
+                        <h2>Bem vindo {user.name}</h2>
+                        <div className="text-base pt-4">
+                            Clique <strong className="cursor-pointer" onClick={() => handleLogout()}> aqui</strong> para sair de sua conta.
+                        </div>
+                    </div>
+                }
 
                 {/* Coluna 2: Imagem - ocupa 7 colunas */}
                 <div className='hidden md:block col-span-7 lg:col-span-5 relative lg:mr-[-300px]'>

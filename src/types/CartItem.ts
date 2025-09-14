@@ -4,7 +4,7 @@ import type { Lunchbox } from './Lunchbox';
 export type CartItemType = {
     id: number; //nao sei se é necessario
     cartId: number;
-    cartItemItself: Kit | Lunchbox
+    cartItem: Kit | Lunchbox
     quantity: number;
 
 }
