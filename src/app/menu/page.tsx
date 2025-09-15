@@ -6,10 +6,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CartSideMenu from '@/components/CartSideMenu';
 import { Lunchbox } from '@/types/Lunchbox';
+import { useCartContext } from '@/context/CartContext';
 
 const MenuPage = () => {
   const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const cart = useCartContext(); //inicializando cartContext
+
+  
 
   // Função para buscar marmitas do backend
   const getMarmitas = async () => {

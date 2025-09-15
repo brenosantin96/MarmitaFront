@@ -14,7 +14,7 @@ type PropsCardItem01AdminPanel = {
 const CardItem01AdminPanel = ({ id, title, price, imageUrl, portionGram, selected, onSelect }: PropsCardItem01AdminPanel) => {
     return (
         <div
-            className={`inline-flex flex-col rounded-lg font-hindmadurai border mb-3 pb-5 max-w-[200px] cursor-pointer transition
+            className={`inline-flex flex-col rounded-lg font-hindmadurai border mb-3 pb-2 w-[200px] cursor-pointer transition
         ${selected ? 'border-green-700 shadow-lg' : 'border-gray-400 hover:border-green-400'}
       `}
             onClick={() => onSelect(id)}
@@ -22,7 +22,8 @@ const CardItem01AdminPanel = ({ id, title, price, imageUrl, portionGram, selecte
             <div className="overflow-hidden rounded-t-lg h-[150px]">
                 <img src={imageUrl as string} alt={title} className="object-cover w-full h-full" />
             </div>
-            <div className="pt-2 px-3">
+            <div className="pt-3 px-3">
+                <div className="font-semibold text-sm truncate">ID: {id}</div>
                 <div className="font-semibold text-sm truncate">{title}</div>
                 <div className="flex justify-between text-sm text-gray-700">
                     <div>{formatPriceToBRL(price)}</div>

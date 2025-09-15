@@ -16,12 +16,19 @@ import CardItem01AdminPanel from '@/components/CardItem01AdminPanel';
 import Modal01 from '@/components/Modal01';
 
 const AdminPanelPage = () => {
+
   const [isMarmitaModalOpened, setIsMarmitaModalOpened] = useState(false);
   const [isCategorieModalOpened, setIsCategorieModalOpened] = useState(false);
+
+  const [isErrorModalOpened, setIsErrorModalOpened] = useState(false);
+  const [errorMsgModal, setErrorMsgModal] = useState("");
+
   const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
   const [selectedMarmitaId, setSelectedMarmitaId] = useState<number | null>(null);
   const [editingMarmita, setEditingMarmita] = useState<Lunchbox | null>(null);
   const [deletingMarmita, setDeletingMarmita] = useState(false);
+
+
 
   const { categories, fetchCategories } = useCategorieContext();
   const { user } = useUserContext();
@@ -134,17 +141,15 @@ const AdminPanelPage = () => {
         console.log(res);
 
       }
-
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
-        //response do backend
-        console.log("Erro ao deletar:", error.response?.data);
         if (error.response?.status === 400) {
-          alert(error.response.data.error); // por exemplo: "Não é possível deletar..."
+          setErrorMsgModal(error.response.data.error || "Erro ao deletar marmita");
+          setIsErrorModalOpened(true);
+          //alert(error.response.data.error); // por exemplo: "Não é possível deletar..."
         } else {
           alert("Erro inesperado ao deletar marmita.");
         }
-
       } else {
         console.error("Erro desconhecido:", error);
       }
@@ -179,6 +184,13 @@ const AdminPanelPage = () => {
         modalTitle='Confirmação'
         isModalForDelete={true}
         handleConfirmDelete={() => handleDeleteMarmita(selectedMarmitaId as number)}
+      />
+
+      <Modal01
+        handleClose={() => setIsErrorModalOpened(false)}
+        isOpen={isErrorModalOpened}
+        modalText={errorMsgModal}
+        modalTitle='Erro'
       />
 
       <MarmitaModal
