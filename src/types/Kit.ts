@@ -3,6 +3,9 @@ export type Kit = {
     name: string;
     description: string;
     price: number;
-    ImageUrl: string;
+    imageUrl: string | File;
     categoryId: number;
+    portionGram: number;
 }
+
+//

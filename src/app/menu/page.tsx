@@ -7,14 +7,16 @@ import axios from 'axios';
 import CartSideMenu from '@/components/CartSideMenu';
 import { Lunchbox } from '@/types/Lunchbox';
 import { useCartContext } from '@/context/CartContext';
+import { useUserContext } from '@/context/UserContext';
 
 const MenuPage = () => {
   const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const cart = useCartContext(); //inicializando cartContext
+  const cartContext = useCartContext(); //inicializando cartContext
+  const userContext = useUserContext();
 
-  
+
 
   // Função para buscar marmitas do backend
   const getMarmitas = async () => {
@@ -36,9 +38,94 @@ const MenuPage = () => {
     getMarmitas();
   }, []);
 
-  // Funções temporárias
-  const addMarmita = () => console.log("Adding Marmita");
-  const removeMarmita = () => console.log("Removing Marmita");
+
+  useEffect(() => {
+    console.log("CART: ", cartContext.cart);
+  }, [cartContext]);
+
+
+ const addMarmita = (idMarmita: number) => {
+  console.log("Id da marmita recebida do componente filho para ser adicionada: ", idMarmita);
+  const marmitaToAdd = marmitas.find((i) => i.id === idMarmita);
+
+  if (!marmitaToAdd) {
+    alert("Marmita não encontrada");
+    return;
+  }
+
+  if (userContext.user) {
+    cartContext.setCart((prevCart) => {
+      // se não existe carrinho ainda
+      if (!prevCart) {
+        return {
+          userId: userContext.user?.id as number,
+          createdAt: new Date(),
+          isCheckedOut: false,
+          cartItems: [{ cartItem: marmitaToAdd, quantity: 1 }],
+        };
+      }
+
+      // se já existe carrinho
+      const existingItemIndex = prevCart.cartItems.findIndex(
+        (ci) => ci.cartItem.id === marmitaToAdd.id
+      );
+
+      let updatedItems;
+      if (existingItemIndex >= 0) {
+        updatedItems = prevCart.cartItems.map((ci, idx) =>
+          idx === existingItemIndex ? { ...ci, quantity: ci.quantity + 1 } : ci
+        );
+      } else {
+        updatedItems = [...prevCart.cartItems, { cartItem: marmitaToAdd, quantity: 1 }];
+      }
+
+      return {
+        ...prevCart,
+        cartItems: updatedItems,
+      };
+    });
+  }
+};
+
+
+  const removeMarmita = (idMarmita: number) => {
+  console.log("Id da marmita recebida do componente filho para ser removida: ", idMarmita);
+
+  if (userContext.user) {
+    cartContext.setCart((prevCart) => {
+      if (!prevCart) {
+        return prevCart; // não existe carrinho ainda
+      }
+
+      const existingItemIndex = prevCart.cartItems.findIndex(
+        (ci) => ci.cartItem.id === idMarmita
+      );
+
+      if (existingItemIndex === -1) {
+        return prevCart; // marmita não está no carrinho
+      }
+
+      const itemToUpdate = prevCart.cartItems[existingItemIndex];
+
+      let updatedItems;
+      if (itemToUpdate.quantity > 1) {
+        // apenas decrementa
+        updatedItems = prevCart.cartItems.map((ci, idx) =>
+          idx === existingItemIndex ? { ...ci, quantity: ci.quantity - 1 } : ci
+        );
+      } else {
+        // remove do array se quantidade = 1
+        updatedItems = prevCart.cartItems.filter((ci) => ci.cartItem.id !== idMarmita);
+      }
+
+      return {
+        ...prevCart,
+        cartItems: updatedItems,
+      };
+    });
+  }
+};
+
 
   if (loading) {
     return <div className="pt-28 px-4">Carregando marmitas...</div>;
@@ -59,6 +146,7 @@ const MenuPage = () => {
         >
           {marmitas.map((item) => (
             <CardItem01
+              id={item.id}
               key={item.id}
               title={item.name}
               price={item.price}
@@ -75,3 +163,20 @@ const MenuPage = () => {
 };
 
 export default MenuPage;
+
+
+/* {
+  "userId": 16,
+  "createdAt": "2025-09-17T19:00:00Z",
+  "isCheckedOut": false,
+  "items": [
+    {
+      "quantity": 3,
+      "lunchboxId": 3
+    },
+    {
+      "quantity": 2,
+      "lunchboxId": 4
+    }
+  ]
+} */

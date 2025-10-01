@@ -1,10 +1,7 @@
 import type { Kit } from './Kit';
 import type { Lunchbox } from './Lunchbox';
 
-export type CartItemType = {
-    id: number; //nao sei se é necessario
-    cartId: number;
+export type CartItem = {
     cartItem: Kit | Lunchbox
     quantity: number;
-
 }

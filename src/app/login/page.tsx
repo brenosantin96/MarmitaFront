@@ -3,6 +3,7 @@ import CartSideMenu from '@/components/CartSideMenu';
 import FormUserPassword from '@/components/FormUserPassword';
 import { SideMenu } from '@/components/SideMenu';
 import { Icon } from '@/components/svg/Icon';
+import { useCartContext } from '@/context/CartContext';
 import { useUserContext } from '@/context/UserContext';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
@@ -18,6 +19,7 @@ const LoginPage = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const { user, setUser } = useUserContext(); // UserContext
+    const cartContext = useCartContext();
 
     const router = useRouter();
 
@@ -31,6 +33,22 @@ const LoginPage = () => {
                 setUser(loggedUser); //ISSO VOU MUDAR DEPOIS para que SERVER COMPONENTS consigam acessar informacoes de CONTEXTS....
                 setUsername("");
                 setPassword("");
+
+                //pegando carrinho do usuario:
+                if (user) {
+                    const resCart = await axios.get(`"/api/carts/${user.id}"`);
+
+                    if (resCart.status === 200) {
+                        console.log("resCart.status === 200: ", resCart.data);
+                        cartContext.setCart(resCart.data);
+                    } else {
+
+                        const resCreateCart = await axios.post("api/carts/create")
+                        if (resCreateCart.status === 200 || resCreateCart.status === 201) {
+                            console.log("CART criado ou ja existe: ", resCreateCart)
+                        }
+                    }
+                }
                 router.push("/signup")
             }
         } catch (err) {
@@ -57,11 +75,25 @@ const LoginPage = () => {
 
             console.log("RESPOSTA DO NEXT:", res.data);
 
-            // Aqui o Next já cuida de setar o cookie HTTP-only
-            // Você só precisa salvar o usuário em contexto/estado
             if (res.data.success) {
                 console.log("setando o res.data.user: ", res.data.user)
                 setUser(res.data.user);
+
+                //pegando carrinho do usuario:
+                const resCart = await axios.get("/api/carts"); //isso nao ta funcionando.......
+
+                if (resCart.status === 200) {
+                    console.log("resCart.status === 200: ", resCart.data);
+                    cartContext.setCart(resCart.data);
+                } else {
+
+                    const resCreateCart = await axios.post("api/carts/create")
+                    if (resCreateCart.status === 200 || resCreateCart.status === 201) {
+                        console.log("CART criado ou ja existe: ", resCreateCart)
+                    }
+
+                }
+
             }
         } catch (err) {
             console.error("Erro ao autenticar com backend via Next:", err);
@@ -106,49 +138,49 @@ const LoginPage = () => {
             <SideMenu />
 
             <div className='pt-13 md:pt-24 h-screen grid grid-cols-12 overflow-x-hidden'>
-                {/* Coluna 1: Formulário - ocupa 5 colunas */               
-                !user &&
-                <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4'>
-                    <div id="createUserDiv" className='flex flex-col w-full lg:w-1/2 mx-auto'>
-                        <div className='font-amsi uppercase font-extrabold text-base text-center leading-6 my-4'>
-                            Já tem uma conta?
-                        </div>
-                        <div className='flex items-center justify-start mx-4'>
-                            <div id="firstLine" className="border-b border-gray-200 grow shrink"></div>
-                            <p className='text-xs text-gray-500 text-left mx-2 py-3'>Use sua rede social para acessar sua conta</p>
-                            <div id="secondLine" className="border-b border-gray-200 grow shrink"></div>
-                        </div>
-                        <div id="socialMedia" className='flex gap-2 items-center mx-4'>
-                            <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
-                                <Icon svg='facebook' width="24px" height='24px' />
-                            </button>
-                            <button onClick={() => googleLogin()} className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
-                                <Icon svg='google' width="24px" height='24px' />
-                            </button>
-                        </div>
-                        <div className='flex items-center justify-start mx-4 '>
-                            <div className="border-b border-gray-200 grow shrink"></div>
-                            <p className='text-xs text-gray-500 text-left mx-2 py-3'>ou</p>
-                            <div className="border-b border-gray-200 grow shrink"></div>
-                        </div>
+                {/* Coluna 1: Formulário - ocupa 5 colunas */
+                    !user &&
+                    <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4'>
+                        <div id="createUserDiv" className='flex flex-col w-full lg:w-1/2 mx-auto'>
+                            <div className='font-amsi uppercase font-extrabold text-base text-center leading-6 my-4'>
+                                Já tem uma conta?
+                            </div>
+                            <div className='flex items-center justify-start mx-4'>
+                                <div id="firstLine" className="border-b border-gray-200 grow shrink"></div>
+                                <p className='text-xs text-gray-500 text-left mx-2 py-3'>Use sua rede social para acessar sua conta</p>
+                                <div id="secondLine" className="border-b border-gray-200 grow shrink"></div>
+                            </div>
+                            <div id="socialMedia" className='flex gap-2 items-center mx-4'>
+                                <button className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
+                                    <Icon svg='facebook' width="24px" height='24px' />
+                                </button>
+                                <button onClick={() => googleLogin()} className="rounded-lg h-14 border border-gray-200 w-full flex items-center justify-center cursor-pointer">
+                                    <Icon svg='google' width="24px" height='24px' />
+                                </button>
+                            </div>
+                            <div className='flex items-center justify-start mx-4 '>
+                                <div className="border-b border-gray-200 grow shrink"></div>
+                                <p className='text-xs text-gray-500 text-left mx-2 py-3'>ou</p>
+                                <div className="border-b border-gray-200 grow shrink"></div>
+                            </div>
 
-                        <FormUserPassword
-                            name={name}
-                            username={username}
-                            password={password}
-                            passwordConfirmation={passwordConfirmation}
-                            isPasswordVisible={isPasswordVisible}
-                            setPasswordVisible={setIsPasswordVisible}
-                            onChangeUsername={setUsername}
-                            onChangePassword={setPassword}
-                            onChangePasswordConfirmation={setPasswordConfirmation}
-                            onChangeName={setName}
-                            isInPageLogin={true}
-                            onSubmit={handleLogin}
+                            <FormUserPassword
+                                name={name}
+                                username={username}
+                                password={password}
+                                passwordConfirmation={passwordConfirmation}
+                                isPasswordVisible={isPasswordVisible}
+                                setPasswordVisible={setIsPasswordVisible}
+                                onChangeUsername={setUsername}
+                                onChangePassword={setPassword}
+                                onChangePasswordConfirmation={setPasswordConfirmation}
+                                onChangeName={setName}
+                                isInPageLogin={true}
+                                onSubmit={handleLogin}
 
-                        />
+                            />
+                        </div>
                     </div>
-                </div>
                 }
                 {user !== null &&
                     <div className='col-span-12 lg:col-span-7 md:col-span-5 flex flex-col mt-7 px-4 text-2xl'>
