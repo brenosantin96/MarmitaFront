@@ -15,8 +15,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={``}>
-        <GoogleOAuthProvider clientId="486411282466-hki87kvtqucbgvgk964h91c2tpnvi6j0.apps.googleusercontent.com">
-          <UserProvider>
+        <UserProvider>
+          <GoogleOAuthProvider clientId="486411282466-hki87kvtqucbgvgk964h91c2tpnvi6j0.apps.googleusercontent.com">
             <CategoryProvider>
               <CartContextProvider>
                 <SideMenuProvider>
@@ -28,8 +28,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 </SideMenuProvider>
               </CartContextProvider>
             </CategoryProvider>
-          </UserProvider>
-        </GoogleOAuthProvider>
+          </GoogleOAuthProvider>
+        </UserProvider>
       </body>
     </html>
   );

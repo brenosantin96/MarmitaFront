@@ -1,3 +1,4 @@
+//src\app\login\page.tsx
 "use client"
 import CartSideMenu from '@/components/CartSideMenu';
 import FormUserPassword from '@/components/FormUserPassword';
@@ -5,10 +6,11 @@ import { SideMenu } from '@/components/SideMenu';
 import { Icon } from '@/components/svg/Icon';
 import { useCartContext } from '@/context/CartContext';
 import { useUserContext } from '@/context/UserContext';
+import { Lunchbox } from '@/types/Lunchbox';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const LoginPage = () => {
 
@@ -23,6 +25,46 @@ const LoginPage = () => {
 
     const router = useRouter();
 
+    useEffect(() => {
+        if (!user) return;
+
+        const fetchCart = async () => {
+            try {
+                const resCart = await axios.get(`/api/carts/${user.id}`);
+                console.log("RESPOSTA da requisicao para ver se possui carrinho: ", resCart);
+                if (resCart.status === 200) {
+                    
+                    /*
+                    cartContext.setCart({
+                        userId: resCart.data.userId,
+                        createdAt: new Date(resCart.data.createdAt),
+                        isCheckedOut: resCart.data.isCheckedOut,
+                        cartItems: resCart.data.cartItems.map((item: any) => ({
+                            quantity: item.quantity,
+                            cartItem: {
+                                id: item.lunchboxId ?? item.kitId, // prioriza lunchbox, mas aceita kit
+                                name: item.name,
+                                // se você tiver mais propriedades de Lunchbox/Kit, pode buscar da API
+                                // ou inicializar vazio
+                                price: 0,
+                                portionGram: 0,
+                                imageUrl: ""
+                            }
+                        }))
+                    });
+                    */
+
+                }
+
+
+            } catch (err) {
+                console.error("Erro ao buscar carrinho:", err);
+            }
+        };
+
+        fetchCart();
+    }, [user]); // executa sempre que user mudar
+
 
     const handleLogin = async () => {
         try {
@@ -30,25 +72,9 @@ const LoginPage = () => {
 
             if (res1.status === 200 && res1.data.user) {
                 const loggedUser = res1.data.user;
-                setUser(loggedUser); //ISSO VOU MUDAR DEPOIS para que SERVER COMPONENTS consigam acessar informacoes de CONTEXTS....
+                setUser(loggedUser);
                 setUsername("");
                 setPassword("");
-
-                //pegando carrinho do usuario:
-                if (user) {
-                    const resCart = await axios.get(`"/api/carts/${user.id}"`);
-
-                    if (resCart.status === 200) {
-                        console.log("resCart.status === 200: ", resCart.data);
-                        cartContext.setCart(resCart.data);
-                    } else {
-
-                        const resCreateCart = await axios.post("api/carts/create")
-                        if (resCreateCart.status === 200 || resCreateCart.status === 201) {
-                            console.log("CART criado ou ja existe: ", resCreateCart)
-                        }
-                    }
-                }
                 router.push("/signup")
             }
         } catch (err) {
@@ -76,24 +102,7 @@ const LoginPage = () => {
             console.log("RESPOSTA DO NEXT:", res.data);
 
             if (res.data.success) {
-                console.log("setando o res.data.user: ", res.data.user)
                 setUser(res.data.user);
-
-                //pegando carrinho do usuario:
-                const resCart = await axios.get("/api/carts"); //isso nao ta funcionando.......
-
-                if (resCart.status === 200) {
-                    console.log("resCart.status === 200: ", resCart.data);
-                    cartContext.setCart(resCart.data);
-                } else {
-
-                    const resCreateCart = await axios.post("api/carts/create")
-                    if (resCreateCart.status === 200 || resCreateCart.status === 201) {
-                        console.log("CART criado ou ja existe: ", resCreateCart)
-                    }
-
-                }
-
             }
         } catch (err) {
             console.error("Erro ao autenticar com backend via Next:", err);

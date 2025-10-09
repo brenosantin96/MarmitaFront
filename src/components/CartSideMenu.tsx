@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Icon } from './svg/Icon';
 import { useCartContext } from '@/context/CartContext';
 import { useUserContext } from '@/context/UserContext';
@@ -12,50 +12,62 @@ type PropsCartSideMenu = {
 
 const CartSideMenu = () => {
 
-    const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems } = useCartContext();
-    const userContext = useUserContext();
+    const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems, getActualCart } = useCartContext();
+    const { user } = useUserContext();
+
+    useEffect(() => {
+        if (isOpen && user) {
+            getActualCart(); //  atualiza carrinho ao abrir menu
+        }
+    }, [isOpen, user]);
+
+
+    useEffect(() => {
+        console.log("CART q ta aparecendo: ", cart);
+    }, [cart]);
+
 
 
     const addMarmita = (idMarmita: number) => {
-    if (cart && cart.cartItems.length > 0) {
-        // nova lista de itens do carrinho com a quantidade atualizada
-        //no map ja realizando a validação se trata do carrinho selecionado.
-        const updatedItems = cart.cartItems.map((item) =>
-            item.cartItem.id === idMarmita
-                ? { ...item, quantity: item.quantity + 1 }
-                : item
-        );
-
-        // atualiza o contexto
-        setCart({
-            ...cart,
-            cartItems: updatedItems
-        });
-
-        setCartItems(updatedItems);
-    }
-};
-
-const removeMarmita = (idMarmita: number) => {
-    if (cart && cart.cartItems.length > 0) {
-        // Atualiza os itens: diminui a quantidade ou remove o item
-        const updatedItems = cart.cartItems
-            .map((item) =>
+        if (cart && cart.cartItems.length > 0) {
+            // nova lista de itens do carrinho com a quantidade atualizada
+            //no map ja realizando a validação se trata do carrinho selecionado.
+            const updatedItems = cart.cartItems.map((item) =>
                 item.cartItem.id === idMarmita
-                    ? { ...item, quantity: item.quantity - 1 }
+                    ? { ...item, quantity: item.quantity + 1 }
                     : item
-            )
-            .filter((item) => item.quantity > 0); // remove itens com quantidade <= 0
+            );
 
-        // Atualiza o contexto
-        setCart({
-            ...cart,
-            cartItems: updatedItems
-        });
+            // atualiza o contexto
+            setCart({
+                ...cart,
+                cartItems: updatedItems
+            });
 
-        setCartItems(updatedItems);
-    }
-};
+            setCartItems(updatedItems);
+        }
+    };
+
+    const removeMarmita = (idMarmita: number) => {
+        if (cart && cart.cartItems.length > 0) {
+            // Atualiza os itens: diminui a quantidade ou remove o item
+            const updatedItems = cart.cartItems
+                .map((item) =>
+                    item.cartItem.id === idMarmita
+                        ? { ...item, quantity: item.quantity - 1 }
+                        : item
+                )
+                .filter((item) => item.quantity > 0); // remove itens com quantidade <= 0
+
+            // Atualiza o contexto
+            setCart({
+                ...cart,
+                cartItems: updatedItems
+            });
+
+            setCartItems(updatedItems);
+        }
+    };
 
 
 
@@ -72,7 +84,7 @@ const removeMarmita = (idMarmita: number) => {
                 {cart && cart.cartItems.length > 0 ? (
                     <div>
                         {cart.cartItems.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center p-2 border-b">
+                            <div key={idx} className="flex items-center p-2">
                                 <CardItem01Cart
                                     id={item.cartItem.id}
                                     title={item.cartItem.name}

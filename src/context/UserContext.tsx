@@ -37,6 +37,8 @@ export const UserProvider = ({ children }: ContextProviderUser) => {
         //console.log("RES.DATA.USER.USER: ", res.data.user.user);
         if (res.data.user) {
           setUser(res.data.user.user);
+        } else {
+          setUser(null);
         }
       } catch {
         setUser(null);

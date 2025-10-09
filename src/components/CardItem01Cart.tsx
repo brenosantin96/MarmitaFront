@@ -41,16 +41,14 @@ const CardItem01Cart = ({ id, title, price, imageUrl, portionGram, oldPrice, onA
     };
 
     return (
-        <div className='inline-flex flex-col rounded-lg font-hindmadurai border border-gray-300 mb-3 pb-2 w-[200px] cursor-pointer transition'>
-            <div className="overflow-hidden rounded-t-lg h-[150px]">
+        <div className='flex rounded-lg justify-start items-center font-hindmadurai border w-full border-gray-300 mb-3 p-2 cursor-pointer transition'>
+            <div className="overflow-hidden rounded-t-lg h-[100px] w-[120px]">
                 <img src={imageUrl} alt={title} className="object-cover w-full h-full" />
             </div>
             <div className='pt-2 px-5'>
-                <div className='pb-2'>{title}</div>
-                <div className='flex justify-between px-2 pb-2'>
-                    <div id="price">{formatPriceToBRL(price)}</div>
-                    <div id="portionGram" className='text-gray-400'>{portionGram}g</div>
-                </div>
+                <div>{title}</div>
+                <div id="price">{formatPriceToBRL(quantityInCart * price)}</div>
+                <div id="portionGram" className='text-gray-400'>{portionGram}g</div>
             </div>
             <div className='px-5 py-3'>
                 {quantityInCart === 0 && (

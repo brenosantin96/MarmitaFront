@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button01 from './Button01';
 import { formatPriceToBRL } from '@/utils/Formatter';
 import { useUserContext } from '@/context/UserContext';
@@ -14,14 +14,30 @@ type PropsCardItem01 = {
     oldPrice?: number;
     onAdd: (id: number) => void;
     onRemove: (id: number) => void;
+    onClick: (id: number) => void;
 }
 
-const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, onRemove }: PropsCardItem01) => {
+const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, onRemove, onClick }: PropsCardItem01) => {
 
     const { user } = useUserContext(); // aqui você acessa o usuário logado
+    const { cart, cartItems, isOpen, openAndCloseCart, setCart, setCartItems } = useCartContext();
     const router = useRouter();
-
     const [countItems, setCountItems] = useState(0);
+
+    //se ja tiver algum item no cart, countItems vai ser a quantidade desse item no cart,
+    //se NAO tiver item no cart, countItems vai ser 0
+
+    useEffect(() => {
+        if (!cart || !cart.cartItems) return;
+
+        const itemInCart = cart.cartItems.find((item) => item.cartItem.id === id);
+        if (itemInCart) {
+            setCountItems(itemInCart.quantity);
+        } else {
+            setCountItems(0);
+        }
+    }, [cart, id])
+
 
     const addItemToCart = (id: number) => {
 
@@ -32,7 +48,7 @@ const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, 
         }
 
         onAdd(id); //enviando para o componente pai
-        
+
         setCountItems((prev) => prev + 1);
         console.log("Adicionado item no cart")
         //pegar contexto do carrinho e adicionar
@@ -47,7 +63,7 @@ const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, 
         }
 
         onRemove(id); //enviando para o componente pai
-        
+
         setCountItems((prev) => prev - 1);
         console.log("Removendo item do cart")
         //pegar contexto do carrinho e adicionar
@@ -55,7 +71,9 @@ const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, 
 
     return (
 
-        <div className='inline-flex flex-col rounded-lg font-hindmadurai border border-gray-300 mb-3 pb-2 w-[200px] cursor-pointer transition'>
+        <div
+            onClick={() => onClick(id)}
+            className='inline-flex flex-col rounded-lg font-hindmadurai border border-gray-300 mb-3 pb-2 w-[200px] cursor-pointer transition'>
             <div className="overflow-hidden rounded-t-lg h-[150px]">
                 <img src={imageUrl as string} alt={title} className="object-cover w-full h-full" />
             </div>
