@@ -20,7 +20,7 @@ type PropsCardItem01 = {
 const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, onRemove, onClick }: PropsCardItem01) => {
 
     const { user } = useUserContext(); // aqui você acessa o usuário logado
-    const { cart, cartItems, isOpen, openAndCloseCart, setCart, setCartItems } = useCartContext();
+    const { cart, cartItems, isOpen, setCart, setCartItems } = useCartContext();
     const router = useRouter();
     const [countItems, setCountItems] = useState(0);
 

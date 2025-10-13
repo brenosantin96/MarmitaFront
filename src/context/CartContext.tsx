@@ -8,7 +8,7 @@ import axios from 'axios';
 // 1 - Tipagem do contexto
 type CartContextType = {
     isOpen: boolean;
-    openAndCloseCart: () => void;
+    openAndCloseCart: (state: boolean) => void;
     cartItems: CartItem[];
     cart: Cart | null;  // <- carrinho do banco
     setCart: React.Dispatch<React.SetStateAction<Cart | null>>; // <- aceita objeto ou função
@@ -29,16 +29,15 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     const { user } = useUserContext();
 
 
-    const openAndCloseCart = () => {
+    const openAndCloseCart = (state: boolean) => {
 
-        if (isOpen) {
-            if (user !== null && user !== undefined) {
-                // let response = axios.get("/api/carts")
-            }
+        if (state) {
+            setIsOpen(true);
+        }
+        if (state === false) {
+            setIsOpen(false) 
         }
 
-        setIsOpen((prev) => !prev);
-        console.log("Executando")
     }
 
     const getActualCart = async () => {

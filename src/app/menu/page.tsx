@@ -50,7 +50,11 @@ const MenuPage = () => {
     }
 
     if (userContext.user) {
+
+      cartContext.openAndCloseCart(true);
+
       cartContext.setCart((prevCart) => {
+
         // se não existe carrinho ainda
         if (!prevCart) {
           return {

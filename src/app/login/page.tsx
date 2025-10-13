@@ -26,44 +26,20 @@ const LoginPage = () => {
     const router = useRouter();
 
     useEffect(() => {
-        if (!user) return;
 
-        const fetchCart = async () => {
-            try {
-                const resCart = await axios.get(`/api/carts/${user.id}`);
-                console.log("RESPOSTA da requisicao para ver se possui carrinho: ", resCart);
-                if (resCart.status === 200) {
-                    
-                    /*
-                    cartContext.setCart({
-                        userId: resCart.data.userId,
-                        createdAt: new Date(resCart.data.createdAt),
-                        isCheckedOut: resCart.data.isCheckedOut,
-                        cartItems: resCart.data.cartItems.map((item: any) => ({
-                            quantity: item.quantity,
-                            cartItem: {
-                                id: item.lunchboxId ?? item.kitId, // prioriza lunchbox, mas aceita kit
-                                name: item.name,
-                                // se você tiver mais propriedades de Lunchbox/Kit, pode buscar da API
-                                // ou inicializar vazio
-                                price: 0,
-                                portionGram: 0,
-                                imageUrl: ""
-                            }
-                        }))
-                    });
-                    */
+        console.log("USER:", user)
 
-                }
+        if (user) {
+            console.log("Entrou dentro do if");
+            cartContext.getActualCart();
+        }
+    }, [user]);
 
+    useEffect(() => {
 
-            } catch (err) {
-                console.error("Erro ao buscar carrinho:", err);
-            }
-        };
+        console.log("CART:", cartContext.cart)
 
-        fetchCart();
-    }, [user]); // executa sempre que user mudar
+    }, [cartContext.cart]);
 
 
     const handleLogin = async () => {
@@ -76,6 +52,7 @@ const LoginPage = () => {
                 setUsername("");
                 setPassword("");
                 router.push("/signup")
+
             }
         } catch (err) {
             console.error("Erro ao realizar login", err);

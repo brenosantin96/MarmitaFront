@@ -66,7 +66,7 @@ const Navbar = () => {
                             <Icon svg="user" height="24" width="24" />
                         </Link>
                     </div>
-                    <div onClick={openAndCloseCart} className="cursor-pointer">
+                    <div onClick={() => openAndCloseCart(true)} className="cursor-pointer">
                         <Icon svg="cart2" height="24" width="24" />
                     </div>
                     {user !== null &&
@@ -131,7 +131,7 @@ const Navbar = () => {
                                         </Link>
                                     </div>
                                 </button>
-                                <button onClick={openAndCloseCart} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
+                                <button onClick={() => openAndCloseCart(true)} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
                                     <div className='pr-2'>
                                         <Icon svg='cart2' height='24' width='24' fillColor='#fff' strokeColor='#fff' />
                                     </div>

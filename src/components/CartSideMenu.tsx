@@ -15,18 +15,6 @@ const CartSideMenu = () => {
     const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems, getActualCart } = useCartContext();
     const { user } = useUserContext();
 
-    useEffect(() => {
-        if (isOpen && user) {
-            getActualCart(); //  atualiza carrinho ao abrir menu
-        }
-    }, [isOpen, user]);
-
-
-    useEffect(() => {
-        console.log("CART q ta aparecendo: ", cart);
-    }, [cart]);
-
-
 
     const addMarmita = (idMarmita: number) => {
         if (cart && cart.cartItems.length > 0) {
@@ -75,7 +63,7 @@ const CartSideMenu = () => {
         <div className={` ${isOpen ? 'w-screen md:w-1/3' : 'w-0'}  bg-white fixed top-0 bottom-0 right-0 z-50 transition-all duration-200 ease-in overflow-hidden`}>
             <div className='flex justify-end items-center pr-3.5 h-14 border-b-1 border-gray-100'>
                 <div className='text-xs font-bold mr-[-3px]'>OCULTAR</div>
-                <div onClick={openAndCloseCart} className="cursor-pointer  rounded-full flex justify-center items-center w-8 h-8">
+                <div onClick={() => openAndCloseCart(false)} className="cursor-pointer  rounded-full flex justify-center items-center w-8 h-8">
                     <Icon svg='close2' width='16' height='16' />
                 </div>
             </div>
