@@ -62,6 +62,8 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
                         kitId: item.kitId,
                         lunchboxId: item.lunchboxId,
                     },
+                    lunchboxId: item.lunchboxId ?? null,
+                    kitId: item.kitId ?? null
                 }));
 
 

@@ -4,7 +4,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const API_URL = "https://localhost:7192"; // backend C#
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "https://localhost:7192"; // backend C#
 
 // Configura o Axios para ignorar erros de certificado SSL em desenvolvimento
 const axiosConfig = {
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
 
         // Faz a chamada para o backend
         const response = await axios.post(
-            `${API_URL}/api/carts/add`,
+            `${API_URL}/api/carts/create2`,
             body,
             {
                 ...axiosConfig,
@@ -77,9 +77,9 @@ export async function POST(request: Request) {
                 },
             }
         );
-
         // Retorna o carrinho atualizado
         return NextResponse.json(response.data, { status: 200 });
+
     } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
             console.error("Error:", error.response?.data || error.message);

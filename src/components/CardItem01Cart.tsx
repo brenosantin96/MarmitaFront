@@ -47,7 +47,7 @@ const CardItem01Cart = ({ id, title, price, imageUrl, portionGram, oldPrice, onA
             </div>
             <div className='pt-2 px-5'>
                 <div>{title}</div>
-                <div id="price">{formatPriceToBRL(quantityInCart * price)}</div>
+                <div id="price">{formatPriceToBRL(price)}</div>
                 <div id="portionGram" className='text-gray-400'>{portionGram}g</div>
             </div>
             <div className='px-5 py-3'>
