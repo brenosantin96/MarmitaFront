@@ -40,6 +40,7 @@ const MenuPage = () => {
 
 
 
+  //aqui a funcao é especificamente para lunchboxes ja que eesta na pagina de MENU....
   const addMarmita = (idMarmita: number) => {
     console.log("Id da marmita recebida do componente filho para ser adicionada: ", idMarmita);
     const marmitaToAdd = marmitas.find((i) => i.id === idMarmita);
@@ -61,7 +62,9 @@ const MenuPage = () => {
             userId: userContext.user?.id as number,
             createdAt: new Date(),
             isCheckedOut: false,
-            cartItems: [{ cartItem: marmitaToAdd, quantity: 1 }],
+            cartItems: [{ 
+              cartItem: marmitaToAdd, 
+              quantity: 1, kitId: null, lunchboxId: marmitaToAdd.id}],
           };
         }
 
@@ -88,6 +91,7 @@ const MenuPage = () => {
   };
 
 
+  //aqui a funcao é especificamente para lunchboxes ja que eesta na pagina de MENU....
   const removeMarmita = (idMarmita: number) => {
     console.log("Id da marmita recebida do componente filho para ser removida: ", idMarmita);
 
