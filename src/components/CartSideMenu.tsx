@@ -6,12 +6,7 @@ import { Cart } from '@/types/Cart';
 import CardItem01Cart from './CardItem01Cart';
 import Button01 from './Button01';
 import axios from 'axios';
-import { CreateOrUpdateCartWithItemsDto } from '@/types/CreateOrUpdateCartWithItemsDto';
 
-
-type PropsCartSideMenu = {
-
-}
 
 const CartSideMenu = () => {
 
