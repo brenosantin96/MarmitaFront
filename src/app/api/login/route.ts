@@ -2,7 +2,7 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 
-const API_URL = "https://localhost:7192"; // backend C#
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "https://localhost:7192"; // backend C#
 
 const axiosConfig = {
   httpsAgent: new (require("https").Agent)({

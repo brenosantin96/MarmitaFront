@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-const API_URL = "https://localhost:7192";
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "https://localhost:7192"; // backend C#
 
 export async function GET(request: Request) {
     try {

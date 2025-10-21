@@ -231,7 +231,7 @@ const userContext = useUserContext();
    ```bash
    # .env.local
    NEXT_PUBLIC_BASE_URL=your_backend_api_url
-   NEXT_PUBLIC_API_BASE_URL=your_asset_base_url
+   NEXT_PUBLIC_BASE_URL_BACKEND=your_asset_base_url
    ```
 
 4. **Run development server**

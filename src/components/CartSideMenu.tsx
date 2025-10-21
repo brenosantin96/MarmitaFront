@@ -121,7 +121,7 @@ const CartSideMenu = () => {
                                         title={item.cartItem.name}
                                         price={item.cartItem.price}
                                         portionGram={"portionGram" in item.cartItem ? item.cartItem.portionGram : 0}
-                                        imageUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}${item.cartItem.imageUrl}`}
+                                        imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}${item.cartItem.imageUrl}`}
                                         quantityInCart={item.quantity}
                                         onAdd={addItem}
                                         onRemove={removeItem}

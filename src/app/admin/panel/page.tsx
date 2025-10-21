@@ -223,7 +223,7 @@ const AdminPanelPage = () => {
                   key={marmita.id}
                   id={marmita.id}
                   title={marmita.name}
-                  imageUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}${marmita.imageUrl}`}
+                  imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}${marmita.imageUrl}`}
                   price={marmita.price}
                   portionGram={marmita.portionGram}
                   selected={selectedMarmitaId === marmita.id}

@@ -1,3 +1,4 @@
+// src\app\menu\page.tsx
 "use client";
 
 import CardItem01 from '@/components/CardItem01';
@@ -21,7 +22,7 @@ const MenuPage = () => {
   // Função para buscar marmitas do backend
   const getMarmitas = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/lunchboxes`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}/api/lunchboxes`, {
         withCredentials: true, // envia cookies HTTP-only
       });
 
@@ -177,7 +178,7 @@ const MenuPage = () => {
               title={item.name}
               price={item.price}
               portionGram={item.portionGram}
-              imageUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}${item.imageUrl}`}
+              imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}${item.imageUrl}`}
               onAdd={addMarmita}
               onRemove={removeMarmita}
               onClick={getMarmitaId}

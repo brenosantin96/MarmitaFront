@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "", // URL base da sua API
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "", // URL base da sua API
   headers: {
     "Content-Type": "application/json",
   },

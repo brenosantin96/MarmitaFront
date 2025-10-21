@@ -4,7 +4,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-const API_URL = "https://localhost:7192"; // backend C#
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "https://localhost:7192"; // backend C#
 
 // Configura o Axios para ignorar erros de certificado SSL em desenvolvimento
 const axiosConfig = {
@@ -13,10 +13,12 @@ const axiosConfig = {
     }),
 };
 
-export async function GET(request: Request, context: { params: { id: string } }) {
+export async function GET(
+    request: Request, 
+    context: { params: Promise <{ id: string }> }) {
 
-    console.log("Context: ", context) //Context:  { params: undefined }
-    const { id } = context.params //Porque params esta undefined?
+    console.log("Context: ", context) //Context:  {params: Promise .... }
+    const { id } = await context.params //params vem da promise
 
     try {
         // Lê o token salvo no cookie HTTP-only
