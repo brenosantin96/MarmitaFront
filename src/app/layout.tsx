@@ -18,7 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const pathname = usePathname();
 
   //Array de rotas que nao vão ter a NAVBAR
-  const noNavbarRoutes = ["/checkout/delivery"];
+  const noNavbarRoutes = ["/checkout/delivery", "/test"];
 
   //Exibe a Navbar apenas se a rota atual NÃO estiver na lista "noNavbarRoutes"
   const showNavbar = !noNavbarRoutes.includes(pathname);
