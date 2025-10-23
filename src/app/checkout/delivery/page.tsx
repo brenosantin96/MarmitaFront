@@ -1,4 +1,5 @@
 "use client";
+import { Icon } from "@/components/svg/Icon";
 import React from "react";
 
 const DeliveryPage = () => {
@@ -7,7 +8,7 @@ const DeliveryPage = () => {
 
     return (
 
-        <div className="grid grid-cols-12 grid-rows-[45px_100px_1fr] min-h-screen bg-green-200 grid-flow-row-dense">
+        <div className="grid grid-cols-12 grid-rows-[45px_70px_1fr] min-h-screen grid-flow-row-dense font-hindmadurai">
 
             {/* linha 1 */}
             <header className="col-span-12 bg-red-700 h-[45px] text-white flex items-center">
@@ -15,20 +16,20 @@ const DeliveryPage = () => {
             </header>
 
             {/* linha 2 */}
-            <div className="col-span-4 border flex justify-center items-center">
-                <div className="flex items-center justify-center">
-                    <div className="bg-amber-300 rounded-full text-gray-700 font-bold flex items-center justify-center">1</div>
-                    <div className=" text-gray-700">Endereco</div>
+            <div className="col-span-4  flex justify-center items-center m-2">
+                <div className="flex h-full w-full items-center justify-center gap-1 ">
+                    <div className="bg-[#f6f3ea] h-[30px] p-2 rounded-full text-gray-700 font-bold flex items-center justify-center">1</div>
+                    <div className=" text-gray-700 font-bold">Endereço</div>
                 </div>
-                <div className="flex items-center justify-center">
-                    <div className="bg-amber-300 rounded-full text-gray-700 font-bold flex items-center justify-center">2</div>
+                <div className="flex h-full w-full items-center justify-center gap-1 ">
+                    <div className="bg-[#f6f3ea] h-[30px] p-2 rounded-full text-gray-700 font-bold flex items-center justify-center">2</div>
                     <div className=" text-gray-700">Entrega</div>
                 </div>
-                <div className="flex items-center justify-center">
-                    <div className="bg-amber-300 rounded-full text-gray-700 font-bold flex items-center justify-center">3</div>
-                    <div className=" text-gray-700">Pagamento</div>
+                <div className="flex h-full w-full items-center justify-center gap-1 ">
+                    <div className="bg-[#f6f3ea] h-[30px] p-2 rounded-full text-gray-700 font-bold flex items-center justify-center">3</div>
+                    <div className=" text-gray-700">Revisão</div>
                 </div>
-
+            
             </div>
 
             <div className="col-span-4 bg-purple-400 row-span-2">
@@ -40,11 +41,17 @@ const DeliveryPage = () => {
             </div>
 
             {/* linha 3 */}
-            <div className="col-span-4 bg-gray-300">
-                <div>Como você prefere receber seus produtos?</div>
-                <div>
-                    <div>ENTREGA</div>
-                    <div>RETIRADA</div>
+            <div className="col-span-4 mx-4 mt-3 ">
+                <div className="font-hindmadurai font-bold text-[18px] uppercase m-2 tracking-tight">Como você <br /> prefere receber <br /> seus produtos?</div>
+                <div className="flex flex-col justify-around gap-2 mx-3">
+                    <div className="border cursor-pointer border-gray-300 w-1/2 hover:shadow-sm p-2 flex items-center">
+                        <div><Icon svg="truck" height="25px" width="25px" /></div>
+                        <div className="font-semibold text-base pl-2">ENTREGA</div>
+                    </div>
+                    <div className="border cursor-pointer border-gray-300 w-1/2 hover:shadow-sm p-2 flex items-center">
+                        <div><Icon svg="store" height="30px" width="30px" /></div>
+                        <div className="font-semibold text-base pl-2">RETIRADA</div>
+                    </div>
                 </div>
             </div>
 

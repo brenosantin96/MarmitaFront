@@ -17,6 +17,8 @@ import GoogleIcon from '../Icons/GoogleIcon';
 import NewCartIcon2 from '../Icons/NewCartIcon2';
 import EyeClosedIcon from '../Icons/EyeClosedIcon';
 import NewEyeOpenedIcon from '../Icons/NewEyeOpenedIcon';
+import StoreIcon from '../Icons/StoreIcon';
+import TruckIcon from '../Icons/TruckIcon';
 
 
 type Props = {
@@ -50,6 +52,8 @@ export const Icon = ({ svg, width, height, fillColor, strokeColor }: Props) => {
       {svg === "google" && <GoogleIcon height={height} width={width} />}
       {svg === "eyeclosed" && <EyeClosedIcon height={height} width={width} color={fillColor} strokeColor={strokeColor} />}
       {svg === "eyeopened" && <NewEyeOpenedIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
+      {svg === "store" && <StoreIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
+      {svg === "truck" && <TruckIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
     </div>
   )
 }
