@@ -1,4 +1,5 @@
 "use client";
+import NewAddressForm from "@/components/NewAddressForm";
 import { Icon } from "@/components/svg/Icon";
 import React from "react";
 
@@ -32,8 +33,8 @@ const DeliveryPage = () => {
             
             </div>
 
-            <div className="col-span-4 bg-purple-400 row-span-2">
-                COLUNA com dados do endereco ou entrega
+            <div className="col-span-4 row-span-2">
+                <NewAddressForm/>
             </div>
 
             <div className="col-span-4 bg-blue-400 row-span-2">
