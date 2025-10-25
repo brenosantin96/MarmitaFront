@@ -9,6 +9,8 @@ import axios from 'axios';
 type ContextUser = {
   user: User | null;
   setUser: (user: User | null) => void;
+  isLoadingUser: boolean;
+
 };
 
 // Tipo do provedor
@@ -23,18 +25,21 @@ const initialUser: User | null = null;
 export const UserContext = createContext<ContextUser>({
   user: initialUser,
   setUser: () => { }, // placeholder para função
+  isLoadingUser: true,
 });
 
 // Provedor do contexto
 export const UserProvider = ({ children }: ContextProviderUser) => {
 
   const [user, setUser] = useState<User | null>(initialUser);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
+  //ao rodar o projeto vai executar isso uma
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        console.log("fetching user...")
         const res = await axios.get("/api/me", { withCredentials: true });
-        //console.log("RES.DATA.USER.USER: ", res.data.user.user);
         if (res.data.user) {
           setUser(res.data.user.user);
         } else {
@@ -42,6 +47,8 @@ export const UserProvider = ({ children }: ContextProviderUser) => {
         }
       } catch {
         setUser(null);
+      } finally {
+        setIsLoadingUser(false);
       }
     };
 
@@ -51,7 +58,7 @@ export const UserProvider = ({ children }: ContextProviderUser) => {
 
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, isLoadingUser }}>
       {children}
     </UserContext.Provider>
   );

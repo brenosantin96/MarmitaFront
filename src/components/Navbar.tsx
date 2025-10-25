@@ -21,7 +21,7 @@ const Navbar = () => {
     const isScreenMDOrHigher = useBreakpoint('md');
     const { openModal } = useModalAddress();
     const { openAndCloseSideMenu } = useSideMenu();
-    const { openAndCloseCart } = useCartContext();
+    const { openAndCloseCart, getActualCart, isOpen } = useCartContext();
     const { categories } = useCategorieContext();
 
 
@@ -30,6 +30,13 @@ const Navbar = () => {
     useEffect(() => {
         getAllCategories();
     }, [categories]);
+
+    const openCartAndCheckItems = () => {
+        if(!isOpen){
+            openAndCloseCart(true)
+            getActualCart();
+        }
+    }
 
 
     const getAllCategories = async () => {
@@ -131,7 +138,7 @@ const Navbar = () => {
                                         </Link>
                                     </div>
                                 </button>
-                                <button onClick={() => openAndCloseCart(true)} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
+                                <button onClick={() => openCartAndCheckItems()} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>
                                     <div className='pr-2'>
                                         <Icon svg='cart2' height='24' width='24' fillColor='#fff' strokeColor='#fff' />
                                     </div>

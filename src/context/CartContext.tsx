@@ -42,7 +42,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 
     const getActualCart = async () => {
 
-        if (!user) return; //se nao tiver logado, retorna.
+        if (user === null) return; //se nao tiver logado, retorna.
 
         try {
             const response = await axios.get(`/api/carts/${user.id}`)

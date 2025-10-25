@@ -1,11 +1,29 @@
 "use client";
 import NewAddressForm from "@/components/NewAddressForm";
 import { Icon } from "@/components/svg/Icon";
-import React from "react";
+import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 const DeliveryPage = () => {
 
+    const route = useRouter();
+    const { user, isLoadingUser } = useUserContext();
 
+    useEffect(() => {
+        if (!isLoadingUser && user === null) {
+            console.log("Usuário não logado, redirecionando...");
+            route.push("/login");
+        }
+    }, [isLoadingUser, user]);
+
+    if (isLoadingUser) {
+        return <p className="text-center mt-20">Carregando usuário...</p>;
+    }
+
+    if (user === null) {
+        return <p className="text-center mt-20">Redirecionando...</p>;
+    }
 
     return (
 
@@ -30,11 +48,11 @@ const DeliveryPage = () => {
                     <div className="bg-[#f6f3ea] h-[30px] p-2 rounded-full text-gray-700 font-bold flex items-center justify-center">3</div>
                     <div className=" text-gray-700">Revisão</div>
                 </div>
-            
+
             </div>
 
             <div className="col-span-4 row-span-2">
-                <NewAddressForm/>
+                <NewAddressForm />
             </div>
 
             <div className="col-span-4 bg-blue-400 row-span-2">

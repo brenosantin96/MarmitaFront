@@ -6,6 +6,7 @@ import { Cart } from '@/types/Cart';
 import CardItem01Cart from './CardItem01Cart';
 import Button01 from './Button01';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 
 const CartSideMenu = () => {
@@ -13,6 +14,8 @@ const CartSideMenu = () => {
     const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems, getActualCart } = useCartContext();
     const { user } = useUserContext();
     const [total, setTotal] = useState(0);
+    
+    const router = useRouter();
 
 
     //To adjust total
@@ -46,7 +49,9 @@ const CartSideMenu = () => {
 
             if (res.status === 200 || res.status === 201) {
                 console.log("Carrinho confirmado com sucesso:", res.data);
-                //setCart(res.data);
+                setCart(res.data);
+                router.push("/checkout/delivery");
+                
             }
         } catch (e) {
             console.error("Erro ao realizar confirmCart:", e);
@@ -117,7 +122,7 @@ const CartSideMenu = () => {
                             {cart.cartItems.map((item, idx) => (
                                 <div key={idx} className="flex items-center p-2">
                                     <CardItem01Cart
-                                        id={item.cartItem.id}
+                                        id={item.lunchboxId ? item.lunchboxId : item.kitId as number}
                                         title={item.cartItem.name}
                                         price={item.cartItem.price}
                                         portionGram={"portionGram" in item.cartItem ? item.cartItem.portionGram : 0}
