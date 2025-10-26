@@ -14,7 +14,7 @@ const CartSideMenu = () => {
     const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems, getActualCart } = useCartContext();
     const { user } = useUserContext();
     const [total, setTotal] = useState(0);
-    
+
     const router = useRouter();
 
 
@@ -48,10 +48,32 @@ const CartSideMenu = () => {
             const res = await axios.post("/api/carts", body);
 
             if (res.status === 200 || res.status === 201) {
+
                 console.log("Carrinho confirmado com sucesso:", res.data);
-                setCart(res.data);
+
+                //Corrigir o BACKEND para retornar o carrinho completo! 
+                // Normaliza o retorno do backend para o formato esperado pelo frontend
+                const normalizedCart: Cart = {
+                    userId: res.data.userId,
+                    createdAt: new Date(res.data.createdAt),
+                    isCheckedOut: res.data.isCheckedOut,
+                    cartItems: res.data.cartItems.map((item: any) => ({
+                        quantity: item.quantity,
+                        lunchboxId: item.lunchboxId,
+                        kitId: item.kitId,
+                        cartItem: {
+                            id: item.lunchboxId ?? item.kitId,
+                            name: item.name ?? "",
+                            price: item.price ?? 0,
+                            portionGram: item.portionGram ?? 0,
+                            imageUrl: item.imageUrl ?? "",
+                        },
+                    })),
+                };
+
+                setCart(normalizedCart);
                 router.push("/checkout/delivery");
-                
+
             }
         } catch (e) {
             console.error("Erro ao realizar confirmCart:", e);
@@ -119,20 +141,25 @@ const CartSideMenu = () => {
                     <>
                         {/* Lista de itens */}
                         <div className='h-4/5 shadow-md overflow-y-auto'>
-                            {cart.cartItems.map((item, idx) => (
-                                <div key={idx} className="flex items-center p-2">
-                                    <CardItem01Cart
-                                        id={item.lunchboxId ? item.lunchboxId : item.kitId as number}
-                                        title={item.cartItem.name}
-                                        price={item.cartItem.price}
-                                        portionGram={"portionGram" in item.cartItem ? item.cartItem.portionGram : 0}
-                                        imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}${item.cartItem.imageUrl}`}
-                                        quantityInCart={item.quantity}
-                                        onAdd={addItem}
-                                        onRemove={removeItem}
-                                    />
-                                </div>
-                            ))}
+                            {cart.cartItems.map((item, idx) => {
+
+                                console.log(cart.cartItems)
+                                return (
+                                    <div key={idx} className="flex items-center p-2">
+                                        <CardItem01Cart
+                                            id={item.lunchboxId ? item.lunchboxId : item.kitId as number}
+                                            title={item.cartItem.name}
+                                            price={item.cartItem.price}
+                                            portionGram={"portionGram" in item.cartItem ? item.cartItem.portionGram : 0}
+                                            imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}${item.cartItem.imageUrl}`}
+                                            quantityInCart={item.quantity}
+                                            onAdd={addItem}
+                                            onRemove={removeItem}
+                                        />
+                                    </div>)
+                            }
+
+                            )}
                         </div>
 
                         {/* Rodapé com total */}
