@@ -21,6 +21,9 @@ const MenuPage = () => {
 
   // Função para buscar marmitas do backend
   const getMarmitas = async () => {
+
+    console.log("NEXT_PUBLIC_BASE_URL_BACKEND: ", process.env.NEXT_PUBLIC_BASE_URL_BACKEND)
+
     try {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}/api/lunchboxes`, {
         withCredentials: true, // envia cookies HTTP-only

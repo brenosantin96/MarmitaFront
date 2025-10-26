@@ -17,9 +17,8 @@ export async function GET(
     request: Request, 
     context: { params: Promise <{ id: string }> }) {
 
-    console.log("Context: ", context) //Context:  {params: Promise .... }
-    const { id } = await context.params //params vem da promise
-
+    const { id } = await context.params 
+    
     try {
         // Lê o token salvo no cookie HTTP-only
         const token = (await cookies()).get("token")?.value;

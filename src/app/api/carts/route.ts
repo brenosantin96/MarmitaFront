@@ -15,8 +15,7 @@ const axiosConfig = {
 
 export async function GET(request: Request, context: { params: { id: string } }) {
 
-    console.log("Context: ", context) //Context:  { params: undefined }
-    const { id } = context.params //Porque params esta undefined?
+    const { id } = context.params 
 
     try {
         // Lê o token salvo no cookie HTTP-only
