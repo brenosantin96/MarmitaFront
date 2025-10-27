@@ -1,6 +1,7 @@
 "use client";
 import NewAddressForm from "@/components/NewAddressForm";
 import { Icon } from "@/components/svg/Icon";
+import { useCartContext } from "@/context/CartContext";
 import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -16,6 +17,12 @@ const DeliveryPage = () => {
             route.push("/login");
         }
     }, [isLoadingUser, user]);
+
+    const { cart } = useCartContext();
+
+    useEffect(() => {
+        console.log("CART diretamente da pagina delivery: ", cart)
+    }, [cart])
 
     if (isLoadingUser) {
         return <p className="text-center mt-20">Carregando usuário...</p>;

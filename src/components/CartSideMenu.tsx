@@ -33,6 +33,8 @@ const CartSideMenu = () => {
     const confirmCart = async (cart: Cart) => {
         if (!cart || cart.cartItems.length === 0) return;
 
+        console.log("cart atual antes de enviar:", cart);
+
         try {
             const body = {
                 userId: cart.userId,
@@ -40,45 +42,25 @@ const CartSideMenu = () => {
                 isCheckedOut: cart.isCheckedOut ?? false,
                 cartItems: cart.cartItems.map(item => ({
                     quantity: item.quantity,
-                    lunchboxId: item.lunchboxId ?? null,
+                    lunchboxId: item.lunchboxId ?? item.cartItem?.id ?? null,
                     kitId: item.kitId ?? null,
                 })),
             };
 
+            console.log("Body enviado para o backend:", body);
+
             const res = await axios.post("/api/carts", body);
 
             if (res.status === 200 || res.status === 201) {
-
                 console.log("Carrinho confirmado com sucesso:", res.data);
-
-                //Corrigir o BACKEND para retornar o carrinho completo! 
-                // Normaliza o retorno do backend para o formato esperado pelo frontend
-                const normalizedCart: Cart = {
-                    userId: res.data.userId,
-                    createdAt: new Date(res.data.createdAt),
-                    isCheckedOut: res.data.isCheckedOut,
-                    cartItems: res.data.cartItems.map((item: any) => ({
-                        quantity: item.quantity,
-                        lunchboxId: item.lunchboxId,
-                        kitId: item.kitId,
-                        cartItem: {
-                            id: item.lunchboxId ?? item.kitId,
-                            name: item.name ?? "",
-                            price: item.price ?? 0,
-                            portionGram: item.portionGram ?? 0,
-                            imageUrl: item.imageUrl ?? "",
-                        },
-                    })),
-                };
-
-                setCart(normalizedCart);
+                setCart(res.data);
                 router.push("/checkout/delivery");
-
             }
         } catch (e) {
             console.error("Erro ao realizar confirmCart:", e);
         }
     };
+
 
 
     // 🔹 Função genérica para adicionar item (marmita ou kit)
