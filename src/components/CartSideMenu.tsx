@@ -53,7 +53,25 @@ const CartSideMenu = () => {
 
             if (res.status === 200 || res.status === 201) {
                 console.log("Carrinho confirmado com sucesso:", res.data);
-                setCart(res.data);
+
+                const normalizedCart = {
+                    ...res.data,
+                    cartItems: res.data.cartItems.map((item: any) => ({
+                        quantity: item.quantity,
+                        lunchboxId: item.lunchboxId,
+                        kitId: item.kitId,
+                        cartItem: {
+                            id: item.lunchboxId ?? item.kitId ?? item.id,
+                            name: item.name,
+                            price: item.price,
+                            portionGram: item.portionGram,
+                            imageUrl: item.imageUrl,
+                        }
+                    })),
+                };
+
+
+                setCart(normalizedCart);
                 router.push("/checkout/delivery");
             }
         } catch (e) {
