@@ -21,7 +21,7 @@ const Navbar = () => {
     const isScreenMDOrHigher = useBreakpoint('md');
     const { openModal } = useModalAddress();
     const { openAndCloseSideMenu } = useSideMenu();
-    const { openAndCloseCart, getActualCart, isOpen } = useCartContext();
+    const { openAndCloseCart, isOpen } = useCartContext();
     const { categories } = useCategorieContext();
 
 
@@ -34,7 +34,6 @@ const Navbar = () => {
     const openCartAndCheckItems = () => {
         if(!isOpen){
             openAndCloseCart(true)
-            getActualCart();
         }
     }
 

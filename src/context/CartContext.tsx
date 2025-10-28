@@ -1,7 +1,7 @@
 "use client"
 import { Cart } from '@/types/Cart';
 import { CartItem } from '@/types/CartItem';
-import React, { createContext, ReactNode, useContext, useState } from 'react'
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { useUserContext } from './UserContext';
 import axios from 'axios';
 
@@ -27,6 +27,10 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [cart, setCart] = useState<Cart | null>(null);
     const { user } = useUserContext();
+
+    useEffect(()=> {
+        getActualCart();
+    }, [user])
 
 
     const openAndCloseCart = (state: boolean) => {

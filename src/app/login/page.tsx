@@ -25,16 +25,7 @@ const LoginPage = () => {
 
     const router = useRouter();
 
-    useEffect(() => {
-
-        console.log("USER:", user)
-
-        if (user) {
-            console.log("Entrou dentro do if");
-            cartContext.getActualCart();
-        }
-    }, [user]);
-
+   
     useEffect(() => {
 
         console.log("CART:", cartContext.cart)
