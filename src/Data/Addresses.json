@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "userId": 2,
+    "zipCode": "28013",
+    "street": "Calle Gran Vía",
+    "city": "Madrid",
+    "state": "Madrid",
+    "neighborhood": "Centro",
+    "number": "45",
+    "complement": "Piso 3, Puerta B",
+    "createdAt": "2025-10-28T18:30:00Z",
+    "updatedAt": "2025-10-28T18:30:00Z"
+  },
+  {
+    "id": 2,
+    "userId": 2,
+    "zipCode": "08002",
+    "street": "Carrer de Ferran",
+    "city": "Barcelona",
+    "state": "Cataluña",
+    "neighborhood": "Gòtic",
+    "number": "12",
+    "complement": "Apartamento 2A",
+    "createdAt": "2025-10-28T18:30:00Z",
+    "updatedAt": "2025-10-28T18:30:00Z"
+  },
+  {
+    "id": 3,
+    "userId": 2,
+    "zipCode": "08302",
+    "street": "Calle de San Jose",
+    "city": "Barcelona",
+    "state": "Cataluña",
+    "neighborhood": "Gòtic",
+    "number": "12",
+    "complement": "Apartamento 2A",
+    "createdAt": "2025-10-28T18:30:00Z",
+    "updatedAt": "2025-10-28T18:30:00Z"
+  }
+]
