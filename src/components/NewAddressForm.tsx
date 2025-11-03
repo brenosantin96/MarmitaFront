@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import Button01 from './Button01';
 import axios from 'axios';
+import { AddressFormDto } from '@/types/AddressFormDTO';
+import { useUserContext } from '@/context/UserContext';
+import { Address } from '@/types/Address';
 
 
 const NewAddressForm = () => {
+
+    const { user } = useUserContext();
 
     //React hook form
     const { register, handleSubmit, watch, setValue, formState: { errors, isValid } } = useForm({
@@ -28,6 +33,14 @@ const NewAddressForm = () => {
         }
     }, [zipCode])
 
+    useEffect(() => {
+        if (user) {
+            console.log("Entrou no useEffect - user disponível");
+            getAddressesUser();
+        }
+    }, [user]);
+
+
     const checkCEP = async () => {
         try {
             const res = await axios.get(`https://viacep.com.br/ws/${zipCode}/json/`);
@@ -48,12 +61,40 @@ const NewAddressForm = () => {
         }
     };
 
+    const getAddressesUser = async () => {
+
+        if (user) {
+
+            let response = await axios.get(`/api/address/${user.id}`);
+            console.log("Endereços do usuario: ", response.data);
+
+        }
+    }
+
+    const saveAddressAndKeepPurchaseProcess = async (formData: AddressFormDto) => {
+
+        if (user) {
+            const normalizedRequest = {
+                userId: user.id,
+                zipCode: formData.zipCode,
+                street: formData.street,
+                city: formData.city,
+                state: formData.state,
+                neighborhood: formData.neighborhood,
+                number: formData.number,
+                complement: formData.complement ? formData.complement : ""
+            }
+
+            let response = await axios.post("/api/address", normalizedRequest);
+            console.log("Response saveAddressAndKeepPurchaseProcess: ", response);
+
+        }
+    }
+
 
 
     return (
-        <form onSubmit={handleSubmit((data) => {
-            console.log(data)
-        })} className='w-full p-2'>
+        <form onSubmit={handleSubmit(saveAddressAndKeepPurchaseProcess)} className='w-full p-2'>
             <div className='font-hindmadurai font-semibold text-gray-800'>
                 <div>Em qual endereço você deseja receber?</div>
             </div>
@@ -73,13 +114,13 @@ const NewAddressForm = () => {
                     className='px-1 w-full border-b border-gray-300 py-1 hover:border-gray-800 hover:placeholder:text-gray-800'
                 />
                 <p className='text-sm text-red-600' >{errors.zipCode?.message}</p>
-                <div className='flex flex-row justify-between'>
+                {/* <div className='flex flex-row justify-between'>
                     <p className='font-hindmadurai font-semibold'>Tipo de endereço</p>
                     <div className='flex flex-row gap-2 mr-5'>
                         <div className='p-1 cursor-pointer text-green-800 bg-white border border-green-800 rounded-md font-semibold text-base uppercase hover:shadow-sm'>Casa</div>
                         <div className='p-1 cursor-pointer text-green-800 bg-white border border-green-800 rounded-md font-semibold text-base uppercase hover:shadow-sm'>Prédio</div>
                     </div>
-                </div>
+                </div> */}
                 <input
                     {...register("street", { required: "Endereço é obrigatório" })}
                     type='text'

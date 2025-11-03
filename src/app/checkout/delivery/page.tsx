@@ -139,9 +139,9 @@ const DeliveryPage = () => {
             <div>
               <div id="selectAddress">
                 <div className="mb-3">Em qual endereço você deseja receber?</div>
-                <ul id="AddressesArea" className="flex gap-2 flex-wrap justify-center lg:justify-start">
+                <ul id="AddressesArea" className="flex items-center gap-2 flex-wrap justify-center lg:flex-row lg:justify-start">
                   {addresses.map((item) => (
-                    <AddressCard address={item} selectAddress={getSelectedAddress} />
+                    <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} />
                   ))}
                 </ul>
               </div>

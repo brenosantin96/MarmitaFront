@@ -4,6 +4,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User } from '../types/User';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 // Tipo do contexto
 type ContextUser = {
@@ -34,6 +35,8 @@ export const UserProvider = ({ children }: ContextProviderUser) => {
   const [user, setUser] = useState<User | null>(initialUser);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
 
+  const router = useRouter();
+
   //ao rodar o projeto vai executar isso uma
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,9 +47,11 @@ export const UserProvider = ({ children }: ContextProviderUser) => {
           setUser(res.data.user.user);
         } else {
           setUser(null);
+          router.push("/login")
         }
       } catch {
         setUser(null);
+        router.push("/login")
       } finally {
         setIsLoadingUser(false);
       }
