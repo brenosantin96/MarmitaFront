@@ -1,0 +1,242 @@
+"use client"
+import React, { useEffect, useState } from 'react'
+import CardItem01AdminPanel from './CardItem01AdminPanel'
+import { Lunchbox } from '@/types/Lunchbox';
+import Button01 from './Button01';
+import axios from 'axios';
+import { useUserContext } from '@/context/UserContext';
+import { useRouter } from 'next/navigation';
+import Modal01 from './Modal01';
+import MarmitaModal from './MarmitaModal';
+import { MarmitaCreateDto } from '@/types/MarmitaCreateDto';
+import { useCategorieContext } from '@/context/CategoryContext';
+
+const MarmitasGridPanelAdmin = () => {
+
+    const [isMarmitaModalOpened, setIsMarmitaModalOpened] = useState(false);
+    const [isErrorModalOpened, setIsErrorModalOpened] = useState(false);
+    
+    const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
+    const [selectedMarmitaId, setSelectedMarmitaId] = useState<number | null>(null);
+    const [editingMarmita, setEditingMarmita] = useState<Lunchbox | null>(null);
+    const [deletingMarmita, setDeletingMarmita] = useState(false);
+    const [errorMsgModal, setErrorMsgModal] = useState("");
+
+    //categories
+    const { categories, fetchCategories } = useCategorieContext();
+
+    const { user } = useUserContext();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (user === null) {
+            router.replace("/login");
+            return;
+        }
+        fetchMarmitas();
+    }, [user, router]);
+
+    // Buscar marmitas
+    const fetchMarmitas = async () => {
+        try {
+            const res = await axios.get(`/api/lunchboxes`);
+            if (res.status === 200) {
+                setMarmitas(res.data);
+            }
+        } catch (err) {
+            console.error("Erro ao buscar marmitas:", err);
+        }
+    };
+
+
+    // Fechar modal (reseta edição)
+    const handleCloseMarmitaModal = () => {
+        setIsMarmitaModalOpened(false);
+        setEditingMarmita(null);
+    };
+
+    // Abrir modal para criar
+    const handleCreateMarmita = () => {
+        setEditingMarmita(null);
+        setIsMarmitaModalOpened(true);
+    };
+
+    // Abrir modal para editar
+    const handleEditMarmita = () => {
+        const marmita = marmitas.find(m => m.id === selectedMarmitaId);
+        if (marmita) {
+            setEditingMarmita(marmita);
+            setIsMarmitaModalOpened(true);
+        }
+    };
+
+    //Excluir marmita selecionada
+    const handleDeleteMarmita = async (id: number) => {
+        try {
+            const marmita = marmitas.find(m => m.id === selectedMarmitaId);
+            if (marmita) {
+
+                const res = await axios.delete(`/api/lunchboxes/${id}`, {
+                    withCredentials: true,
+                });
+                if (res.status === 200) {
+                    fetchMarmitas();
+                }
+                console.log(res);
+
+            }
+        } catch (error: any) {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 400) {
+                    setErrorMsgModal(error.response.data.error || "Erro ao deletar marmita");
+                    setIsErrorModalOpened(true);
+                    //alert(error.response.data.error); // por exemplo: "Não é possível deletar..."
+                } else {
+                    alert("Erro inesperado ao deletar marmita.");
+                }
+            } else {
+                console.error("Erro desconhecido:", error);
+            }
+        }
+    };
+
+    // Criar marmita
+  const onSubmitMarmita = async (dto: MarmitaCreateDto) => {
+    try {
+      const fd = new FormData();
+      fd.append("name", dto.name);
+      fd.append("description", dto.description);
+      fd.append("price", String(dto.price));
+      fd.append("portionGram", String(dto.portionGram));
+      fd.append("categoryId", String(dto.categoryId));
+
+      if (dto.image) fd.append("image", dto.image);
+
+      const res = await axios.post(`/api/lunchboxes`, fd, { withCredentials: true });
+
+      console.log("Marmita criada:", res.data);
+      fetchMarmitas();
+    } catch (err) {
+      console.error("Erro ao criar marmita:", err);
+    }
+  };
+
+  // Editar marmita
+  const onEditMarmita = async (id: number, dto: MarmitaCreateDto) => {
+    try {
+      const fd = new FormData();
+      fd.append("id", String(id));
+      fd.append("name", dto.name);
+      fd.append("description", dto.description);
+      fd.append("price", String(dto.price));
+      fd.append("portionGram", String(dto.portionGram));
+      fd.append("categoryId", String(dto.categoryId));
+      if (dto.image) fd.append("image", dto.image);
+
+      //Log detalhado do FormData
+      console.log("FD enviado:");
+      for (const [key, value] of fd.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const res = await axios.put(`/api/lunchboxes/${id}`, fd, {
+        withCredentials: true,
+      });
+
+      console.log("Marmita editada:", res.data);
+
+      fetchMarmitas();
+    } catch (err) {
+      console.error("Erro ao editar marmita:", err);
+    }
+  };
+
+
+    return (
+        <>
+        <Modal01
+                handleClose={() => setDeletingMarmita(false)}
+                isOpen={deletingMarmita}
+                modalText={`Tem certeza que deseja excluir essa marmita?`}
+                modalTitle='Confirmação'
+                isModalForDelete={true}
+                handleConfirmDelete={() => handleDeleteMarmita(selectedMarmitaId as number)}
+              />
+        
+              <Modal01
+                handleClose={() => setIsErrorModalOpened(false)}
+                isOpen={isErrorModalOpened}
+                modalText={errorMsgModal}
+                modalTitle='Erro'
+              />
+        
+              <MarmitaModal
+                handleClose={handleCloseMarmitaModal}
+                categories={categories}
+                isOpen={isMarmitaModalOpened}
+                modalTitle={editingMarmita ? "Editar Marmita" : "Nova Marmita"}
+                onSubmitMarmita={onSubmitMarmita}
+                onEditMarmita={onEditMarmita}
+                marmita={editingMarmita ?? undefined}
+              />
+
+              
+        <div className="border rounded-2xl p-6 shadow-md">
+            <h2 className="text-xl font-bold mb-4 text-green-700">Marmitas</h2>
+
+            {/* Listagem */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto justify-items-center">
+                {marmitas.length > 0 ? (
+                    marmitas.map((marmita) => (
+                        <CardItem01AdminPanel
+                            key={marmita.id}
+                            id={marmita.id}
+                            title={marmita.name}
+                            imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}${marmita.imageUrl}`}
+                            price={marmita.price}
+                            portionGram={marmita.portionGram}
+                            selected={selectedMarmitaId === marmita.id}
+                            onSelect={setSelectedMarmitaId}
+                        />
+                    ))
+                ) : (
+                    <p className="text-gray-500">Nenhuma marmita cadastrada.</p>
+                )}
+            </div>
+
+
+
+            {/* Rodapé com botões */}
+            <div className="flex gap-3 mt-6 justify-end">
+                <Button01
+                    classes="bg-green-700 text-white"
+                    onClick={handleCreateMarmita}
+                >
+                    Criar Marmita
+                </Button01>
+
+                <Button01
+                    classes="bg-yellow-500 text-white"
+                    disabled={!selectedMarmitaId}
+                    onClick={handleEditMarmita}
+                >
+                    Editar Marmita
+                </Button01>
+
+                <Button01
+                    classes="bg-red-600 text-white"
+                    disabled={!selectedMarmitaId}
+                    onClick={() => setDeletingMarmita(true)}
+                >
+                    Apagar Marmita
+                </Button01>
+
+
+            </div>
+        </div>
+        </>
+    )
+}
+
+export default MarmitasGridPanelAdmin

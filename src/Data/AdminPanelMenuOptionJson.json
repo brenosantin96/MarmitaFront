@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Marmitas", "isSelected": false },
+  { "id": 2, "name": "Kits", "isSelected": false },
+  { "id": 3, "name": "Categorias", "isSelected": false },
+  { "id": 4, "name": "Endereços de Retirada", "isSelected": false }
+]
