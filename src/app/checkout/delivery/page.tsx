@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import addressesData from "../../../Data/Addresses.json"
 import { Address } from '@/types/Address'
+import Modal01 from "@/components/Modal01";
+import axios from "axios";
 
 const DeliveryPage = () => {
 
@@ -21,8 +23,12 @@ const DeliveryPage = () => {
 
   const [total, setTotal] = useState(0);
   const [receiveInAnotherAddress, setReceiveInAnotherAddress] = useState(false);
-  
-  const [addresses, setAddresses] = useState<Address[]>(addressesData)
+
+  const [addresses, setAddresses] = useState<Address[]>([])
+
+  //modalDeleteAdress
+  const [isOpenModalDeleteAddress, setIsOpenModalDeleteAddress] = useState(false);
+  const [idSelectedAddress, setIdSelectedAddress] = useState<number | null>(null);
 
   //To adjust total
   useEffect(() => {
@@ -43,8 +49,20 @@ const DeliveryPage = () => {
   }, [isLoadingUser, user]);
 
   useEffect(() => {
-    console.log("CART diretamente da pagina delivery: ", cart)
-  }, [cart])
+    if (!isLoadingUser && user === null) {
+      console.log("Usuário não logado, redirecionando...");
+      route.push("/login");
+    }
+  }, [isLoadingUser, user]);
+
+
+  //get user addresses
+  useEffect(() => {
+    if (user) {
+      getAddressesUser();
+    }
+  }, [user]);
+
 
   if (isLoadingUser) {
     return <p className="text-center mt-20">Carregando usuário...</p>;
@@ -54,10 +72,46 @@ const DeliveryPage = () => {
     return <p className="text-center mt-20">Redirecionando...</p>;
   }
 
+  const getAddressesUser = async () => {
+    if (user) {
+      let response = await axios.get(`/api/address/${user.id}`);
+      console.log("Endereços do usuario: ", response.data);
 
+      setAddresses(response.data)
+
+    }
+  }
 
   const getSelectedAddress = (id: number) => {
-    console.log("Aqui desde o componente PAI exibindo o id do CARD SELECIONADO: ", id)
+    console.log("SELECIONANDO ADDRESS: ", id)
+    setIdSelectedAddress(id)
+  }
+
+  const openModalDeleteAddress = async (id: number) => {
+    console.log("AQUI o ID a ser deletado: ID: ", id)
+    setIsOpenModalDeleteAddress(true)
+    setIdSelectedAddress(id);
+  }
+
+  const confirmDeleteSelectedAddress = async (id: number) => {
+
+    try {
+      let response = await axios.delete(`/api/address/${id}`)
+      console.log("RESPONSE: ", response);
+
+      setAddresses((prevAddresses) =>
+        prevAddresses.filter((item) => item.id !== id)
+      );
+
+      setIdSelectedAddress(null);
+
+      getAddressesUser();
+
+    } catch (error) {
+      console.error("Erro ao deletar endereço: ", error)
+    }
+
+
   }
 
 
@@ -141,7 +195,7 @@ const DeliveryPage = () => {
                 <div className="mb-3">Em qual endereço você deseja receber?</div>
                 <ul id="AddressesArea" className="flex items-center gap-2 flex-wrap justify-center lg:flex-row lg:justify-start">
                   {addresses.map((item) => (
-                    <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} />
+                    <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} clickedTrashIcon={openModalDeleteAddress} isSelected={item.id === idSelectedAddress} />
                   ))}
                 </ul>
               </div>
@@ -157,7 +211,7 @@ const DeliveryPage = () => {
                   </div>
                 </div>
                 {receiveInAnotherAddress &&
-                  <NewAddressForm />
+                  <NewAddressForm onAddressSaved={getAddressesUser} />
                 }
               </div>
             </div>
@@ -199,6 +253,15 @@ const DeliveryPage = () => {
           </div>
         </div>
       </div>
+      <Modal01
+        handleClose={() => setIsOpenModalDeleteAddress(false)}
+        isOpen={isOpenModalDeleteAddress}
+        modalTitle="Confirma deletar endereço?"
+        modalText="Tem certeza que deseja eliminar o endereço selecionado?"
+        isModalForDelete={true}
+        idToDelete={idSelectedAddress as number}
+        handleConfirmDelete={confirmDeleteSelectedAddress}
+      />
     </>
   );
 

@@ -57,3 +57,43 @@ export async function GET(request: Request, context: { params: { id: string } })
     }
 }
 
+export async function DELETE(request: Request, context: { params: { id: string } }) {
+
+    const { id } = context.params 
+
+    try {
+        // Lê o token salvo no cookie HTTP-only
+        const token = (await cookies()).get("token")?.value;
+        if (!token) {
+            return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+        }
+        
+        // Faz a chamada para o backend
+        const response = await axios.delete(
+            `${API_URL}/api/Addresses/${id}`,
+
+            {
+                ...axiosConfig,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        return NextResponse.json({ status: 204 });
+
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            console.error("Error:", error.response?.data || error.message);
+        } else {
+            console.error("Error:", error);
+        }
+
+        return NextResponse.json(
+            { error: "Erro no servidor" },
+            { status: 500 }
+        );
+    }
+}
+

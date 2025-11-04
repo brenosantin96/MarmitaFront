@@ -5,9 +5,11 @@ import { Address } from '@/types/Address'
 type AddressCardProps = {
     address: Address;
     selectAddress: (id: number) => void
+    clickedTrashIcon : (id: number) => void
+    isSelected : boolean;
 }
 
-const AddressCard = ({ address, selectAddress }: AddressCardProps) => {
+const AddressCard = ({ address, selectAddress, clickedTrashIcon, isSelected }: AddressCardProps) => {
 
 
     const selectedAddress = (id: number) => {
@@ -15,16 +17,29 @@ const AddressCard = ({ address, selectAddress }: AddressCardProps) => {
     }
 
     return (
-        <li className='border border-gray-300 rounded-md p-3 w-[200px] hover:border-red-500 cursor-pointer'>
-            <div className="flex justify-between gap-3">
-                <div onClick={() => selectedAddress(address.id)} className="text-base flex-2/6  font-semibold text-wrap">{address.street}</div>
-                <div className="cursor-pointer"><Icon svg='trash' height='24px' width='24px' /></div>
-            </div>
-            <div onClick={() => selectedAddress(address.id)} className="pt-1">
-                <div className="text-sm">Nº {address.number}</div>
-                <div className="text-sm">{address.neighborhood}, {address.city} - {address.state}</div>
-            </div>
-        </li>
+        <li
+      className={`border rounded-md p-3 w-[200px] cursor-pointer transition-all duration-200
+        ${isSelected ? 'border-red-500 shadow-xl' : 'border-gray-300 hover:border-gray-800'}`}
+    >
+      <div className="flex justify-between gap-3">
+        <div
+          onClick={() => selectedAddress(address.id)}
+          className="text-base flex-2/6 font-semibold text-wrap"
+        >
+          {address.street}
+        </div>
+        <div
+          onClick={() => clickedTrashIcon(address.id)}
+          className="cursor-pointer p-2"
+        >
+          <Icon svg='trash' height='24px' width='24px' />
+        </div>
+      </div>
+      <div onClick={() => selectedAddress(address.id)} className="pt-1">
+        <div className="text-sm">Nº {address.number}</div>
+        <div className="text-sm">{address.neighborhood}, {address.city} - {address.state}</div>
+      </div>
+    </li>
     )
 }
 

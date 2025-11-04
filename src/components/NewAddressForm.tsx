@@ -6,13 +6,17 @@ import { AddressFormDto } from '@/types/AddressFormDTO';
 import { useUserContext } from '@/context/UserContext';
 import { Address } from '@/types/Address';
 
+type NewAddressFormProps = {
+    onAddressSaved?: () => void;
+}
 
-const NewAddressForm = () => {
+
+const NewAddressForm = ({onAddressSaved} : NewAddressFormProps) => {
 
     const { user } = useUserContext();
 
     //React hook form
-    const { register, handleSubmit, watch, setValue, formState: { errors, isValid } } = useForm({
+    const { register, handleSubmit, watch, setValue, reset, formState: { errors, isValid } } = useForm({
         mode: "onChange", // importante! valida a cada mudança
         defaultValues: {
             zipCode: "",
@@ -32,14 +36,6 @@ const NewAddressForm = () => {
             checkCEP();
         }
     }, [zipCode])
-
-    useEffect(() => {
-        if (user) {
-            console.log("Entrou no useEffect - user disponível");
-            getAddressesUser();
-        }
-    }, [user]);
-
 
     const checkCEP = async () => {
         try {
@@ -61,15 +57,7 @@ const NewAddressForm = () => {
         }
     };
 
-    const getAddressesUser = async () => {
 
-        if (user) {
-
-            let response = await axios.get(`/api/address/${user.id}`);
-            console.log("Endereços do usuario: ", response.data);
-
-        }
-    }
 
     const saveAddressAndKeepPurchaseProcess = async (formData: AddressFormDto) => {
 
@@ -87,6 +75,12 @@ const NewAddressForm = () => {
 
             let response = await axios.post("/api/address", normalizedRequest);
             console.log("Response saveAddressAndKeepPurchaseProcess: ", response);
+
+            // limpa formulário
+            reset();
+
+            // chama a função passada pelo componente pai
+            if (onAddressSaved) onAddressSaved();
 
         }
     }
