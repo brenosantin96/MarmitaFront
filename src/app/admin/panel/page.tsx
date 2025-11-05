@@ -17,6 +17,7 @@ import Modal01 from '@/components/Modal01';
 import { MenuOption } from "@/types/AdminPanelMenuOption"
 import AdminPanelMenuOptionJson from "../../../Data/AdminPanelMenuOptionJson.json"
 import MarmitasGridPanelAdmin from '@/components/MarmitasGridPanelAdmin';
+import CategoriesGridPanelAdmin from '@/components/CategoriesGridPanelAdmin';
 
 const AdminPanelPage = () => {
 
@@ -58,8 +59,15 @@ const AdminPanelPage = () => {
           </ul>
         </div>
 
+        {menuOptions[0].isSelected === true &&
         <MarmitasGridPanelAdmin />
+        }
+
         
+        {menuOptions[2].isSelected === true &&
+        <CategoriesGridPanelAdmin />
+        }
+
       </div>
     </>
   )
