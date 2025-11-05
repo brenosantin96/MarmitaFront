@@ -1,25 +1,23 @@
 "use client"
 
 import React, { useState } from 'react'
+import { Icon } from './svg/Icon';
 
 type CategorieItemProps = {
     id: number;
     name: string;
     onSelect: (id: number) => void;
     isSelected: boolean; // nova prop controlada pelo pai
+    onEdit: (id: number) => void;
+    onRemove: (id: number) => void;
 }
 
-const AdminCategorieItemGrid = ({ id, name, onSelect, isSelected }: CategorieItemProps) => {
+const AdminCategorieItemGrid = ({ id, name, onSelect, isSelected, onEdit, onRemove }: CategorieItemProps) => {
 
-    const [selectedId, setSelectedId] = useState<number | null>(null);
 
     const handleSelect = () => {
-    setSelectedId(id);
-
-    console.log("ID sendo passado para o pai: ", id);
-
-    onSelect(id);
-  };
+        onSelect(id);
+    };
 
 
     return (
@@ -32,12 +30,15 @@ const AdminCategorieItemGrid = ({ id, name, onSelect, isSelected }: CategorieIte
                 }`}
         >
             <span className="font-medium text-gray-800">{name}</span>
-            <span
-                className={`text-sm font-semibold ${isSelected ? "text-green-600" : "text-gray-400"
-                    }`}
-            >
-                {isSelected ? "Selecionado" : "Clique para selecionar"}
-            </span>
+
+            <div className="flex gap-3">
+                <div onClick={() => onEdit(id)}>
+                    <Icon svg='edit' height='24px' width='24px' fillColor="#7A7878"></Icon>
+                </div>
+                <div onClick={() => onRemove(id)}>
+                    <Icon svg='trash' height='24px' width='24px' fillColor="#7A7878"></Icon>
+                </div>
+            </div>
         </div>
     )
 }

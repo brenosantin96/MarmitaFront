@@ -1,17 +1,20 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "./svg/Icon";
 import Button01 from "./Button01";
 import { CategoryCreateUpdateDto } from "@/types/CategoryCreateUpdateDto";
+import { Category } from "@/types/Category";
 
 type PropsCategorieModal = {
   isOpen: boolean;
   handleClose: () => void;
   modalTitle: string;
   onSubmitCategorie: (data: CategoryCreateUpdateDto) => void;
+  onEditCategorie?: (id: number, data: CategoryCreateUpdateDto) => void; // opcional
+  category?: Category; // usado em EDICAO para quando for aberto o MODAL trazer os dados da CATEGORY selecionada.
 
 };
 
@@ -23,10 +26,11 @@ const schema = z.object({
 // Inferindo a tipagem do schema
 type FormData = z.infer<typeof schema>;
 
-const CategorieModal = ({ handleClose, isOpen, modalTitle, onSubmitCategorie }: PropsCategorieModal) => {
+const CategorieModal = ({ handleClose, isOpen, modalTitle, onSubmitCategorie, onEditCategorie, category }: PropsCategorieModal) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isValid },
   } = useForm<FormData>({
     mode: "onChange",
@@ -37,6 +41,8 @@ const CategorieModal = ({ handleClose, isOpen, modalTitle, onSubmitCategorie }: 
   });
 
   if (!isOpen) return null;
+
+
 
   const onSubmit = (data: FormData) => {
 
@@ -98,7 +104,7 @@ const CategorieModal = ({ handleClose, isOpen, modalTitle, onSubmitCategorie }: 
               )}
             </div>
 
-            
+
             {/* Botão */}
             <Button01
               backgroundColor="bg-green-700"
