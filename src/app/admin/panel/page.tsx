@@ -18,6 +18,7 @@ import { MenuOption } from "@/types/AdminPanelMenuOption"
 import AdminPanelMenuOptionJson from "../../../Data/AdminPanelMenuOptionJson.json"
 import MarmitasGridPanelAdmin from '@/components/MarmitasGridPanelAdmin';
 import CategoriesGridPanelAdmin from '@/components/CategoriesGridPanelAdmin';
+import ToTakeAwayAddreessPanelAdmin from '@/components/ToTakeAwayAddreessPanelAdmin';
 
 const AdminPanelPage = () => {
 
@@ -66,6 +67,10 @@ const AdminPanelPage = () => {
         
         {menuOptions[2].isSelected === true &&
         <CategoriesGridPanelAdmin />
+        }
+
+        {menuOptions[3].isSelected === true &&
+        <ToTakeAwayAddreessPanelAdmin />
         }
 
       </div>

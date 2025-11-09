@@ -8,6 +8,7 @@ import AdminCategorieItemGrid from './AdminCategorieItemGrid';
 import Button01 from './Button01';
 import { Icon } from './svg/Icon';
 import { Category } from '@/types/Category';
+import Modal01 from './Modal01';
 
 const CategoriesGridPanelAdmin = () => {
 
@@ -15,6 +16,7 @@ const CategoriesGridPanelAdmin = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const [categorieToBeEdited, setCategorieToBeEdited] = useState<Category | null>(null);
+  const [isOpenModalDeleteCategorie, setIsOpenModalDeleteCategorie] = useState(false);
 
   const { categories, fetchCategories } = useCategorieContext();
   const { user } = useUserContext();
@@ -37,6 +39,7 @@ const CategoriesGridPanelAdmin = () => {
 
   // Abrir modal para criar
   const handleCreateCategory = () => {
+    setCategorieToBeEdited(null);
     setIsCategorieModalOpened(true);
   };
 
@@ -53,10 +56,7 @@ const CategoriesGridPanelAdmin = () => {
 
     try {
 
-      console.log("ID onEditCategory: ", id)
-      console.log("dto onEditCategory: ", dto)
-
-      const res = await axios.put(`/api/lunchboxes/${id}`, dto, {
+      const res = await axios.put(`/api/categories/${id}`, dto, {
         withCredentials: true,
       });
 
@@ -68,9 +68,34 @@ const CategoriesGridPanelAdmin = () => {
     }
   };
 
-  const handleDeleteCategory = (id: number) => {
-    console.log("Categoria para ser removida: ", id);
+  const openModalDeleteCategory = (id: number) => {
+    setIsOpenModalDeleteCategorie(true);
   }
+
+  const deleteCategory = async (id: number) => {
+
+    if (!id) {
+    console.warn("Nenhuma categoria selecionada para deletar");
+    return;
+  }
+
+  try {
+    const response = await axios.delete(`/api/categories/${id}`, {
+      withCredentials: true,
+    });
+
+    console.log("Categoria deletada:", response.data);
+
+    // Atualiza lista
+    fetchCategories();
+
+    // Fecha o modal após deletar
+    setIsOpenModalDeleteCategorie(false);
+    setSelectedId(null);
+  } catch (err) {
+    console.log("Algum erro aconteceu ao deletar: ", err);
+  }
+};
 
   return (
     <>
@@ -81,6 +106,16 @@ const CategoriesGridPanelAdmin = () => {
         onSubmitCategorie={onSubmitCategory}
         onEditCategorie={onEditCategory}
         category={categorieToBeEdited ?? undefined}
+      />
+
+      <Modal01
+        handleClose={() => setIsOpenModalDeleteCategorie(false)}
+        isOpen={isOpenModalDeleteCategorie}
+        modalTitle="Confirma deletar categoria?"
+        modalText="Tem certeza que deseja eliminar a categoria selecionada?"
+        isModalForDelete={true}
+        idToDelete={selectedId as number}
+        handleConfirmDelete={deleteCategory}
       />
 
       <div className="border rounded-2xl p-6 shadow-md">
@@ -97,7 +132,7 @@ const CategoriesGridPanelAdmin = () => {
                 onSelect={getSelectedItem}
                 isSelected={selectedId === categorie.id}
                 onEdit={handleEditCategory}
-                onRemove={handleDeleteCategory}
+                onRemove={openModalDeleteCategory}
               />
             ))
           ) : (

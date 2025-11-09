@@ -18,9 +18,7 @@ type PropsModal01 = {
 const Modal01 = ({ handleClose, isOpen, modalTitle, modalText, isModalForDelete, handleConfirmDelete, idToDelete }: PropsModal01) => {
 
 
-    if (!isOpen) return null; //essa linha deve ser corrigida!
-
-
+    if (!isOpen) return null; 
 
     const handleDeleteAndCloseModal = () => {
 

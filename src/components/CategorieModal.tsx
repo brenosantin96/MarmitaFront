@@ -27,6 +27,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const CategorieModal = ({ handleClose, isOpen, modalTitle, onSubmitCategorie, onEditCategorie, category }: PropsCategorieModal) => {
+
   const {
     register,
     handleSubmit,
@@ -40,9 +41,19 @@ const CategorieModal = ({ handleClose, isOpen, modalTitle, onSubmitCategorie, on
     },
   });
 
+  useEffect(() => {
+    if (category) {
+      reset({ name: category.name });
+    } else {
+      reset({ name: "" });
+    }
+  }, [category, reset]);
+
   if (!isOpen) return null;
 
 
+
+  if (!isOpen) return null;
 
   const onSubmit = (data: FormData) => {
 
@@ -94,6 +105,7 @@ const CategorieModal = ({ handleClose, isOpen, modalTitle, onSubmitCategorie, on
               <input
                 id="name"
                 {...register("name")}
+                value={onEditCategorie ? category?.name : ""}
                 className="border-b py-3 px-2 block w-full border-gray-200"
                 placeholder="Ex: Dia a dia"
               />
