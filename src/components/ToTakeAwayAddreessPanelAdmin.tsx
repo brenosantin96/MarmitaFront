@@ -26,7 +26,7 @@ const ToTakeAwayAddreessPanelAdmin = () => {
 
     useEffect(() => {
         if (user && user.isAdmin) {
-            fetchAddresses();
+          //  fetchAddresses();
         }
     }, [addresses])
 
@@ -40,6 +40,19 @@ const ToTakeAwayAddreessPanelAdmin = () => {
             console.log("Algum erro ocorreu: ", err)
         }
     };
+
+    const getAddressesUser = async () => {
+    if (user) {
+
+      //mudar essa chamada para pegar endereços de TODOS usuarios que possuem status como ADMIN
+      //atualmetne pega apenas do usuario logado
+      let response = await axios.get(`/api/address/${user.id}`);
+      console.log("Endereços do usuario: ", response.data);
+
+      setAddresses(response.data)
+
+    }
+  }
 
     const fetchAddresses = async () => {
         const res = await axios.get("/api/addresses");
@@ -104,9 +117,10 @@ const ToTakeAwayAddreessPanelAdmin = () => {
     return (
         <>
             <ModalAddress
-                handleClose={() => setIsOpenModalDeleteAddress(false)}
+                handleClose={() => setIsAddressModalOpened(false)}
                 isOpen={isAddressModalOpened}
                 modalTitle='Endereço'
+                onAddressSaved={getAddressesUser}
             />
 
             <div className="border rounded-2xl p-6 shadow-md">
