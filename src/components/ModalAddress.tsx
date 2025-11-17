@@ -61,6 +61,8 @@ const ModalAddress = ({ isOpen, handleClose, modalTitle, onAddressSaved }: Props
   };
 
   const saveAddress = async (formData: AddressFormDto) => {
+
+
     if (user) {
       const normalizedRequest = {
         userId: user.id,
@@ -74,7 +76,7 @@ const ModalAddress = ({ isOpen, handleClose, modalTitle, onAddressSaved }: Props
       };
 
       const response = await axios.post("/api/address", normalizedRequest);
-      console.log("Response saveAddress:", response);
+      console.log("Response saveAddress ModalAddress:", response);
 
       reset();
       if (onAddressSaved) onAddressSaved();

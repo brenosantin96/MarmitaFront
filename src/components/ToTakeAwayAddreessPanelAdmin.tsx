@@ -26,9 +26,10 @@ const ToTakeAwayAddreessPanelAdmin = () => {
 
     useEffect(() => {
         if (user && user.isAdmin) {
-          //  fetchAddresses();
+            fetchAddresses();
         }
-    }, [addresses])
+    }, [user]);
+
 
     const onSubmitAddresses = async (dto: CategoryCreateUpdateDto) => {
         try {
@@ -42,125 +43,139 @@ const ToTakeAwayAddreessPanelAdmin = () => {
     };
 
     const getAddressesUser = async () => {
-    if (user) {
+        if (user) {
 
-      //mudar essa chamada para pegar endereços de TODOS usuarios que possuem status como ADMIN
-      //atualmetne pega apenas do usuario logado
-      let response = await axios.get(`/api/address/${user.id}`);
-      console.log("Endereços do usuario: ", response.data);
+            console.log("Teste maroto")
 
-      setAddresses(response.data)
-
+        }
     }
-  }
 
     const fetchAddresses = async () => {
-        const res = await axios.get("/api/addresses");
-       // setAddressToBeEdited(res.data);
-    };
+    const res = await axios.get<Address[]>("/api/address");
 
-    const getSelectedItem = (id: number) => {
-        setSelectedId(id);
-    };
+    console.log("fetchAddresses USER:", user);
 
-    // Abrir modal para criar
-    const handleCreateAddress = () => {
-        setAddressToBeEdited(null);
-        setIsAddressModalOpened(true);
-    };
+    if (user && user.isAdmin) {
+        const deliveryAddresses = res.data.filter((item) => {
+            console.log("item:", item);
+            console.log("user.id:", user.id);
+            console.log("TYPEOF user.id", typeof user.id);
 
-    const handleEditAddress = (id: number) => {
-        const address = addresses.find(c => c.id === id);
-        if (address) {
-            setAddressToBeEdited(address);
-            setIsAddressModalOpened(true);
-        }
-    };
+            return item.userId === Number(user.id); // por alguma razao user.id esta vindo como string.
+        });
 
-    // Editar cateogria
-    const onEditAddress = async (id: number, dto: AddressFormDto) => {
-
-        try {
-
-            const res = await axios.put(`/api/addresses/${id}`, dto, {
-                withCredentials: true,
-            });
-
-            console.log("Endereco editado:", res.data);
-
-            fetchAddresses();
-
-        } catch (err) {
-            console.error("Erro ao editar categoria:", err);
-        }
-    };
-
-    const openModalDeleteAddress = (id: number) => {
-        setSelectedId(id);
-        setIsOpenModalDeleteAddress(true);
+        setAddresses(deliveryAddresses);
+        return;
     }
 
-    const deleteAddress = async (id: number) => {
+    setAddresses([]);
+};
 
-        if (!id) {
-            console.warn("Nenhum endereço selecionado para deletar");
-            return;
-        }
 
-        try {
-            console.log("Endereço de RETIRADA para deletar:", id);
-        } catch (err) {
-            console.log("Algum erro aconteceu ao deletar: ", err);
-        }
-    };
 
-    return (
-        <>
-            <ModalAddress
-                handleClose={() => setIsAddressModalOpened(false)}
-                isOpen={isAddressModalOpened}
-                modalTitle='Endereço'
-                onAddressSaved={getAddressesUser}
-            />
 
-            <div className="border rounded-2xl p-6 shadow-md">
-                <h2 className="text-xl font-bold mb-4 text-green-700">Endereços de retirada</h2>
+const getSelectedItem = (id: number) => {
+    setSelectedId(id);
+};
 
-                {/* Listagem */}
-                <div className="grid grid-cols-1 md:grid-cols-1 gap-2 max-w-4xl mx-auto w-full">
-                    {addresses.length > 0 ? (
-                        addresses.map((address) => (
-                            <AddressCard
-                                key={address.id}
-                                address={address}
-                                clickedTrashIcon={openModalDeleteAddress}
-                                isSelected={selectedId ? true : false}
-                                selectAddress={getSelectedItem}
-                            />
-                        ))
-                    ) : (
-                        <p className="text-gray-500 text-center py-6">
-                            Nenhum endereço de retirada cadastrado.
-                        </p>
-                    )}
-                </div>
+// Abrir modal para criar
+const handleCreateAddress = () => {
+    setAddressToBeEdited(null);
+    setIsAddressModalOpened(true);
+};
 
-                {/* Rodapé com botões */}
-                <div className="flex gap-3 mt-6 justify-end">
-                    <Button01
-                        classes="bg-green-700 text-white"
-                        onClick={handleCreateAddress}
-                    >
-                        Novo
-                    </Button01>
-                </div>
+const handleEditAddress = (id: number) => {
+    const address = addresses.find(c => c.id === id);
+    if (address) {
+        setAddressToBeEdited(address);
+        setIsAddressModalOpened(true);
+    }
+};
 
+// Editar cateogria
+const onEditAddress = async (id: number, dto: AddressFormDto) => {
+
+    try {
+
+        const res = await axios.put(`/api/addresses/${id}`, dto, {
+            withCredentials: true,
+        });
+
+        console.log("Endereco editado:", res.data);
+
+        fetchAddresses();
+
+    } catch (err) {
+        console.error("Erro ao editar categoria:", err);
+    }
+};
+
+const openModalDeleteAddress = (id: number) => {
+    setSelectedId(id);
+    setIsOpenModalDeleteAddress(true);
+}
+
+const deleteAddress = async (id: number) => {
+
+    if (!id) {
+        console.warn("Nenhum endereço selecionado para deletar");
+        return;
+    }
+
+    try {
+        console.log("Endereço de RETIRADA para deletar:", id);
+    } catch (err) {
+        console.log("Algum erro aconteceu ao deletar: ", err);
+    }
+};
+
+return (
+    <>
+        <ModalAddress
+            handleClose={() => setIsAddressModalOpened(false)}
+            isOpen={isAddressModalOpened}
+            modalTitle='Endereço'
+            onAddressSaved={getAddressesUser}
+        />
+
+        <div className="border rounded-2xl p-6 shadow-md">
+            <h2 className="text-xl font-bold mb-4 text-green-700">Endereços de retirada</h2>
+
+            {/* Listagem */}
+            <ul className=" grid grid-cols-1 md:grid-cols-2 gap-2 max-w-4xl mx-auto w-full">
+                {addresses.length > 0 ? (
+                    addresses.map((address) => (
+                        <AddressCard
+                            key={address.id}
+                            address={address}
+                            clickedTrashIcon={openModalDeleteAddress}
+                            isSelected={selectedId === address.id}
+                            selectAddress={getSelectedItem}
+                        />
+                    ))
+                ) : (
+                    <p className="text-gray-500 text-center py-6">
+                        Nenhum endereço de retirada cadastrado.
+                    </p>
+                )}
+            </ul>
+
+            {/* Rodapé com botões */}
+            <div className="flex gap-3 mt-6 justify-end">
+                <Button01
+                    classes="bg-green-700 text-white"
+                    onClick={handleCreateAddress}
+                >
+                    Novo
+                </Button01>
             </div>
 
+        </div>
 
 
-        </>
-    )
+
+    </>
+)
 }
 
 export default ToTakeAwayAddreessPanelAdmin

@@ -16,8 +16,6 @@ const axiosConfig = {
 export async function GET(request: Request) {
   try {
 
-    console.log("API_URL: ", API_URL)
-   
     // Chama backend com token
     const response = await axios.get(`${API_URL}/api/Categories`, {
       ...axiosConfig,
