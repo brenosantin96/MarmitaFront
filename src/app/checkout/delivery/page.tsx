@@ -30,6 +30,10 @@ const DeliveryPage = () => {
   const [isOpenModalDeleteAddress, setIsOpenModalDeleteAddress] = useState(false);
   const [idSelectedAddress, setIdSelectedAddress] = useState<number | null>(null);
 
+  //pickupOrDelivery
+  const [isDeliveryOrPickup, setIsDeliveryOrPickup] = useState<"DELIVERY" | "PICKUP">("DELIVERY");
+
+
   //To adjust total
   useEffect(() => {
     if (!user || !cart) return
@@ -59,10 +63,21 @@ const DeliveryPage = () => {
   //get user addresses
   useEffect(() => {
     if (user) {
-      getAddressesUser();
+      fetchAddresses();
     }
   }, [user]);
 
+  useEffect(() => {
+    if (addresses.length <= 0) {
+      setReceiveInAnotherAddress(true)
+    } else {
+      setReceiveInAnotherAddress(false)
+      if(addresses.length === 1) {
+        const lastAddress = addresses[addresses.length - 1]
+        setIdSelectedAddress(lastAddress.id);
+      }
+    }
+  }, [addresses])
 
   if (isLoadingUser) {
     return <p className="text-center mt-20">Carregando usuário...</p>;
@@ -72,15 +87,25 @@ const DeliveryPage = () => {
     return <p className="text-center mt-20">Redirecionando...</p>;
   }
 
-  const getAddressesUser = async () => {
+  const fetchAddresses = async (): Promise<Address[]> => {
     if (user) {
-      let response = await axios.get(`/api/address/${user.id}`);
-      console.log("Endereços do usuario: ", response.data);
-
-      setAddresses(response.data)
-
+      const response = await axios.get(`/api/address/${user.id}`);
+      setAddresses(response.data);
+      return response.data; // retornamos array atualizado
     }
-  }
+    return [];
+  };
+
+  //pegamos o retorno de fetchAddress
+  const onAddressSaved = async () => {
+    const updatedAddresses = await fetchAddresses();
+    setReceiveInAnotherAddress(false);
+
+    const lastAddress = updatedAddresses.at(-1); // sempre seguro
+    if (lastAddress) {
+      setIdSelectedAddress(lastAddress.id);
+    }
+  };
 
   const getSelectedAddress = (id: number) => {
     console.log("SELECIONANDO ADDRESS: ", id)
@@ -105,7 +130,7 @@ const DeliveryPage = () => {
 
       setIdSelectedAddress(null);
 
-      getAddressesUser();
+      fetchAddresses();
 
     } catch (error) {
       console.error("Erro ao deletar endereço: ", error)
@@ -167,14 +192,33 @@ const DeliveryPage = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row lg:flex-col justify-around gap-3">
-                <div className="border cursor-pointer border-gray-300 w-full sm:w-1/2 lg:w-1/2 hover:shadow-md p-3 flex items-center justify-center rounded-md">
+
+                {/* DELIVERY */}
+                <div
+                  onClick={() => setIsDeliveryOrPickup("DELIVERY")}
+                  className={`
+      border cursor-pointer w-full sm:w-1/2 lg:w-1/2 
+      hover:shadow-md p-3 flex items-center justify-center rounded-md 
+      ${isDeliveryOrPickup === "DELIVERY" ? "border-red-500" : "border-gray-300"}
+    `}
+                >
                   <Icon svg="truck" height="25px" width="25px" />
                   <div className="font-semibold text-base pl-2">ENTREGA</div>
                 </div>
-                <div className="border cursor-pointer border-gray-300 w-full sm:w-1/2 lg:w-1/2 hover:shadow-md p-3 flex items-center justify-center rounded-md">
-                  <Icon svg="store" height="30px" width="30px" />
+
+                {/* PICKUP */}
+                <div
+                  onClick={() => setIsDeliveryOrPickup("PICKUP")}
+                  className={`
+      border cursor-pointer w-full sm:w-1/2 lg:w-1/2 
+      hover:shadow-md p-3 flex items-center justify-center rounded-md 
+      ${isDeliveryOrPickup === "PICKUP" ? "border-red-500" : "border-gray-300"}
+    `}
+                >
+                  <Icon svg="store" height="25px" width="25px" />
                   <div className="font-semibold text-base pl-2">RETIRADA</div>
                 </div>
+
               </div>
             </div>
             {/* Fim das 4 primeiras colunas linha 1 */}
@@ -182,41 +226,42 @@ const DeliveryPage = () => {
 
           </div>
 
-          {/* === NOVO ENDEREÇO === */}
-          <div
-            className="
+          {/* === NOVO ENDEREÇO === */
+            <div
+              className="
             bg-gray-50 rounded-md p-4
             lg:col-span-4 lg:row-span-2
             flex flex-col lg:flex-row justify-center
           "
-          >
-            <div>
-              <div id="selectAddress">
-                <div className="mb-3">Em qual endereço você deseja receber?</div>
-                <ul id="AddressesArea" className="flex items-center gap-2 flex-wrap justify-center lg:flex-row lg:justify-start">
-                  {addresses.map((item) => (
-                    <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} clickedTrashIcon={openModalDeleteAddress} isSelected={item.id === idSelectedAddress} />
-                  ))}
-                </ul>
-              </div>
-              <div id="newAddress">
-                <div className="flex justify-between my-3">
-                  <div>Quero receber em outro endereço</div>
-                  <div
-                    id="downArrow"
-                    onClick={() => setReceiveInAnotherAddress(!receiveInAnotherAddress)}
-                    className={`${receiveInAnotherAddress ? 'rotate-90' : '-rotate-90'} transition-transform duration-300`}
-                  >
-                    <Icon svg="rightarrow" height="24px" width="24px" />
-                  </div>
+            >
+              <div>
+                <div id="selectAddress">
+                  <div className="mb-3">Em qual endereço você deseja receber?</div>
+                  <ul id="AddressesArea" className="flex items-center gap-2 flex-wrap justify-center lg:flex-row lg:justify-start">
+                    {addresses.map((item) => (
+                      <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} clickedTrashIcon={openModalDeleteAddress} isSelected={item.id === idSelectedAddress} />
+                    ))}
+                  </ul>
                 </div>
-                {receiveInAnotherAddress &&
-                  <NewAddressForm onAddressSaved={getAddressesUser} />
-                }
+                <div id="newAddress">
+                  <div className="flex justify-between my-3">
+                    <div>{addresses.length > 0 ? "Quero receber em outro endereço" : "Cadastrar endereço de entrega"}</div>
+                    <div
+                      id="downArrow"
+                      onClick={() => setReceiveInAnotherAddress(!receiveInAnotherAddress)}
+                      className={`${receiveInAnotherAddress ? 'rotate-90' : '-rotate-90'} transition-transform duration-300`}
+                    >
+                      <Icon svg="rightarrow" height="24px" width="24px" />
+                    </div>
+                  </div>
+                  {receiveInAnotherAddress &&
+                    <NewAddressForm onAddressSaved={onAddressSaved} />
+                  }
+                </div>
               </div>
-            </div>
 
-          </div>
+            </div>
+          }
 
           {/* === ITENS DO CARRINHO === */}
           <div
