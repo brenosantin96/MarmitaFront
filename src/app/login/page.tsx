@@ -77,13 +77,27 @@ const LoginPage = () => {
         }
     };
 
+     //GOOGLE AUTH
+    // Callback de sucesso
+    const getCodeOnly = async (response: any) => {
+            console.log("RESPONSE DO GOOGLE:", response);
+
+            // No flow "auth-code", o objeto vem com { code }
+            const { code } = response;
+
+            if (!code) {
+                console.error("Nenhum code retornado pelo Google");
+                return;
+            }   
+    };
+
     const handleGoogleError = () => {
         console.error("Erro no login com Google");
     };
 
     // Hook do Google para usar com botão customizado
     const googleLogin = useGoogleLogin({
-        onSuccess: handleGoogleSuccess,
+        onSuccess: getCodeOnly,
         onError: handleGoogleError,
         flow: "auth-code",           // IMPORTANTE: flow auth-code retorna credential
         scope: "openid profile email",

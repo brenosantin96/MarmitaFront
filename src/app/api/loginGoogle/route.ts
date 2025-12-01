@@ -20,12 +20,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Authorization code is required" }, { status: 400 });
     }
 
+    console.log("teste de console.log") // aqui sim chega
+
     // Chama backend C# para trocar code por tokens e gerar JWT interno
     const response = await axios.post(
       `${API_URL}/api/users/google-login`,
-      { code }, // agora mandamos o authorization code
-      axiosConfig
+      {
+        code,
+        clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        redirectUri: "http://localhost:3000"   // o mesmo do Google Console
+      },
+      {
+        ...axiosConfig,
+        headers: { "X-Tenant-Id": 2 }
+      }
     );
+
+
+    console.log("RESPONSE dps de enviar tenanTId-2: ", response) //ja nao chega aqui...
 
     const { token, user } = response.data;
 
