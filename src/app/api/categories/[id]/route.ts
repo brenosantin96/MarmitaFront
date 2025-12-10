@@ -18,6 +18,7 @@ export async function DELETE(
     context: { params: Promise <{ id: string }> }) {
 
     const { id } = await context.params 
+    const tenantId = (await cookies()).get("tenantId")?.value;
     
     try {
         // Lê o token salvo no cookie HTTP-only
@@ -35,6 +36,7 @@ export async function DELETE(
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
+                    "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
                 },
             }
         );
@@ -61,6 +63,7 @@ export async function PUT(
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
+  const tenantId = (await cookies()).get("tenantId")?.value;
 
   try {
     // Lê o token salvo no cookie HTTP-only
@@ -81,6 +84,7 @@ export async function PUT(
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
+          "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
         },
         withCredentials: true,
       }

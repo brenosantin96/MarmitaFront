@@ -15,6 +15,7 @@ export async function GET(request: Request, context: { params: { id: string } })
 
     const params = context.params;
     const id = params.id;
+    const tenantId = (await cookies()).get("tenantId")?.value;
 
     // Pega o cookie enviado pelo browser
     const token = (await cookies()).get("token")?.value;
@@ -26,7 +27,11 @@ export async function GET(request: Request, context: { params: { id: string } })
     // Chama backend com token
     const response = await axios.get(`${API_URL}/api/Lunchboxes/${id}`, 
         {
-            ...axiosConfig
+            ...axiosConfig,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+            }
         }
     )
 
@@ -46,6 +51,8 @@ export async function PUT(request: Request, context: { params: { id: string } })
     // Pega o cookie enviado pelo browser
     const token = (await cookies()).get("token")?.value;
 
+    const tenantId = (await cookies()).get("tenantId")?.value;
+
     if (!token) {
         return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
@@ -59,7 +66,8 @@ export async function PUT(request: Request, context: { params: { id: string } })
             ...axiosConfig,
             headers: {
                 Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data"
+                "Content-Type": "multipart/form-data",
+                "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
             },
             withCredentials: true
         }
@@ -81,6 +89,8 @@ export async function DELETE(request: Request, context: { params: { id: string }
 
         // Pega o cookie enviado pelo browser
         const token = (await cookies()).get("token")?.value;
+        const tenantId = (await cookies()).get("tenantId")?.value;
+
 
         if (!token) {
             return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
@@ -91,6 +101,7 @@ export async function DELETE(request: Request, context: { params: { id: string }
                 ...axiosConfig,
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
                 },
                 withCredentials: true
             }

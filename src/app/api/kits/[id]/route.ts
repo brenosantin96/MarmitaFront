@@ -18,6 +18,7 @@ export async function GET(request: Request, context: { params: { id: string } })
 
     // Pega o cookie enviado pelo browser
     const token = (await cookies()).get("token")?.value;
+    const tenantId = (await cookies()).get("tenantId")?.value;
 
     if (!token) {
         return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
@@ -29,6 +30,8 @@ export async function GET(request: Request, context: { params: { id: string } })
             ...axiosConfig,
             headers: {
                 Authorization: `Bearer ${token}`,
+                "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+
             },
             withCredentials: true
         }

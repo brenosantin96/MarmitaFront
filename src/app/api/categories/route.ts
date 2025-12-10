@@ -16,10 +16,15 @@ const axiosConfig = {
 export async function GET(request: Request) {
   try {
 
+    const tenantId = (await cookies()).get("tenantId")?.value;
+
     // Chama backend com token
     const response = await axios.get(`${API_URL}/api/Categories`, {
       ...axiosConfig,
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+        "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+      }
     });
 
     return NextResponse.json(response.data, { status: 200 });
@@ -34,6 +39,7 @@ export async function POST(request: Request) {
   try {
 
     const { name } = await request.json();
+    const tenantId = (await cookies()).get("tenantId")?.value;
 
     if (!name || name.trim() === "") {
       return NextResponse.json(
@@ -55,6 +61,7 @@ export async function POST(request: Request) {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
+          "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
         },
         withCredentials: true,
       }

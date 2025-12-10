@@ -18,6 +18,9 @@ export async function POST(request: Request) {
     try {
         // Lê o token salvo no cookie HTTP-only
         const token = (await cookies()).get("token")?.value;
+
+        const tenantId = (await cookies()).get("tenantId")?.value;
+
         if (!token) {
             return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
         }
@@ -34,6 +37,7 @@ export async function POST(request: Request) {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
+                    "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
                 },
             }
         );

@@ -2,12 +2,14 @@
 
 import { NextResponse } from "next/server";
 import axios from "axios";
+import { cookies } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "https://localhost:7192"; // backend C#
 
 export async function GET(request: Request) {
     try {
-        const token = request.headers.get("cookie")?.split("token=")[1]?.split(";")[0];
+        const token = (await cookies()).get("token")?.value;
+        const tenantId = (await cookies()).get("tenantId")?.value;
 
         if (!token) {
             return NextResponse.json({ user: null }, { status: 401 });
@@ -15,7 +17,10 @@ export async function GET(request: Request) {
 
         // Chama backend para validar token e pegar user
         const response = await axios.get(`${API_URL}/api/users/me`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+            },
             httpsAgent: new (require("https").Agent)({
                 rejectUnauthorized: process.env.NODE_ENV === "production",
             }),

@@ -32,6 +32,8 @@ export async function GET(request: Request) {
       sameSite: "lax",
     });
 
+    console.log(res.cookies);
+
     return res;
 
   } catch (err: any) {

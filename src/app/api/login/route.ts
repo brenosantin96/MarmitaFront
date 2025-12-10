@@ -1,5 +1,6 @@
 // src/app/api/login/route.ts
 import axios from "axios";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "https://localhost:7192"; // backend C#
@@ -12,10 +13,20 @@ const axiosConfig = {
 
 export async function POST(request: Request) {
   try {
+
     const { email, password } = await request.json();
+    const tenantId = (await cookies()).get("tenantId")?.value;
 
     // Chamada ao backend
-    const response = await axios.post(`${API_URL}/api/users/login`, { email, password }, axiosConfig);
+    const response = await axios.post(`${API_URL}/api/users/login`,
+      { email, password },
+      {
+        ...axiosConfig,
+        headers: {
+          "Content-Type": "application/json",
+          "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+        },
+      });
 
     const { token, user } = response.data;
 
@@ -25,7 +36,7 @@ export async function POST(request: Request) {
 
     // Cria a resposta e seta cookie HTTP-only
     const res = NextResponse.json({ success: true, user }, { status: 200 });
-    
+
     res.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

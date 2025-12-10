@@ -16,13 +16,16 @@ const axiosConfig = {
 export async function GET(request: Request) {
   try {
 
+    const tenantId = (await cookies()).get("tenantId")?.value;
+
     // Chama backend com token
     const response = await axios.get(`${API_URL}/api/Addresses`, {
       ...axiosConfig,
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+        "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+      }
     });
-
-    console.log("API_URL ADDRESSAPI: ", API_URL)
 
     return NextResponse.json(response.data, { status: 200 });
   } catch (err) {
@@ -36,6 +39,8 @@ export async function POST(request: Request) {
     try {
         // Lê o token salvo no cookie HTTP-only
         const token = (await cookies()).get("token")?.value;
+        const tenantId = (await cookies()).get("tenantId")?.value;
+
         if (!token) {
             return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
         }
@@ -52,6 +57,7 @@ export async function POST(request: Request) {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
+                    "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
                 },
             }
         );

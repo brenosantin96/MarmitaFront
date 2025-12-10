@@ -1,5 +1,6 @@
 // src/app/api/loginGoogle/route.ts
 import axios from "axios";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND || "https://localhost:7192"; // backend C#
@@ -12,15 +13,14 @@ const axiosConfig = {
 
 export async function POST(request: Request) {
   try {
-    const { code } = await request.json();
 
-    console.log("CODE RECEBIDO DO FRONT: ", code);
+    const { code } = await request.json();
+    const tenantId = (await cookies()).get("tenantId")?.value;
+    
 
     if (!code) {
       return NextResponse.json({ error: "Authorization code is required" }, { status: 400 });
     }
-
-    console.log("teste de console.log") // aqui sim chega
 
     // Chama backend C# para trocar code por tokens e gerar JWT interno
     const response = await axios.post(
@@ -29,16 +29,13 @@ export async function POST(request: Request) {
         code,
         clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        redirectUri: "http://localhost:3000"   // o mesmo do Google Console
+        redirectUri: "http://localhost:3000"   // o mesmo do Google Console //vou ter q mudar isso dps
       },
       {
         ...axiosConfig,
-        headers: { "X-Tenant-Id": 2 }
+        headers: { "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}` }
       }
     );
-
-
-    console.log("RESPONSE dps de enviar tenanTId-2: ", response) //ja nao chega aqui...
 
     const { token, user } = response.data;
 

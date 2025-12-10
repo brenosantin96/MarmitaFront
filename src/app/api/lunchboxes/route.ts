@@ -14,10 +14,14 @@ const axiosConfig = {
 export async function GET(request: Request) {
   try {
 
+    const tenantId = (await cookies()).get("tenantId")?.value;
 
     const response = await axios.get(`${API_URL}/api/Lunchboxes`, {
       ...axiosConfig,
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+        "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+      }
     });
 
     return NextResponse.json(response.data, { status: 200 });
@@ -29,32 +33,40 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
 
-  // Pega o cookie enviado pelo browser
-  const token = (await cookies()).get("token")?.value;
+  try {
+    // Pega o cookie enviado pelo browser
+    const token = (await cookies()).get("token")?.value;
+    const tenantId = (await cookies()).get("tenantId")?.value;
 
-  if (!token) {
-    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-  }
-
-  const formData = await request.formData();
-
-  // Chama backend com token
-  const response = await axios.post(`${API_URL}/api/LunchboxesWithImage`, formData,
-    {
-      ...axiosConfig,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data"
-      },
-      withCredentials: true
+    if (!token) {
+      return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
-  )
 
-  if (response.status !== 201) {
-    return NextResponse.json({ error: "Ocorreu um erro" }, { status: response.status });
+    const formData = await request.formData();
+
+    // Chama backend com token
+    const response = await axios.post(`${API_URL}/api/LunchboxesWithImage`, formData,
+      {
+        ...axiosConfig,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+          "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
+        },
+        withCredentials: true
+      }
+    )
+
+    if (response.status !== 201) {
+      return NextResponse.json({ error: "Ocorreu um erro" }, { status: response.status });
+    }
+
+    return NextResponse.json({ success: true, data: response.data });
+
+  } catch (err) {
+    console.error("Erro ao buscar marmitas:", err);
+    return NextResponse.json({ error: "Erro ao salvar marmita" }, { status: 500 });
   }
-
-  return NextResponse.json({ success: true, data: response.data });
 
 }
 
