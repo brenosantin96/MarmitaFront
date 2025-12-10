@@ -25,6 +25,7 @@ export async function POST(request: Request) {
 
     // Cria a resposta e seta cookie HTTP-only
     const res = NextResponse.json({ success: true, user }, { status: 200 });
+    
     res.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
