@@ -28,7 +28,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     const [cart, setCart] = useState<Cart | null>(null);
     const { user } = useUserContext();
 
-    useEffect(()=> {
+    useEffect(() => {
         getActualCart();
     }, [user])
 
@@ -39,7 +39,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
             setIsOpen(true);
         }
         if (state === false) {
-            setIsOpen(false) 
+            setIsOpen(false)
         }
 
     }
@@ -83,7 +83,15 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 
             }
         } catch (err) {
-            console.error("Erro ao buscar carrinho:", err);
+            if (axios.isAxiosError(err)) {
+                if (err.response?.status === 404) {
+                    // Carrinho ainda não existe → estado válido
+                    setCart(null);
+                    setCartItems([]);
+                    return;
+                }
+            }
+            console.error("Erro inesperado ao buscar carrinho:", err);
         }
 
     }
