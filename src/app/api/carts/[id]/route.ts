@@ -14,12 +14,12 @@ const axiosConfig = {
 };
 
 export async function GET(
-    request: Request, 
-    context: { params: Promise <{ id: string }> }) {
+    request: Request,
+    context: { params: Promise<{ id: string }> }) {
 
     const { id } = await context.params
     const tenantId = (await cookies()).get("tenantId")?.value;
-    
+
     try {
         // Lê o token salvo no cookie HTTP-only
         const token = (await cookies()).get("token")?.value;
@@ -45,13 +45,19 @@ export async function GET(
 
     } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-            console.error("Error:", error.response?.data || error.message);
-        } else {
-            console.error("Error:", error);
-        }
+            const status = error.response?.status ?? 500;
+            const message =
+                typeof error.response?.data === "string"
+                    ? error.response.data
+                    : error.response?.data?.error ?? "Erro inesperado";
+            return NextResponse.json(
+                { error: message },
+                { status }
+            );
 
+        }
         return NextResponse.json(
-            { error: "Erro no servidor" },
+            { error: "Erro interno inesperado" },
             { status: 500 }
         );
     }

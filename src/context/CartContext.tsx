@@ -28,7 +28,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
     const [cart, setCart] = useState<Cart | null>(null);
     const { user } = useUserContext();
 
-    useEffect(()=> {
+    useEffect(() => {
         getActualCart();
     }, [user])
 
@@ -39,7 +39,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
             setIsOpen(true);
         }
         if (state === false) {
-            setIsOpen(false) 
+            setIsOpen(false)
         }
 
     }

@@ -42,7 +42,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
 
+    if (!tenantId) {
+      return NextResponse.json({ error: "TenantId não identificado" }, { status: 401 });
+    }
+
     const formData = await request.formData();
+
+    // DEBUG correto
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
 
     // Chama backend com token
     const response = await axios.post(`${API_URL}/api/LunchboxesWithImage`, formData,
@@ -50,7 +59,6 @@ export async function POST(request: Request) {
         ...axiosConfig,
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
           "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
         },
         withCredentials: true
