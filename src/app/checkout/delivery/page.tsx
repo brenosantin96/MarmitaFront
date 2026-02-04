@@ -14,6 +14,15 @@ import addressesData from "../../../Data/Addresses.json"
 import { Address } from '@/types/Address'
 import Modal01 from "@/components/Modal01";
 import axios from "axios";
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import Calendar from 'react-calendar'
+import CalendarComponent from "@/components/CalendarComponent";
+
+type selectedDateType = Date | null;
+
+type ValuePiece = Date | null;
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 const DeliveryPage = () => {
 
@@ -32,6 +41,23 @@ const DeliveryPage = () => {
 
   //pickupOrDelivery
   const [isDeliveryOrPickup, setIsDeliveryOrPickup] = useState<"DELIVERY" | "PICKUP">("DELIVERY");
+
+
+  //dateDelivery
+  const [selectedDate, setSelectedDate] = useState<Value>(null);
+
+  const handleDateClick = (value: Value) => {
+    // Para o TS não reclamar do format, garantimos que é uma Date única
+    const date = Array.isArray(value) ? value[0] : value;
+
+    if (date) {
+      const formattedDate = format(date, 'dd-MMM-yyyy', { locale: ptBR });
+      console.log('Data selecionada:', formattedDate);
+    }
+
+    setSelectedDate(value);
+  };
+
 
 
   //To adjust total
@@ -72,7 +98,7 @@ const DeliveryPage = () => {
       setReceiveInAnotherAddress(true)
     } else {
       setReceiveInAnotherAddress(false)
-      if(addresses.length === 1) {
+      if (addresses.length === 1) {
         const lastAddress = addresses[addresses.length - 1]
         setIdSelectedAddress(lastAddress.id);
       }
@@ -158,17 +184,17 @@ const DeliveryPage = () => {
           grid 
           grid-cols-1
           lg:grid-cols-12 
-          lg:grid-rows-[70px_1fr]
+          lg:grid-rows-[70px_auto_1fr]
           min-h-[calc(100vh-45px)]
           gap-4
           font-hindmadurai
         "
         >
-          {/* === LINHA 1 - FASE ATUAL === */}
-          <div
-            className=" flex flex-wrap justify-center items-center gap-2 py-3 bg-[#fefefe] rounded-md shadow-sm
-            lg:col-span-4 lg:row-span-1 lg:m-2"
-          >
+
+
+
+          {/* === LINHA 1 - primeira coluna === */}
+          <div className=" flex flex-wrap justify-center items-center gap-2 py-3 bg-red-300 rounded-md shadow-sm lg:col-span-4 lg:row-start-1 lg:m-2">
             {[
               { num: 1, label: 'Endereço' },
               { num: 2, label: 'Entrega' },
@@ -181,96 +207,90 @@ const DeliveryPage = () => {
                 <div className="text-gray-700 font-semibold text-sm sm:text-base">{step.label}</div>
               </div>
             ))}
-            <div
-              className="bg-white rounded-md p-4
-            lg:col-span-4 lg:row-span-1
-            flex flex-col justify-center lg:justify-start
-          "
-            >
-              <div className="font-hindmadurai font-bold text-lg sm:text-xl uppercase mb-3 tracking-tight text-center lg:text-left">
-                Como você prefere receber seus produtos?
-              </div>
+          </div>
 
-              <div className="flex flex-col sm:flex-row lg:flex-col justify-around gap-3">
 
-                {/* DELIVERY */}
-                <div
-                  onClick={() => setIsDeliveryOrPickup("DELIVERY")}
-                  className={`
+          {/*linha 2 - primeira coluna*/}
+          <div className="bg-yellow-300 rounded-md p-4 lg:col-span-4 lg:row-start-2 flex flex-col justify-center lg:justify-start">
+
+            <div className="font-hindmadurai font-bold text-lg sm:text-xl uppercase mb-3 tracking-tight text-center lg:text-left">
+              Como você prefere receber seus produtos?
+            </div>
+
+            <div className="flex flex-col sm:flex-row lg:flex-col justify-around gap-3">
+              {/* DELIVERY */}
+              <div
+                onClick={() => setIsDeliveryOrPickup("DELIVERY")}
+                className={`
       border cursor-pointer w-full sm:w-1/2 lg:w-1/2 
       hover:shadow-md p-3 flex items-center justify-center rounded-md 
       ${isDeliveryOrPickup === "DELIVERY" ? "border-red-500" : "border-gray-300"}
     `}
-                >
-                  <Icon svg="truck" height="25px" width="25px" />
-                  <div className="font-semibold text-base pl-2">ENTREGA</div>
-                </div>
+              >
+                <Icon svg="truck" height="25px" width="25px" />
+                <div className="font-semibold text-base pl-2">ENTREGA</div>
+              </div>
 
-                {/* PICKUP */}
-                <div
-                  onClick={() => setIsDeliveryOrPickup("PICKUP")}
-                  className={`
+              {/* PICKUP */}
+              <div
+                onClick={() => setIsDeliveryOrPickup("PICKUP")}
+                className={`
       border cursor-pointer w-full sm:w-1/2 lg:w-1/2 
       hover:shadow-md p-3 flex items-center justify-center rounded-md 
       ${isDeliveryOrPickup === "PICKUP" ? "border-red-500" : "border-gray-300"}
     `}
-                >
-                  <Icon svg="store" height="25px" width="25px" />
-                  <div className="font-semibold text-base pl-2">RETIRADA</div>
-                </div>
-
+              >
+                <Icon svg="store" height="25px" width="25px" />
+                <div className="font-semibold text-base pl-2">RETIRADA</div>
               </div>
             </div>
-            {/* Fim das 4 primeiras colunas linha 1 */}
+          </div>
 
+
+          {/* linha 3 / primeira coluna */}
+          <div className="bg-blue-300 p-4 rounded-md lg:row-start-3 lg:col-span-4 w-full">
+            <h3 className="font-bold mb-2">
+              Detalhes da entrega
+            </h3>
+            <div className="flex items-center justify-center">
+              <CalendarComponent onChange={handleDateClick} selectedDate={selectedDate} />
+            </div>
+          </div>
+
+
+          { /* linha 1,2,3 / segunda coluna*/}
+          <div className="bg-red-300 rounded-md p-4 lg:col-span-4 lg:row-start-1 lg-row-end-4 flex flex-col lg:flex-row justify-center">
+            <div>
+              <div id="selectAddress">
+                <div className="mb-3">Em qual endereço você deseja receber?</div>
+                <ul id="AddressesArea" className="flex items-center gap-2 flex-wrap justify-center lg:flex-row lg:justify-start">
+                  {addresses.map((item) => (
+                    <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} clickedTrashIcon={openModalDeleteAddress} isSelected={item.id === idSelectedAddress} />
+                  ))}
+                </ul>
+              </div>
+              <div id="newAddress">
+                <div className="flex justify-between my-3">
+                  <div>{addresses.length > 0 ? "Quero receber em outro endereço" : "Cadastrar endereço de entrega"}</div>
+                  <div
+                    id="downArrow"
+                    onClick={() => setReceiveInAnotherAddress(!receiveInAnotherAddress)}
+                    className={`${receiveInAnotherAddress ? 'rotate-90' : '-rotate-90'} transition-transform duration-300`}
+                  >
+                    <Icon svg="rightarrow" height="24px" width="24px" />
+                  </div>
+                </div>
+                {receiveInAnotherAddress &&
+                  <NewAddressForm onAddressSaved={onAddressSaved} />
+                }
+              </div>
+            </div>
 
           </div>
 
-          {/* === NOVO ENDEREÇO === */
-            <div
-              className="
-            bg-gray-50 rounded-md p-4
-            lg:col-span-4 lg:row-span-2
-            flex flex-col lg:flex-row justify-center
-          "
-            >
-              <div>
-                <div id="selectAddress">
-                  <div className="mb-3">Em qual endereço você deseja receber?</div>
-                  <ul id="AddressesArea" className="flex items-center gap-2 flex-wrap justify-center lg:flex-row lg:justify-start">
-                    {addresses.map((item) => (
-                      <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} clickedTrashIcon={openModalDeleteAddress} isSelected={item.id === idSelectedAddress} />
-                    ))}
-                  </ul>
-                </div>
-                <div id="newAddress">
-                  <div className="flex justify-between my-3">
-                    <div>{addresses.length > 0 ? "Quero receber em outro endereço" : "Cadastrar endereço de entrega"}</div>
-                    <div
-                      id="downArrow"
-                      onClick={() => setReceiveInAnotherAddress(!receiveInAnotherAddress)}
-                      className={`${receiveInAnotherAddress ? 'rotate-90' : '-rotate-90'} transition-transform duration-300`}
-                    >
-                      <Icon svg="rightarrow" height="24px" width="24px" />
-                    </div>
-                  </div>
-                  {receiveInAnotherAddress &&
-                    <NewAddressForm onAddressSaved={onAddressSaved} />
-                  }
-                </div>
-              </div>
 
-            </div>
-          }
-
-          {/* === ITENS DO CARRINHO === */}
-          <div
-            className="
-            bg-gray-100 rounded-md p-4
-            lg:col-span-4 lg:row-span-2
-            flex flex-col
-          "
-          >
+          { /* linha 1,2,3 / terceira coluna */}
+          <div className="bg-gray-100 rounded-md p-4 lg:col-span-4 lg:row-start-1 lg:row-end-4 flex flex-col">
             <div className="text-xl font-bold mb-3">Resumo do pedido</div>
             {cart && cart.cartItems.length > 0 ? (
               <div className="flex flex-col gap-2 overflow-y-auto max-h-[60vh] pr-2">
@@ -296,8 +316,12 @@ const DeliveryPage = () => {
               </div>
             </div>
           </div>
+
+
         </div>
       </div>
+
+
       <Modal01
         handleClose={() => setIsOpenModalDeleteAddress(false)}
         isOpen={isOpenModalDeleteAddress}

@@ -83,7 +83,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 
             }
         } catch (err) {
-            console.error("Erro ao buscar carrinho:", err);
+            console.log("Usuario nao possui carrinhos!", err);
         }
 
     }
