@@ -259,17 +259,22 @@ const DeliveryPage = () => {
 
 
           { /* linha 1,2,3 / segunda coluna*/}
-          <div className="bg-red-300 rounded-md p-4 lg:col-span-4 lg:row-start-1 lg-row-end-4 flex flex-col lg:flex-row justify-center">
+          <div className="bg-red-300 rounded-md p-4 lg:col-span-4 lg:row-start-1 lg:row-end-4 flex flex-col lg:flex-row justify-center">
             <div>
               <div id="selectAddress">
-                <div className="mb-3">Em qual endereço você deseja receber?</div>
+                <div className="mb-3">
+                  {isDeliveryOrPickup === "DELIVERY"
+                    ? <>Em qual endereço você deseja <span className="font-bold">RECEBER</span> o pedido?</>
+                    : <>Em qual endereço você deseja <span className="font-bold">RETIRAR</span> o pedido?</>}
+                </div>
+
                 <ul id="AddressesArea" className="flex items-center gap-2 flex-wrap justify-center lg:flex-row lg:justify-start">
                   {addresses.map((item) => (
                     <AddressCard key={item.id} address={item} selectAddress={getSelectedAddress} clickedTrashIcon={openModalDeleteAddress} isSelected={item.id === idSelectedAddress} />
                   ))}
                 </ul>
               </div>
-              <div id="newAddress">
+              <div id="newAddress" className={`${isDeliveryOrPickup === "PICKUP" ? "hidden" : ""}`}>
                 <div className="flex justify-between my-3">
                   <div>{addresses.length > 0 ? "Quero receber em outro endereço" : "Cadastrar endereço de entrega"}</div>
                   <div
@@ -283,6 +288,18 @@ const DeliveryPage = () => {
                 {receiveInAnotherAddress &&
                   <NewAddressForm onAddressSaved={onAddressSaved} />
                 }
+                <div>
+                  <Button01
+                    backgroundColor='bg-blue-800'
+                    textColor='text-white'
+                    width='w-full'
+                    classes='h-10'
+                    disabled={idSelectedAddress == null}
+                  // 👈 desabilita se form não for válido
+                  >
+                    Continuar
+                  </Button01>
+                </div>
               </div>
             </div>
 
