@@ -54,8 +54,6 @@ const LoginPage = () => {
     // Callback de sucesso
     const handleGoogleSuccess = async (response: any) => {
         try {
-            console.log("RESPONSE DO GOOGLE:", response);
-
             // No flow "auth-code", o objeto vem com { code }
             const { code } = response;
 

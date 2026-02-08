@@ -7,9 +7,10 @@ type AddressCardProps = {
     selectAddress: (id: number) => void
     clickedTrashIcon : (id: number) => void
     isSelected : boolean;
+    haveExcludeIcon? : boolean;
 }
 
-const AddressCard = ({ address, selectAddress, clickedTrashIcon, isSelected }: AddressCardProps) => {
+const AddressCard = ({ address, selectAddress, clickedTrashIcon, isSelected, haveExcludeIcon }: AddressCardProps) => {
 
 
     const selectedAddress = (id: number) => {
@@ -30,7 +31,7 @@ const AddressCard = ({ address, selectAddress, clickedTrashIcon, isSelected }: A
         </div>
         <div
           onClick={() => clickedTrashIcon(address.id)}
-          className="cursor-pointer p-2"
+          className={haveExcludeIcon === true ? "cursor-pointer p-2" : "hidden"}
         >
           <Icon svg='trash' height='24px' width='24px' />
         </div>

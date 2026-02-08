@@ -88,6 +88,9 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 
     }
 
+    //para pegar Cart do id logado:
+    // https://localhost:7192/api/Carts/GetCartByUserId/ (esse id vai vir dinamico.)
+
     return (
         <CartContext.Provider value={{ isOpen, openAndCloseCart, cartItems, cart, setCart, setCartItems, getActualCart }}>
             {children}

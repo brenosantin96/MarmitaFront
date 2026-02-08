@@ -40,8 +40,6 @@ export async function GET(request: Request, context: { params: { id: string } })
             }
         );
 
-        console.log("RESPONSE: ", response);
-
         // Retorna o carrinho atualizado
         return NextResponse.json(response.data, { status: 200 });
 

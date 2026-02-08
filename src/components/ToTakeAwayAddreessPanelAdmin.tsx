@@ -95,7 +95,6 @@ const ToTakeAwayAddreessPanelAdmin = () => {
 
         try {
             let response = await axios.delete(`/api/address/${id}`)
-            console.log("RESPONSE: ", response);
 
             setAddresses((prevAddresses) =>
                 prevAddresses.filter((item) => item.id !== id)

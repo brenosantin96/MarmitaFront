@@ -89,12 +89,6 @@ const SignUp = () => {
         }
     };
 
-    const handleGoogleSuccess2 = async (response: any) => {
-        
-            console.log("RESPONSE DO GOOGLE direto de handleGoogleSuccess2 :", response);
-
-           
-    };
 
     const handleGoogleError = () => {
         console.error("Erro no login com Google");

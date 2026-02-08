@@ -18,6 +18,8 @@ export async function GET(request: Request) {
 
     const tenantId = (await cookies()).get("tenantId")?.value;
 
+    console.log("TENANTID: ", tenantId)
+
     // Chama backend com token
     const response = await axios.get(`${API_URL}/api/Addresses`, {
       ...axiosConfig,
