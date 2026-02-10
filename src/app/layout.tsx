@@ -20,12 +20,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const pathname = usePathname();
 
   //Array de rotas que nao vão ter a NAVBAR
-  const noNavbarRoutes = ["/checkout/delivery", "/test"];
+  const noNavbarRoutes = ["/checkout/delivery", "/test", "/checkout/deliveryTime"];
 
   //Exibe a Navbar apenas se a rota atual NÃO estiver na lista "noNavbarRoutes"
   const showNavbar = !noNavbarRoutes.includes(pathname);
 
-  //Descobringo tenant
+  //Descobrindo tenant
   const [hostname, setHostname] = useState("");
 
   useEffect(() => {
@@ -36,6 +36,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   useEffect(() => {
     if (!hostname) return;
+
+    console.log("HOSTNAME: ", hostname);
 
     const loadTenant = async () => {
       try {

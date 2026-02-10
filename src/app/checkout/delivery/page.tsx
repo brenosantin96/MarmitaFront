@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Calendar from 'react-calendar'
 import CalendarComponent from "@/components/CalendarComponent";
+import { DeliveryInfoDraft } from "@/types/DeliveryType";
 
 type selectedDateType = Date | null;
 
@@ -40,12 +41,14 @@ const DeliveryPage = () => {
   const [isOpenModalDeleteAddress, setIsOpenModalDeleteAddress] = useState(false);
   const [idSelectedAddress, setIdSelectedAddress] = useState<number | null>(null);
 
-  //pickupOrDelivery
+
+  //deliveryInfo
   const [isDeliveryOrPickup, setIsDeliveryOrPickup] = useState<"DELIVERY" | "PICKUP">("DELIVERY");
-
-
-  //dateDelivery
+  const [canLeaveAtDoor, setCanLeaveAtDoor] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Value>(null);
+  const [selectedAddressDelivery, setSelectedAddressDelivery] = useState<Address>();
+
+
 
   const handleDateClick = (value: Value) => {
     // Para o TS não reclamar do format, garantimos que é uma Date única
@@ -65,7 +68,7 @@ const DeliveryPage = () => {
     setIdSelectedAddress(null);
   }
 
-   const hitPickupButton = () => {
+  const hitPickupButton = () => {
     setIsDeliveryOrPickup("PICKUP");
     setIdSelectedAddress(null);
   }
@@ -193,9 +196,25 @@ const DeliveryPage = () => {
 
   }
 
-  const goToDeliveryTimeStep = () => {
+  const goToNextStepDeliveryTime = async () => {
 
-    
+    if (cart) {
+
+      const normalizedRequest = {
+        cartId: cart.id,
+        addressId: idSelectedAddress,
+        deliveryType: isDeliveryOrPickup,
+        canLeaveAtDoor: canLeaveAtDoor,
+      };
+
+      const response = await axios.post("/api/deliveryinfo",  normalizedRequest );
+      console.log("nextStep: ", response)
+      route.push("/checkout/deliveryTime");
+
+
+    }
+    //cartId, addressId, deliveryType, canLeaveAtDoor
+    //const response = await axios.post()
 
   }
 
@@ -279,7 +298,7 @@ const DeliveryPage = () => {
           </div>
 
 
-        
+
 
 
           { /* linha 1,2,3 / segunda coluna*/}
@@ -307,6 +326,47 @@ const DeliveryPage = () => {
 
 
               </div>
+
+              {isDeliveryOrPickup === "DELIVERY" &&
+                <div className="my-3 flex items-center justify-between">
+                  <h3 className="text-base font-bold text-gray-700">
+                    Deixar na portaria
+                  </h3>
+
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={canLeaveAtDoor}
+                      onChange={(e) => setCanLeaveAtDoor(e.target.checked)}
+                      className="peer sr-only"
+                    />
+
+                    {/* trilho */}
+                    <div
+                      className="
+        h-6 w-11 rounded-full
+        bg-gray-300
+        transition-colors duration-300
+        peer-checked:bg-blue-500
+      "
+                    ></div>
+
+                    {/* bolinha */}
+                    <div
+                      className="
+        absolute left-0.5 top-0.5
+        h-5 w-5 rounded-full
+        bg-white
+        shadow
+        transition-transform duration-300
+        peer-checked:translate-x-5
+      "
+                    ></div>
+                  </label>
+                </div>
+              }
+
+
               <div id="newAddress" className={`${isDeliveryOrPickup === "PICKUP" ? "hidden" : ""}`}>
                 <div className="flex justify-between my-3">
                   <div onClick={() => setReceiveInAnotherAddress(!receiveInAnotherAddress)} >{addresses.length > 0 ? "Quero receber em outro endereço" : "Cadastrar endereço de entrega"}</div>
@@ -322,19 +382,19 @@ const DeliveryPage = () => {
                   <NewAddressForm onAddressSaved={onAddressSaved} />
                 }
               </div>
-               <div>
-                  <Button01
-                    onClick={() => goToDeliveryTimeStep()}
-                    backgroundColor='bg-blue-800'
-                    textColor='text-white'
-                    width='w-full'
-                    classes='h-10'
-                    disabled={idSelectedAddress == null}
-                  // 👈 desabilita se form não for válido
-                  >
-                    Continuar
-                  </Button01>
-                </div>
+              <div className="mt-3">
+                <Button01
+                  onClick={() => goToNextStepDeliveryTime()}
+                  backgroundColor='bg-blue-800'
+                  textColor='text-white'
+                  width='w-full'
+                  classes='h-10'
+                  disabled={idSelectedAddress == null}
+                // 👈 desabilita se form não for válido
+                >
+                  Continuar
+                </Button01>
+              </div>
             </div>
 
           </div>

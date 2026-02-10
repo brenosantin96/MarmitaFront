@@ -9,6 +9,7 @@ import CartSideMenu from '@/components/CartSideMenu';
 import { Lunchbox } from '@/types/Lunchbox';
 import { useCartContext } from '@/context/CartContext';
 import { useUserContext } from '@/context/UserContext';
+import { CartItem } from '@/types/CartItem';
 
 const MenuPage = () => {
   const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
@@ -46,52 +47,49 @@ const MenuPage = () => {
 
   //aqui a funcao é especificamente para lunchboxes ja que eesta na pagina de MENU....
   const addMarmita = (idMarmita: number) => {
-    console.log("Id da marmita recebida do componente filho para ser adicionada: ", idMarmita);
-    const marmitaToAdd = marmitas.find((i) => i.id === idMarmita);
 
-    if (!marmitaToAdd) {
-      alert("Marmita não encontrada");
-      return;
-    }
+    const marmitaToAdd = marmitas.find(m => m.id === idMarmita);
+    if (!marmitaToAdd || !userContext.user) return;
 
-    if (userContext.user) {
+    cartContext.openAndCloseCart(true);
 
-      cartContext.openAndCloseCart(true);
 
-      cartContext.setCart((prevCart) => {
+    cartContext.setCart((prevCart) => {
 
-        // se não existe carrinho ainda
-        if (!prevCart) {
-          return {
-            userId: userContext.user?.id as number,
-            createdAt: new Date(),
-            isCheckedOut: false,
-            cartItems: [{ 
-              cartItem: marmitaToAdd, 
-              quantity: 1, kitId: null, lunchboxId: marmitaToAdd.id}],
-          };
-        }
-
-        // se já existe carrinho
-        const existingItemIndex = prevCart.cartItems.findIndex(
-          (ci) => ci.cartItem.id === marmitaToAdd.id
-        );
-
-        let updatedItems;
-        if (existingItemIndex >= 0) {
-          updatedItems = prevCart.cartItems.map((ci, idx) =>
-            idx === existingItemIndex ? { ...ci, quantity: ci.quantity + 1 } : ci
-          );
-        } else {
-          updatedItems = [...prevCart.cartItems, { cartItem: marmitaToAdd, quantity: 1 }];
-        }
-
+      // se não existe carrinho ainda
+      if (!prevCart) {
         return {
-          ...prevCart,
-          cartItems: updatedItems,
+          userId: userContext.user?.id as number,
+          createdAt: new Date(),
+          isCheckedOut: false,
+          cartItems: [{
+            cartItem: marmitaToAdd,
+            quantity: 1, kitId: null, lunchboxId: marmitaToAdd.id
+          }],
         };
-      });
-    }
+      }
+
+      // se já existe carrinho
+      const existingItemIndex = prevCart.cartItems.findIndex(
+        (ci) => ci.cartItem.id === marmitaToAdd.id
+      );
+
+      let updatedItems : CartItem[];
+      
+      if (existingItemIndex >= 0) {
+        updatedItems = prevCart.cartItems.map((ci, idx) =>
+          idx === existingItemIndex ? { ...ci, quantity: ci.quantity + 1 } : ci
+        );
+      } else {
+        updatedItems = [...prevCart.cartItems, { cartItem: marmitaToAdd, quantity: 1 }];
+      }
+
+      return {
+        ...prevCart,
+        cartItems: updatedItems,
+      };
+    });
+
   };
 
 

@@ -16,7 +16,7 @@ const axiosConfig = {
 
 export async function GET(request: Request, context: { params: { id: string } }) {
 
-    const { id } = context.params
+    const { id } = await context.params
     const tenantId = (await cookies()).get("tenantId")?.value;
 
     try {
@@ -59,7 +59,7 @@ export async function GET(request: Request, context: { params: { id: string } })
 
 export async function DELETE(request: Request, context: { params: { id: string } }) {
 
-    const { id } = context.params 
+    const { id } = await context.params 
     const tenantId = (await cookies()).get("tenantId")?.value;
 
     try {
