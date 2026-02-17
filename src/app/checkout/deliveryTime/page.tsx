@@ -19,6 +19,7 @@ import { ptBR } from 'date-fns/locale';
 import Calendar from 'react-calendar'
 import CalendarComponent from "@/components/CalendarComponent";
 import { DeliveryInfoDraft } from "@/types/DeliveryType";
+import PeriodCard from "@/components/PeriodCard";
 
 type selectedDateType = Date | null;
 
@@ -86,15 +87,41 @@ const DeliveryTimePage = () => {
   }
 
 
-  const goToNextStepDeliveryTime = async () => {
+  //consertar isso
+  const goToPaymentSelectionStep = async () => {
+  if (!cart) return;
 
-    if (cart) {
+  try {
+    // extrai a Date real do react-calendar
+    const date =
+      Array.isArray(deliveryDate) ? deliveryDate[0] : deliveryDate;
 
-    }
-    //PRIMEIRO MOMENTO OBTER DELIVERYPERIOD COM id, cartId, addressId, deliveryType, canLeaveAtDoor
-    //SEGUNDO MOMENTO ENVIAR OUTRA REQUISICAO NOVAMENTE COM TUDO ISSO + selectedDate + DeliveryDate
+    if (!date) return;
 
+    const normalizedRequest = {
+      cartId: cart.id,
+      deliveryDate: date, // ISO automático
+      deliveryPeriod: deliveryPeriod,
+      // os campos abaixo já existem no banco,
+      // mas o backend aceita reenviar
+      addressId: null, // pode mandar null se não for alterar
+      deliveryType: "DELIVERY", // ou pegar do contexto se tiver salvo
+      canLeaveAtDoor: false // idem acima
+    };
+
+    const response = await axios.post(
+      "/api/deliveryinfo",
+      normalizedRequest
+    );
+
+    console.log("DeliveryInfo atualizado:", response.data);
+
+    route.push("/checkout/payment");
+  } catch (error) {
+    console.error("Erro ao atualizar DeliveryInfo:", error);
   }
+};
+
 
 
   return (
@@ -161,10 +188,47 @@ const DeliveryTimePage = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row lg:flex-row justify-around gap-3">
-              <div>ComponenteCard</div>
-              <div>ComponenteCard</div>
-              <div>ComponenteCard</div>
+              <div className="flex flex-col sm:flex-row lg:flex-row justify-around gap-3">
+
+                <PeriodCard
+                  period="Manhã"
+                  timePeriod="8h às 13h"
+                  selected={deliveryPeriod === "MORNING"}
+                  onSelect={() => setDeliveryPeriod("MORNING")}
+                />
+
+                <PeriodCard
+                  period="Tarde"
+                  timePeriod="14h às 19h"
+                  selected={deliveryPeriod === "AFTERNOON"}
+                  onSelect={() => setDeliveryPeriod("AFTERNOON")}
+                />
+
+                <PeriodCard
+                  period="Noite"
+                  timePeriod="18h às 22h"
+                  selected={deliveryPeriod === "NIGHT"}
+                  onSelect={() => setDeliveryPeriod("NIGHT")}
+                />
+              </div>
             </div>
+
+            <div className="mt-3 flex items-center justify-center">
+              <Button01
+                onClick={() => goToPaymentSelectionStep()}
+                backgroundColor='bg-blue-800'
+                textColor='text-white'
+                width='w-full'
+                outline={deliveryDate == null || deliveryPeriod == "" ? true : false}
+                classes='h-10 w-full sm:w-40 '
+                disabled={deliveryDate == null || deliveryPeriod == ""}
+              // 👈 desabilita se form não for válido
+              >
+                Continuar
+              </Button01>
+            </div>
+
+
           </div>
 
 

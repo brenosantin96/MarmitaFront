@@ -1,3 +1,4 @@
+//src\app\checkout\delivery\page.tsx
 "use client";
 import AddressCard from "@/components/AddressCard";
 import Button01 from "@/components/Button01";
@@ -18,7 +19,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Calendar from 'react-calendar'
 import CalendarComponent from "@/components/CalendarComponent";
-import { DeliveryInfoDraft } from "@/types/DeliveryType";
+import { useDeliveryInfoContext } from "@/context/DeliveryInfoContext";
 
 type selectedDateType = Date | null;
 
@@ -48,7 +49,7 @@ const DeliveryPage = () => {
   const [selectedDate, setSelectedDate] = useState<Value>(null);
   const [selectedAddressDelivery, setSelectedAddressDelivery] = useState<Address>();
 
-
+  const { deliveryInfo, setDeliveryInfo } = useDeliveryInfoContext();
 
   const handleDateClick = (value: Value) => {
     // Para o TS não reclamar do format, garantimos que é uma Date única
@@ -200,6 +201,17 @@ const DeliveryPage = () => {
 
     if (cart) {
 
+
+      setDeliveryInfo((prev) => ({
+        ...prev!,
+        cartId: cart.id,
+        userId: user.id,
+        deliveryType: "DELIVERY",
+        addressId: idSelectedAddress,
+        canLeaveAtDoor: canLeaveAtDoor
+      }));
+
+
       const normalizedRequest = {
         cartId: cart.id,
         addressId: idSelectedAddress,
@@ -207,7 +219,7 @@ const DeliveryPage = () => {
         canLeaveAtDoor: canLeaveAtDoor,
       };
 
-      const response = await axios.post("/api/deliveryinfo",  normalizedRequest );
+      const response = await axios.post("/api/deliveryinfo", normalizedRequest);
       console.log("nextStep: ", response)
       route.push("/checkout/deliveryTime");
 

@@ -72,6 +72,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 
 
                 setCart({
+                    id: response.data.id,
                     userId: response.data.id,
                     createdAt: response.data.createdAt,
                     isCheckedOut: response.data.isCheckedOut,
