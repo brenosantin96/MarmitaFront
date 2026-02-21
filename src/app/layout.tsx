@@ -14,13 +14,14 @@ import { CategoryProvider } from "@/context/CategoryContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { DeliveryInfoContextProvider } from "@/context/DeliveryInfoContext";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 
   const pathname = usePathname();
 
   //Array de rotas que nao vão ter a NAVBAR
-  const noNavbarRoutes = ["/checkout/delivery", "/test", "/checkout/deliveryTime"];
+  const noNavbarRoutes = ["/checkout/delivery", "/test", "/checkout/deliveryTime", "/checkout/payment"];
 
   //Exibe a Navbar apenas se a rota atual NÃO estiver na lista "noNavbarRoutes"
   const showNavbar = !noNavbarRoutes.includes(pathname);
@@ -61,14 +62,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <GoogleOAuthProvider clientId="486411282466-hki87kvtqucbgvgk964h91c2tpnvi6j0.apps.googleusercontent.com">
             <CategoryProvider>
               <CartContextProvider>
-                <SideMenuProvider>
-                  <ModalAddressProvider>
-                    {/* formatacao condicional para exibir paginas */}
-                    {showNavbar && <Navbar />}
-                    {children}
-                    <ModalAddressGlobal />
-                  </ModalAddressProvider>
-                </SideMenuProvider>
+                <DeliveryInfoContextProvider>
+                  <SideMenuProvider>
+                    <ModalAddressProvider>
+                      {/* formatacao condicional para exibir paginas */}
+                      {showNavbar && <Navbar />}
+                      {children}
+                      <ModalAddressGlobal />
+                    </ModalAddressProvider>
+                  </SideMenuProvider>
+                </DeliveryInfoContextProvider>
               </CartContextProvider>
             </CategoryProvider>
           </GoogleOAuthProvider>

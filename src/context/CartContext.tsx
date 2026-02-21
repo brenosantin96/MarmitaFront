@@ -11,7 +11,7 @@ type CartContextType = {
     openAndCloseCart: (state: boolean) => void;
     cartItems: CartItem[];
     cart: Cart | null;  // <- carrinho do banco
-    setCart: React.Dispatch<React.SetStateAction<Cart | null>>; // <- aceita objeto ou função
+    setCart: React.Dispatch<React.SetStateAction<Cart | null>>; // aceita objeto ou função
     setCartItems: (items: CartItem[]) => void; // expõe também
     getActualCart: () => Promise<void>;
 

@@ -20,6 +20,7 @@ import Calendar from 'react-calendar'
 import CalendarComponent from "@/components/CalendarComponent";
 import { DeliveryInfoDraft } from "@/types/DeliveryType";
 import PeriodCard from "@/components/PeriodCard";
+import { useDeliveryInfoContext } from "@/context/DeliveryInfoContext";
 
 type selectedDateType = Date | null;
 
@@ -31,6 +32,7 @@ const DeliveryTimePage = () => {
   const route = useRouter();
   const { user, isLoadingUser } = useUserContext();
   const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems, getActualCart } = useCartContext();
+  const {deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo} = useDeliveryInfoContext();
 
   const [total, setTotal] = useState(0);
 
@@ -64,6 +66,9 @@ const DeliveryTimePage = () => {
   }, [user, cart])
 
   useEffect(() => {
+
+    console.log("DELIVERY INFO VINDO DO CONTEXT deliveryInfo: ", deliveryInfo)
+
     if (!isLoadingUser && user === null) {
       console.log("Usuário não logado, redirecionando...");
       route.push("/login");
@@ -96,17 +101,15 @@ const DeliveryTimePage = () => {
     const date =
       Array.isArray(deliveryDate) ? deliveryDate[0] : deliveryDate;
 
-    if (!date) return;
+    if (!date || !deliveryInfo) return;
 
     const normalizedRequest = {
-      cartId: cart.id,
+      cartId: deliveryInfo.cartId,
       deliveryDate: date, // ISO automático
       deliveryPeriod: deliveryPeriod,
-      // os campos abaixo já existem no banco,
-      // mas o backend aceita reenviar
-      addressId: null, // pode mandar null se não for alterar
-      deliveryType: "DELIVERY", // ou pegar do contexto se tiver salvo
-      canLeaveAtDoor: false // idem acima
+      addressId: deliveryInfo.addressId, // pode mandar null se não for alterar
+      deliveryType: deliveryInfo.deliveryType, // ou pegar do contexto se tiver salvo
+      canLeaveAtDoor: deliveryInfo.canLeaveAtDoor // idem acima
     };
 
     const response = await axios.post(
@@ -167,7 +170,7 @@ const DeliveryTimePage = () => {
 
 
           {/*linha 2 - primeira coluna*/}
-          <div className="bg-red-300 rounded-md p-4 lg:col-span-8 lg:row-start-2 flex flex-col justify-center lg:justify-start">
+          <div className="rounded-md p-4 lg:col-span-8 lg:row-start-2 flex flex-col justify-center lg:justify-start">
 
             <div className="font-hindmadurai font-bold text-lg sm:text-xl uppercase mb-3 tracking-tight text-center lg:text-left">
               Quando você prefere receber seus produtos?
@@ -181,7 +184,7 @@ const DeliveryTimePage = () => {
           </div>
 
           {/*linha 3 - primeira coluna*/}
-          <div className="bg-red-300 rounded-md p-4 lg:col-span-8 lg:row-start-3 flex flex-col justify-center lg:justify-start">
+          <div className="rounded-md p-4 lg:col-span-8 lg:row-start-3 flex flex-col justify-center lg:justify-start">
 
             <div className="font-hindmadurai font-bold text-lg sm:text-xl uppercase mb-3 tracking-tight text-center lg:text-left">
               Em qual período você prefere receber seus produtos?

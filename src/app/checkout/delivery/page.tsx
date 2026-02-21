@@ -49,7 +49,7 @@ const DeliveryPage = () => {
   const [selectedDate, setSelectedDate] = useState<Value>(null);
   const [selectedAddressDelivery, setSelectedAddressDelivery] = useState<Address>();
 
-  const { deliveryInfo, setDeliveryInfo } = useDeliveryInfoContext();
+  const {deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo} = useDeliveryInfoContext();
 
   const handleDateClick = (value: Value) => {
     // Para o TS não reclamar do format, garantimos que é uma Date única
@@ -201,15 +201,21 @@ const DeliveryPage = () => {
 
     if (cart) {
 
+      setDeliveryInfo((prev) => {
+  if (!cart || !user) return prev;
 
-      setDeliveryInfo((prev) => ({
-        ...prev!,
-        cartId: cart.id,
-        userId: user.id,
-        deliveryType: "DELIVERY",
-        addressId: idSelectedAddress,
-        canLeaveAtDoor: canLeaveAtDoor
-      }));
+  return {
+    id: prev?.id,
+    tenantId: prev?.tenantId,
+    cartId: cart.id,
+    userId: user.id,
+    addressId: idSelectedAddress,
+    deliveryType: "DELIVERY",
+    deliveryDate: prev?.deliveryDate ?? null,
+    deliveryPeriod: prev?.deliveryPeriod ?? null,
+    canLeaveAtDoor: canLeaveAtDoor,
+  };
+});
 
 
       const normalizedRequest = {

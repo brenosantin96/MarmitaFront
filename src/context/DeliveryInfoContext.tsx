@@ -56,6 +56,7 @@ export const DeliveryInfoContextProvider = ({
   }, [user, cart]);
 
   const getActualDeliveryInfo = async () => {
+    
     if (!user || !cart) return;
 
     try {
