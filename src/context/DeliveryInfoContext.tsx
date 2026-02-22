@@ -82,6 +82,7 @@ export const DeliveryInfoContextProvider = ({
         };
 
         setDeliveryInfo(normalized);
+        console.log("DELIVERY INFO ENCONTRADO: ", response.data);
       }
     } catch (err) {
       console.log("Usuário não possui DeliveryInfo ainda.", err);

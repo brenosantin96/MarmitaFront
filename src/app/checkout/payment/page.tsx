@@ -1,3 +1,4 @@
+//src\app\checkout\payment\page.tsx
 "use client";
 import AddressCard from "@/components/AddressCard";
 import Button01 from "@/components/Button01";
@@ -21,6 +22,7 @@ import CalendarComponent from "@/components/CalendarComponent";
 import { DeliveryInfoDraft } from "@/types/DeliveryType";
 import PeriodCard from "@/components/PeriodCard";
 import { useDeliveryInfoContext } from "@/context/DeliveryInfoContext";
+import PaymentMethodCard from "@/components/PaymentMethodCard";
 
 
 const PaymentPage = () => {
@@ -30,6 +32,7 @@ const PaymentPage = () => {
   const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems, getActualCart } = useCartContext();
   const { deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo } = useDeliveryInfoContext();
   const [total, setTotal] = useState(0);
+  const [selectedPayment, setSelectedPayment] = useState<"PIX" | "CARTAO">("PIX");
 
 
   return (
@@ -84,11 +87,19 @@ const PaymentPage = () => {
               Quando você quer pagar seus produtos?
             </div>
 
-            <div className="flex flex-col sm:flex-row lg:flex-col justify-around gap-3">
-              <div className="flex items-center justify-center">
-                <div>PIX</div>
-                <div>Cartão de crédito</div>
-              </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <PaymentMethodCard
+                label="PIX"
+                value="PIX"
+                selected={selectedPayment === "PIX"}
+                onSelect={setSelectedPayment}
+              />
+              <PaymentMethodCard
+                label="Cartão de crédito"
+                value="CARTAO"
+                selected={selectedPayment === "CARTAO"}
+                onSelect={setSelectedPayment}
+              />
             </div>
           </div>
 
