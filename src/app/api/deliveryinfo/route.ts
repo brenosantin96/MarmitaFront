@@ -1,5 +1,3 @@
-// src/app/api/deliveryinfo/route.ts
-
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -23,17 +21,18 @@ export async function GET(
   context: { params: { cartId: string } }
 ) {
   const { cartId } = context.params;
-  const tenantId = (await cookies()).get("tenantId")?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  const tenantId = cookieStore.get("tenantId")?.value;
+
+  if (!token) {
+    return NextResponse.json(
+      { error: "Sessão expirada. Faça login novamente." },
+      { status: 401 }
+    );
+  }
 
   try {
-    const token = (await cookies()).get("token")?.value;
-    if (!token) {
-      return NextResponse.json(
-        { error: "Não autenticado" },
-        { status: 401 }
-      );
-    }
-
     const response = await axios.get(
       `${API_URL}/api/DeliveryInfoes/by-cart/${cartId}`,
       {
@@ -49,16 +48,31 @@ export async function GET(
     return NextResponse.json(response.data, { status: 200 });
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
+      // Se backend retornou 401 (token expirado)
+      if (error.response?.status === 401) {
+        cookieStore.delete("token");
+
+        return NextResponse.json(
+          { error: "Sessão expirada. Faça login novamente." },
+          { status: 401 }
+        );
+      }
+
       console.error(
         "DeliveryInfo GET error:",
         error.response?.data || error.message
       );
-    } else {
-      console.error("DeliveryInfo GET error:", error);
+
+      return NextResponse.json(
+        error.response?.data || { error: "Erro na API" },
+        { status: error.response?.status || 500 }
+      );
     }
 
+    console.error("DeliveryInfo GET error:", error);
+
     return NextResponse.json(
-      { error: "Erro ao buscar DeliveryInfo" },
+      { error: "Erro interno do servidor" },
       { status: 500 }
     );
   }
@@ -69,17 +83,18 @@ export async function GET(
  * /api/DeliveryInfoes
  */
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  const tenantId = cookieStore.get("tenantId")?.value;
+
+  if (!token) {
+    return NextResponse.json(
+      { error: "Sessão expirada. Faça login novamente." },
+      { status: 401 }
+    );
+  }
+
   try {
-    const token = (await cookies()).get("token")?.value;
-    const tenantId = (await cookies()).get("tenantId")?.value;
-
-    if (!token) {
-      return NextResponse.json(
-        { error: "Não autenticado" },
-        { status: 401 }
-      );
-    }
-
     const body = await request.json();
 
     const response = await axios.post(
@@ -98,16 +113,31 @@ export async function POST(request: Request) {
     return NextResponse.json(response.data, { status: 200 });
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
+      // TOKEN EXPIRADO
+      if (error.response?.status === 401) {
+        cookieStore.delete("token");
+
+        return NextResponse.json(
+          { error: "Sessão expirada. Faça login novamente." },
+          { status: 401 }
+        );
+      }
+
       console.error(
         "DeliveryInfo POST error:",
         error.response?.data || error.message
       );
-    } else {
-      console.error("DeliveryInfo POST error:", error);
+
+      return NextResponse.json(
+        error.response?.data || { error: "Erro na API" },
+        { status: error.response?.status || 500 }
+      );
     }
 
+    console.error("DeliveryInfo POST error:", error);
+
     return NextResponse.json(
-      { error: "Erro ao salvar DeliveryInfo" },
+      { error: "Erro interno do servidor" },
       { status: 500 }
     );
   }

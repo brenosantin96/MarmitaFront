@@ -12,18 +12,21 @@ type CalendarProps = {
 }
 
 const CalendarComponent = ({ selectedDate, onChange }: CalendarProps) => {
-  
-  // O react-calendar passa o valor e o evento
+  // Data mínima: início do dia atual (não permite selecionar dias anteriores)
+  const minDate = new Date();
+  minDate.setHours(0, 0, 0, 0);
+
   const handleChange = (value: Value) => {
     onChange(value);
   };
 
   return (
     <div className="flex items-center justify-center w-full">
-      <Calendar 
-        onChange={handleChange} 
-        value={selectedDate} 
-        locale='pt-BR' 
+      <Calendar
+        onChange={handleChange}
+        value={selectedDate}
+        locale="pt-BR"
+        minDate={minDate}
       />
     </div>
   );

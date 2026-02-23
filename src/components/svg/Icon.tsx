@@ -21,6 +21,8 @@ import StoreIcon from '../Icons/StoreIcon';
 import TruckIcon from '../Icons/TruckIcon';
 import TrashIcon from '../Icons/TrashIcon';
 import EditIcon from '../Icons/EditIcon';
+import CalendarIcon from '../Icons/CalendarIcon';
+import MoneyIcon from '../Icons/MoneyIcon';
 
 
 type Props = {
@@ -58,6 +60,8 @@ export const Icon = ({ svg, width, height, fillColor, strokeColor }: Props) => {
       {svg === "truck" && <TruckIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
       {svg === "trash" && <TrashIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
       {svg === "edit" && <EditIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
+      {svg === "calendar" && <CalendarIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
+      {svg === "money" && <MoneyIcon height={height} width={width} color={fillColor} strokeColor={strokeColor}  />}
     </div>
   )
 }

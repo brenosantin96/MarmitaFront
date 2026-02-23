@@ -23,6 +23,7 @@ import { DeliveryInfoDraft } from "@/types/DeliveryType";
 import PeriodCard from "@/components/PeriodCard";
 import { useDeliveryInfoContext } from "@/context/DeliveryInfoContext";
 import PaymentMethodCard from "@/components/PaymentMethodCard";
+import ReviewCard from "@/components/ReviewCard";
 
 
 const PaymentPage = () => {
@@ -34,16 +35,20 @@ const PaymentPage = () => {
   const [total, setTotal] = useState(0);
   const [selectedPayment, setSelectedPayment] = useState<"PIX" | "CARTAO">("PIX");
 
+  useEffect(() => {
+    if (!cart) return;
+    const newTotal = cart.cartItems.reduce((valueAcumulated, item) => {
+      return valueAcumulated + item.cartItem.price * item.quantity;
+    }, 0);
+    setTotal(newTotal);
+  }, [cart]);
 
   return (
     <>
       {/* HEADER FIXO */}
-      <header className="w-full bg-purple-400 h-[45px] text-white flex items-center justify-center px-3 text-sm sm:text-base">
-        <div className="content-center">
-          PAGAMENTO
-        </div>
+      <header className="w-full bg-red-700 h-[45px] text-white flex items-center justify-center px-3 text-sm sm:text-base">
         <div>
-          São <span className="underline">2 itens</span> no total de <strong>R$ 40,98</strong>
+          São <span className="underline">{cart ? cart.cartItems.reduce((acc, item) => acc + item.quantity, 0) : 0} itens</span> no total de <strong>{formatPriceToBRL(total)}</strong>
         </div>
       </header>
 
@@ -81,24 +86,37 @@ const PaymentPage = () => {
 
 
           {/*linha 2 - primeira coluna*/}
-          <div className="rounded-md p-4 lg:col-span-8 lg:row-start-2 flex flex-col justify-center lg:justify-start">
+          <div className="rounded-md gap-3 p-4 lg:col-span-8 lg:row-start-2 flex flex-col justify-center lg:justify-start">
 
             <div className="font-hindmadurai font-bold text-lg sm:text-xl uppercase mb-3 tracking-tight text-center lg:text-left">
-              Quando você quer pagar seus produtos?
+              Revisão do pedido
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <PaymentMethodCard
-                label="PIX"
-                value="PIX"
-                selected={selectedPayment === "PIX"}
-                onSelect={setSelectedPayment}
+            <div>
+              <ReviewCard
+                description="Receber em"
+                subdescription="Avenida Paulista"
+                svg="truck"
+                heightSvg="32px"
+                widthSvg="32px"
               />
-              <PaymentMethodCard
-                label="Cartão de crédito"
-                value="CARTAO"
-                selected={selectedPayment === "CARTAO"}
-                onSelect={setSelectedPayment}
+            </div>
+            <div>
+              <ReviewCard
+                description="Quarta, 25 de fev de 2026"
+                subdescription="Pela tarde, das 14h às 19h"
+                svg="calendar"
+                heightSvg="32px"
+                widthSvg="32px"
+              />
+            </div>
+            <div>
+              <ReviewCard
+                description="PIX"
+                subdescription="Pagamento instantâneo"
+                svg="money"
+                heightSvg="32px"
+                widthSvg="32px"
               />
             </div>
           </div>
@@ -106,8 +124,17 @@ const PaymentPage = () => {
           {/*linha 3 - primeira coluna*/}
           <div className="rounded-md p-4 lg:col-span-8 lg:row-start-3 flex flex-col justify-center lg:justify-start">
 
-            IKS PUTUTU
-
+            <Button01
+                  onClick={() => console.log("pagando")}
+                  backgroundColor='bg-blue-800'
+                  textColor='text-white'
+                  width='w-full'
+                  classes='h-10'
+                  disabled={false}
+                // 👈 desabilita se form não for válido
+                >
+                  Continuar
+                </Button01>
           </div>
 
 
@@ -148,3 +175,21 @@ const PaymentPage = () => {
 };
 
 export default PaymentPage;
+
+
+/*
+              <div className="flex flex-col sm:flex-row gap-3">
+                <PaymentMethodCard
+                  label="PIX"
+                  value="PIX"
+                  selected={selectedPayment === "PIX"}
+                  onSelect={setSelectedPayment}
+                />
+                <PaymentMethodCard
+                  label="Cartão de crédito"
+                  value="CARTAO"
+                  selected={selectedPayment === "CARTAO"}
+                  onSelect={setSelectedPayment}
+                />
+              </div>
+*/

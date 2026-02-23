@@ -5,17 +5,17 @@ type PropsPeriodCard = {
   timePeriod: string;
   selected: boolean;
   onSelect: (period: string) => void;
+  disabled?: boolean;
 };
 
-const PeriodCard = ({ period, timePeriod, selected, onSelect }: PropsPeriodCard) => {
+const PeriodCard = ({ period, timePeriod, selected, onSelect, disabled = false }: PropsPeriodCard) => {
   return (
     <div
-      onClick={() => onSelect(period)}
+      onClick={() => !disabled && onSelect(period)}
       className={`
         h-[85px]
         w-full
         sm:w-28
-        cursor-pointer
         rounded-md
         border
         shadow-sm
@@ -26,10 +26,13 @@ const PeriodCard = ({ period, timePeriod, selected, onSelect }: PropsPeriodCard)
         transition-all
         duration-200
         select-none
+        ${disabled ? "cursor-not-allowed opacity-50 bg-gray-100 border-gray-200 pointer-events-none" : "cursor-pointer hover:border-gray-300"}
         
-        ${selected
+        ${!disabled && selected
           ? "border-green-700 text-green-700 bg-green-50"
-          : "border-gray-200 bg-white hover:border-gray-300"
+          : !disabled
+          ? "border-gray-200 bg-white"
+          : ""
         }
       `}
     >

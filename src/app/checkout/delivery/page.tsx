@@ -49,7 +49,7 @@ const DeliveryPage = () => {
   const [selectedDate, setSelectedDate] = useState<Value>(null);
   const [selectedAddressDelivery, setSelectedAddressDelivery] = useState<Address>();
 
-  const {deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo} = useDeliveryInfoContext();
+  const { deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo } = useDeliveryInfoContext();
 
   const handleDateClick = (value: Value) => {
     // Para o TS não reclamar do format, garantimos que é uma Date única
@@ -92,13 +92,31 @@ const DeliveryPage = () => {
     }
   }, [isLoadingUser, user]);
 
+  // Redireciona baseado no estado do deliveryInfo ao acessar a página
   useEffect(() => {
-    if (!isLoadingUser && user === null) {
-      console.log("Usuário não logado, redirecionando...");
-      route.push("/login");
-    }
-  }, [isLoadingUser, user]);
+    if (isLoadingUser || !user || !cart || !deliveryInfo) return;
 
+    const hasAddressAndType =
+      deliveryInfo.addressId != null &&
+      deliveryInfo.deliveryType != null &&
+      String(deliveryInfo.deliveryType).trim() !== "";
+
+    const hasDateAndPeriod =
+      deliveryInfo.deliveryDate != null &&
+      deliveryInfo.deliveryPeriod != null &&
+      String(deliveryInfo.deliveryPeriod).trim() !== "";
+
+    // addressId e deliveryType preenchidos, deliveryDate e deliveryPeriod NÃO → deliveryTime
+    if (hasAddressAndType && !hasDateAndPeriod) {
+      route.push("/checkout/deliveryTime");
+      return;
+    }
+
+    // Todos preenchidos → payment
+    if (hasAddressAndType && hasDateAndPeriod) {
+      route.push("/checkout/payment");
+    }
+  }, [deliveryInfo, user, cart, isLoadingUser, route]);
 
   //get user addresses
   useEffect(() => {
@@ -202,20 +220,20 @@ const DeliveryPage = () => {
     if (cart) {
 
       setDeliveryInfo((prev) => {
-  if (!cart || !user) return prev;
+        if (!cart || !user) return prev;
 
-  return {
-    id: prev?.id,
-    tenantId: prev?.tenantId,
-    cartId: cart.id,
-    userId: user.id,
-    addressId: idSelectedAddress,
-    deliveryType: "DELIVERY",
-    deliveryDate: prev?.deliveryDate ?? null,
-    deliveryPeriod: prev?.deliveryPeriod ?? null,
-    canLeaveAtDoor: canLeaveAtDoor,
-  };
-});
+        return {
+          id: prev?.id,
+          tenantId: prev?.tenantId,
+          cartId: cart.id,
+          userId: user.id,
+          addressId: idSelectedAddress,
+          deliveryType: "DELIVERY",
+          deliveryDate: prev?.deliveryDate ?? null,
+          deliveryPeriod: prev?.deliveryPeriod ?? null,
+          canLeaveAtDoor: canLeaveAtDoor,
+        };
+      });
 
 
       const normalizedRequest = {
@@ -225,9 +243,19 @@ const DeliveryPage = () => {
         canLeaveAtDoor: canLeaveAtDoor,
       };
 
-      const response = await axios.post("/api/deliveryinfo", normalizedRequest);
-      console.log("nextStep: ", response)
-      route.push("/checkout/deliveryTime");
+
+      try {
+        const response = await axios.post("/api/deliveryinfo", normalizedRequest);
+        console.log("nextStep: ", response)
+        route.push("/checkout/deliveryTime");
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          route.push("/login");
+          route.refresh();
+          return;
+        }
+        console.error(error);
+      }
 
 
     }
@@ -242,7 +270,7 @@ const DeliveryPage = () => {
       {/* HEADER FIXO */}
       <header className="w-full bg-red-700 h-[45px] text-white flex items-center justify-center px-3 text-sm sm:text-base">
         <p>
-          São <span className="underline">2 itens</span> no total de <strong>R$ 40,98</strong>
+          São <span className="underline">{cart ? cart.cartItems.reduce((acc, item) => acc + item.quantity, 0) : 0} itens</span> no total de <strong>{formatPriceToBRL(total)}</strong>
         </p>
       </header>
 

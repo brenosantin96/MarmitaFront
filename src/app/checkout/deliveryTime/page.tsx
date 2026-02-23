@@ -1,3 +1,4 @@
+//src\app\checkout\deliveryTime\page.tsx
 "use client";
 import AddressCard from "@/components/AddressCard";
 import Button01 from "@/components/Button01";
@@ -35,6 +36,7 @@ const DeliveryTimePage = () => {
   const {deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo} = useDeliveryInfoContext();
 
   const [total, setTotal] = useState(0);
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   //deliveryInfo
   const [deliveryDate, setDeliveryDate] = useState<Value>(null);
@@ -54,6 +56,11 @@ const DeliveryTimePage = () => {
   };
 
 
+  // Hora atual ao carregar a página (para regra de 4h de antecedência quando deliveryDate é hoje)
+  useEffect(() => {
+    setCurrentTime(new Date());
+  }, []);
+
   //To adjust total
   useEffect(() => {
     if (!user || !cart) return
@@ -64,6 +71,49 @@ const DeliveryTimePage = () => {
 
     setTotal(newTotal);
   }, [user, cart])
+
+  // Verifica se a data selecionada é hoje (mesmo dia)
+  const isDeliveryDateToday = (): boolean => {
+    const date = Array.isArray(deliveryDate) ? deliveryDate[0] : deliveryDate;
+    if (!date || !currentTime) return false;
+    return (
+      date.getFullYear() === currentTime.getFullYear() &&
+      date.getMonth() === currentTime.getMonth() &&
+      date.getDate() === currentTime.getDate()
+    );
+  };
+
+
+  // Períodos: Manhã 08-13, Tarde 14-19, Noite 18-22. Mínimo 4h de antecedência.
+  const isPeriodDisabled = (period: "MORNING" | "AFTERNOON" | "NIGHT"): boolean => {
+    if (!isDeliveryDateToday() || !currentTime) return false;
+    const now = currentTime;
+    const minDeliveryMs = now.getTime() + 4 * 60 * 60 * 1000;
+    const minDelivery = new Date(minDeliveryMs);
+    const minHour = minDelivery.getHours() + minDelivery.getMinutes() / 60;
+
+    switch (period) {
+      case "MORNING": // 08-13
+        return minHour > 13;
+      case "AFTERNOON": // 14-19
+        return minHour < 14 || minHour > 19;
+      case "NIGHT": // 18-22
+        return minHour < 18 || minHour > 22;
+      default:
+        return false;
+    }
+  };
+
+  // Limpa o período selecionado se ele ficar desabilitado (ex: usuário troca para data de hoje)
+  useEffect(() => {
+    if (
+      (deliveryPeriod === "MORNING" && isPeriodDisabled("MORNING")) ||
+      (deliveryPeriod === "AFTERNOON" && isPeriodDisabled("AFTERNOON")) ||
+      (deliveryPeriod === "NIGHT" && isPeriodDisabled("NIGHT"))
+    ) {
+      setDeliveryPeriod("");
+    }
+  }, [deliveryDate, currentTime, deliveryPeriod]);
 
   useEffect(() => {
 
@@ -112,14 +162,21 @@ const DeliveryTimePage = () => {
       canLeaveAtDoor: deliveryInfo.canLeaveAtDoor // idem acima
     };
 
-    const response = await axios.post(
-      "/api/deliveryinfo",
-      normalizedRequest
-    );
 
-    console.log("DeliveryInfo atualizado:", response.data);
+    try {
+        const response = await axios.post("/api/deliveryinfo", normalizedRequest);
+        console.log("DeliveryInfo atualizado:", response.data);
+        route.push("/checkout/payment");
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          route.push("/login");
+          route.refresh();
+          return;
+        }
+        console.error(error);
+      }
 
-    route.push("/checkout/payment");
+      
   } catch (error) {
     console.error("Erro ao atualizar DeliveryInfo:", error);
   }
@@ -130,9 +187,9 @@ const DeliveryTimePage = () => {
   return (
     <>
       {/* HEADER FIXO */}
-      <header className="w-full bg-green-400 h-[45px] text-white flex items-center justify-center px-3 text-sm sm:text-base">
+      <header className="w-full bg-red-700 h-[45px] text-white flex items-center justify-center px-3 text-sm sm:text-base">
         <p>
-          São <span className="underline">2 itens</span> no total de <strong>R$ 40,98</strong>
+          São <span className="underline">{cart ? cart.cartItems.reduce((acc, item) => acc + item.quantity, 0) : 0} itens</span> no total de <strong>{formatPriceToBRL(total)}</strong>
         </p>
       </header>
 
@@ -198,6 +255,7 @@ const DeliveryTimePage = () => {
                   timePeriod="8h às 13h"
                   selected={deliveryPeriod === "MORNING"}
                   onSelect={() => setDeliveryPeriod("MORNING")}
+                  disabled={isPeriodDisabled("MORNING")}
                 />
 
                 <PeriodCard
@@ -205,6 +263,7 @@ const DeliveryTimePage = () => {
                   timePeriod="14h às 19h"
                   selected={deliveryPeriod === "AFTERNOON"}
                   onSelect={() => setDeliveryPeriod("AFTERNOON")}
+                  disabled={isPeriodDisabled("AFTERNOON")}
                 />
 
                 <PeriodCard
@@ -212,6 +271,7 @@ const DeliveryTimePage = () => {
                   timePeriod="18h às 22h"
                   selected={deliveryPeriod === "NIGHT"}
                   onSelect={() => setDeliveryPeriod("NIGHT")}
+                  disabled={isPeriodDisabled("NIGHT")}
                 />
               </div>
             </div>
