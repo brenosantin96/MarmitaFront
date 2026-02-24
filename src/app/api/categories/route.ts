@@ -17,7 +17,6 @@ export async function GET(request: Request) {
   try {
 
     const tenantId = (await cookies()).get("tenantId")?.value;
-    console.log("TENANTID: ", tenantId);
 
     const response = await axios.get(`${API_URL}/api/Categories`, {
       ...axiosConfig,

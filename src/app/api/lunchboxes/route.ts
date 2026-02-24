@@ -48,11 +48,7 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
 
-    // DEBUG correto
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
+  
     // Chama backend com token
     const response = await axios.post(`${API_URL}/api/LunchboxesWithImage`, formData,
       {

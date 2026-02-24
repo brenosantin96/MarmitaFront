@@ -33,7 +33,7 @@ const DeliveryTimePage = () => {
   const route = useRouter();
   const { user, isLoadingUser } = useUserContext();
   const { isOpen, openAndCloseCart, cart, cartItems, setCart, setCartItems, getActualCart } = useCartContext();
-  const {deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo} = useDeliveryInfoContext();
+  const { deliveryInfo, getActualDeliveryInfo, clearDeliveryInfo, setDeliveryInfo } = useDeliveryInfoContext();
 
   const [total, setTotal] = useState(0);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
@@ -50,6 +50,8 @@ const DeliveryTimePage = () => {
     if (date) {
       const formattedDate = format(date, 'dd-MMM-yyyy', { locale: ptBR });
       console.log('Data selecionada:', formattedDate);
+      console.log("DATE SEM ESTAR FORMATTED: ", date);
+      console.log("value: ", value);
     }
 
     setDeliveryDate(value);
@@ -144,28 +146,31 @@ const DeliveryTimePage = () => {
 
   //consertar isso
   const goToPaymentSelectionStep = async () => {
-  if (!cart) return;
-
-  try {
-    // extrai a Date real do react-calendar
-    const date =
-      Array.isArray(deliveryDate) ? deliveryDate[0] : deliveryDate;
-
-    if (!date || !deliveryInfo) return;
-
-    const normalizedRequest = {
-      cartId: deliveryInfo.cartId,
-      deliveryDate: date, // ISO automático
-      deliveryPeriod: deliveryPeriod,
-      addressId: deliveryInfo.addressId, // pode mandar null se não for alterar
-      deliveryType: deliveryInfo.deliveryType, // ou pegar do contexto se tiver salvo
-      canLeaveAtDoor: deliveryInfo.canLeaveAtDoor // idem acima
-    };
-
+    if (!cart) return;
 
     try {
+      // extrai a Date real do react-calendar
+      const date =
+        Array.isArray(deliveryDate) ? deliveryDate[0] : deliveryDate;
+
+      if (!date || !deliveryInfo) return;
+
+      const normalizedRequest = {
+        cartId: deliveryInfo.cartId,
+        deliveryDate: date, // ISO automático
+        deliveryPeriod: deliveryPeriod,
+        addressId: deliveryInfo.addressId, // pode mandar null se não for alterar
+        deliveryType: deliveryInfo.deliveryType, // ou pegar do contexto se tiver salvo
+        canLeaveAtDoor: deliveryInfo.canLeaveAtDoor // idem acima
+      };
+
+
+      try {
         const response = await axios.post("/api/deliveryinfo", normalizedRequest);
         console.log("DeliveryInfo atualizado:", response.data);
+
+        setDeliveryInfo(response.data);
+
         route.push("/checkout/payment");
       } catch (error: any) {
         if (error.response?.status === 401) {
@@ -176,11 +181,11 @@ const DeliveryTimePage = () => {
         console.error(error);
       }
 
-      
-  } catch (error) {
-    console.error("Erro ao atualizar DeliveryInfo:", error);
-  }
-};
+
+    } catch (error) {
+      console.error("Erro ao atualizar DeliveryInfo:", error);
+    }
+  };
 
 
 

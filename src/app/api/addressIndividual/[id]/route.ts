@@ -1,4 +1,4 @@
-// src\app\api\address\route.ts
+// src\app\api\addressIndividual\[id]\route.ts
 
 import axios from "axios";
 import { cookies } from "next/headers";
@@ -13,45 +13,23 @@ const axiosConfig = {
     }),
 };
 
-export async function GET(request: Request) {
-  try {
 
+export async function GET(request: Request, context: { params: { id: string } }) {
+
+    const { id } = await context.params
     const tenantId = (await cookies()).get("tenantId")?.value;
 
-    // Chama backend com token
-    const response = await axios.get(`${API_URL}/api/Addresses`, {
-      ...axiosConfig,
-      withCredentials: true,
-      headers: {
-        "X-Tenant-Id": `${tenantId ? tenantId.toString() : ""}`
-      }
-    });
-
-    return NextResponse.json(response.data, { status: 200 });
-  } catch (err) {
-    console.error("Erro ao buscar endereços:", err);
-    return NextResponse.json({ error: "Erro ao buscar endereços" }, { status: 500 });
-  }
-}
-
-
-export async function POST(request: Request) {
     try {
         // Lê o token salvo no cookie HTTP-only
         const token = (await cookies()).get("token")?.value;
-        const tenantId = (await cookies()).get("tenantId")?.value;
-
         if (!token) {
             return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
         }
-
-        // Lê o corpo da requisição enviada pelo frontend
-        const body = await request.json();
-
+        
         // Faz a chamada para o backend
-        const response = await axios.post(
-            `${API_URL}/api/Addresses`,
-            body,
+        const response = await axios.get(
+            `${API_URL}/api/Addresses/${id}`,
+
             {
                 ...axiosConfig,
                 headers: {
@@ -61,7 +39,7 @@ export async function POST(request: Request) {
                 },
             }
         );
-        // Retorna o carrinho atualizado
+
         return NextResponse.json(response.data, { status: 200 });
 
     } catch (error: unknown) {
@@ -72,8 +50,11 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json(
-            { error: "Erro ao tentar salvar novo endereço" },
+            { error: "Erro no servidor" },
             { status: 500 }
         );
     }
 }
+
+
+

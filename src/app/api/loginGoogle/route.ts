@@ -53,7 +53,6 @@ export async function POST(request: Request) {
       sameSite: "lax",
     });
 
-    console.log("TOKEN JWT INTERNO GERADO PELO BACKEND C#: ", token);
 
     return res;
   } catch (err) {

@@ -9,6 +9,7 @@ type PropsReviewCard = {
   svg: string; // truck | money | calendar
   heightSvg: string; // 32px
   widthSvg: string; // 32px
+  handleClick: () => void;
 };
 
 const ReviewCard = ({
@@ -17,10 +18,10 @@ const ReviewCard = ({
   svg,
   heightSvg,
   widthSvg,
+  handleClick
+
 }: PropsReviewCard) => {
-  const handleClick = () => {
-    console.log("Elemento selecionado foi clicado:", description);
-  };
+ 
 
   return (
     <div
@@ -28,6 +29,7 @@ const ReviewCard = ({
       className="
         flex
         items-center
+        justify-between
         gap-3
         p-4
         rounded-md
@@ -41,11 +43,16 @@ const ReviewCard = ({
         select-none
       "
     >
-      <Icon svg={svg} height={heightSvg} width={widthSvg} />
-      <div className="flex flex-col">
-        <span className="font-semibold text-base text-gray-800">{description}</span>
-        <span className="text-sm text-gray-600">{subdescription}</span>
+      <div className="flex items-center gap-3">
+        <Icon svg={svg} height={heightSvg} width={widthSvg} />
+        <div className="flex flex-col">
+          <span className="font-semibold text-base text-gray-800">{description}</span>
+          <span className="text-sm text-gray-600">{subdescription}</span>
+        </div>
       </div>
+      <span className="text-xs font-semibold text-blue-800 uppercase tracking-wide">
+        TROCAR
+      </span>
     </div>
   );
 };

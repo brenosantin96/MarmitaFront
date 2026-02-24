@@ -58,7 +58,6 @@ export async function PUT(request: Request, context: { params: { id: string } })
     }
 
     const formData = await request.formData();
-    console.log("FORM DATA: ", formData)
 
     // Chama backend com token
     const response = await axios.put(`${API_URL}/api/LunchboxesWithImage/${id}`, formData,

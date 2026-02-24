@@ -45,8 +45,6 @@ export async function POST(request: Request) {
       sameSite: "lax", // permite envio do cookie em requests de frontend
     });
 
-    console.log("TOKEN POST LOGIN: ", token); //AQUI APARECE COM NORMALIDADE
-
     return res;
 
 

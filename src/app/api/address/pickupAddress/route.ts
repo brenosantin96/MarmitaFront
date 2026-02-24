@@ -22,8 +22,6 @@ export async function GET(request: Request) {
       withCredentials: true
     });
 
-    console.log("API_URL ADDRESSAPI: ", API_URL)
-
     return NextResponse.json(response.data, { status: 200 });
   } catch (err) {
     console.error("Erro ao buscar endereços:", err);

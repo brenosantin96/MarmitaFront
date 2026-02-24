@@ -112,7 +112,7 @@ const DeliveryPage = () => {
       return;
     }
 
-    // Todos preenchidos → payment
+    // Todos preenchidos > payment
     if (hasAddressAndType && hasDateAndPeriod) {
       route.push("/checkout/payment");
     }
@@ -149,7 +149,6 @@ const DeliveryPage = () => {
   const fetchAddresses = async (): Promise<Address[]> => {
     if (user) {
       const response = await axios.get(`/api/address/${user.id}`);
-      console.log("ADDRESSES: ", response.data);
       setAddresses(response.data);
       return response.data; // retornamos array atualizado
     }
@@ -166,11 +165,8 @@ const DeliveryPage = () => {
 
     const addresses: Address[] = response.data;
     const pickupAddresses = addresses.filter((a) => a.userId === 5)
-    console.log("pickupAddresses: ", pickupAddresses);
     setPickupAddresses(pickupAddresses);
     return response.data; // retornamos array atualizado
-
-
   };
 
   //pegamos o retorno de fetchAddress
@@ -190,7 +186,6 @@ const DeliveryPage = () => {
   }
 
   const openModalDeleteAddress = async (id: number) => {
-    console.log("AQUI o ID a ser deletado: ID: ", id)
     setIsOpenModalDeleteAddress(true)
     setIdSelectedAddress(id);
   }
