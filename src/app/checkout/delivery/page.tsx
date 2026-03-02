@@ -96,15 +96,45 @@ const DeliveryPage = () => {
   useEffect(() => {
     if (isLoadingUser || !user || !cart || !deliveryInfo) return;
 
+    // Se a data salva for anterior a hoje, limpamos deliveryDate e deliveryPeriod
+    let normalizedInfo = deliveryInfo;
+
+    if (deliveryInfo.deliveryDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const deliveryDateOnly = new Date(deliveryInfo.deliveryDate);
+      deliveryDateOnly.setHours(0, 0, 0, 0);
+
+      if (deliveryDateOnly < today) {
+        // Atualiza no context para não reutilizar data vencida
+        setDeliveryInfo((prev) =>
+          prev
+            ? {
+                ...prev,
+                deliveryDate: null,
+                deliveryPeriod: null,
+              }
+            : prev
+        );
+
+        normalizedInfo = {
+          ...deliveryInfo,
+          deliveryDate: null,
+          deliveryPeriod: null,
+        };
+      }
+    }
+
     const hasAddressAndType =
-      deliveryInfo.addressId != null &&
-      deliveryInfo.deliveryType != null &&
-      String(deliveryInfo.deliveryType).trim() !== "";
+      normalizedInfo.addressId != null &&
+      normalizedInfo.deliveryType != null &&
+      String(normalizedInfo.deliveryType).trim() !== "";
 
     const hasDateAndPeriod =
-      deliveryInfo.deliveryDate != null &&
-      deliveryInfo.deliveryPeriod != null &&
-      String(deliveryInfo.deliveryPeriod).trim() !== "";
+      normalizedInfo.deliveryDate != null &&
+      normalizedInfo.deliveryPeriod != null &&
+      String(normalizedInfo.deliveryPeriod).trim() !== "";
 
     // addressId e deliveryType preenchidos, deliveryDate e deliveryPeriod NÃO → deliveryTime
     if (hasAddressAndType && !hasDateAndPeriod) {
@@ -116,7 +146,7 @@ const DeliveryPage = () => {
     if (hasAddressAndType && hasDateAndPeriod) {
       route.push("/checkout/payment");
     }
-  }, [deliveryInfo, user, cart, isLoadingUser, route]);
+  }, [deliveryInfo, user, cart, isLoadingUser, route, setDeliveryInfo]);
 
   //get user addresses
   useEffect(() => {

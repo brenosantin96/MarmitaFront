@@ -41,6 +41,13 @@ export async function POST(request: Request) {
     if (!token) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
     }
+    
+    console.log("TOKEN: ", token);
+    console.log("TENANT ID: ", tenantId);
+    
+    // Log do formato do header que será enviado
+    console.log("Authorization Header:", `Bearer ${token}`);
+
 
     if (!tenantId) {
       return NextResponse.json({ error: "TenantId não identificado" }, { status: 401 });
@@ -48,7 +55,13 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
 
-  
+    console.log("FORMDATA: ", formData)
+
+    formData.forEach(element => {
+      console.log(element)
+    });
+
+
     // Chama backend com token
     const response = await axios.post(`${API_URL}/api/LunchboxesWithImage`, formData,
       {

@@ -131,6 +131,53 @@ const PaymentPage = () => {
     setIdSelectedAddress(null);
   }
 
+  const saveAddressOnPayment = async () => {
+    if (!cart || !user || !idSelectedAddress) return;
+
+    // Atualiza o contexto localmente
+    setDeliveryInfo((prev) => {
+      if (!prev) {
+        return {
+          cartId: cart.id,
+          userId: user.id,
+          addressId: idSelectedAddress,
+          deliveryType: isDeliveryOrPickup,
+          deliveryDate: null,
+          deliveryPeriod: null,
+          canLeaveAtDoor: canLeaveAtDoor,
+        };
+      }
+
+      return {
+        ...prev,
+        cartId: cart.id,
+        userId: user.id,
+        addressId: idSelectedAddress,
+        deliveryType: isDeliveryOrPickup,
+        canLeaveAtDoor: canLeaveAtDoor,
+      };
+    });
+
+    const normalizedRequest = {
+      cartId: cart.id,
+      addressId: idSelectedAddress,
+      deliveryType: isDeliveryOrPickup,
+      canLeaveAtDoor: canLeaveAtDoor,
+    };
+
+    try {
+      const response = await axios.post("/api/deliveryinfo", normalizedRequest);
+      console.log("Endereço atualizado (payment):", response.data);
+      alert("Endereço atualizado com sucesso!");
+      setChangingAddress(false);
+    } catch (error: any) {
+      console.error("Erro ao atualizar endereço na tela de pagamento:", error);
+      if (error.response?.status === 401) {
+        route.push("/login");
+        route.refresh();
+      }
+    }
+  };
 
   return (
     <>
@@ -270,7 +317,7 @@ const PaymentPage = () => {
 
                   <div className="mt-3">
                     <Button01
-                      onClick={() => console.log("CU")}
+                      onClick={saveAddressOnPayment}
                       backgroundColor='bg-blue-800'
                       textColor='text-white'
                       width='w-full'

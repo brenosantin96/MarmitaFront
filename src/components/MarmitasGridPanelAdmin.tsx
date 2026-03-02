@@ -111,10 +111,12 @@ const MarmitasGridPanelAdmin = () => {
       fd.append("categoryId", String(dto.categoryId));
 
       if (dto.image) fd.append("image", dto.image);
+      console.log(dto.image);
 
       const res = await axios.post(`/api/lunchboxes`, fd, { withCredentials: true });
-
       console.log("Marmita criada:", res.data);
+
+
       fetchMarmitas();
     } catch (err) {
       console.error("Erro ao criar marmita:", err);

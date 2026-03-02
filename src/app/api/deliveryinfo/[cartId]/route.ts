@@ -22,7 +22,7 @@ export async function GET(
   request: Request,
   context: { params: { cartId: string } }
 ) {
-  const { cartId } = context.params;
+  const { cartId } = await context.params;
   const tenantId = (await cookies()).get("tenantId")?.value;
 
   try {
