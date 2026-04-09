@@ -1,10 +1,8 @@
 "use client"
 import type { Metadata } from "next";
 import axios from "axios";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ModalAddressProvider, useModalAddress } from '../context/ModalAddressContext';
-import ModalAddress from '../components/ModalAddress';
 import ModalAddressGlobal from "@/components/ModalAddressGlobal";
 import { SideMenuProvider } from "../context/SideMenuContext"
 import { CartContextProvider } from "@/context/CartContext";
@@ -41,6 +39,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     console.log("HOSTNAME: ", hostname);
 
     const loadTenant = async () => {
+
+      
+
       try {
         const response = await axios.get(`/api/tenant?hostname=${hostname}`);
         localStorage.setItem("tenantId", response.data.tenantId);

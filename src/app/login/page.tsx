@@ -62,6 +62,10 @@ const LoginPage = () => {
                 return;
             }
 
+            console.log(code);
+
+            /*
+            //NAO FAZER O POST de momento, realizazr um console.log e executar desde o postman
             // Envia o code para o route handler do Next.js
             const res = await axios.post("/api/loginGoogle", { code });
 
@@ -70,6 +74,9 @@ const LoginPage = () => {
             if (res.data.success) {
                 setUser(res.data.user);
             }
+
+            */
+
         } catch (err) {
             console.error("Erro ao autenticar com backend via Next:", err);
         }
