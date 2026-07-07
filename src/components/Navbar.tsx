@@ -32,7 +32,7 @@ const Navbar = () => {
     }, [categories]);
 
     const openCartAndCheckItems = () => {
-        if (!isOpen) {
+        if(!isOpen){
             openAndCloseCart(true)
         }
     }
@@ -48,12 +48,6 @@ const Navbar = () => {
             console.log(res.data);
         }
     }
-
-    const handleLoginRedirect = () => {
-        const currentHost = window.location.host;
-
-        window.location.href = `http://auth.brenosantin.es:3000/login?redirect=${currentHost}`;
-    };
 
 
 
@@ -74,9 +68,9 @@ const Navbar = () => {
                         </Link>
                     </div>
                     <div className="cursor-pointer">
-                        <button onClick={handleLoginRedirect}>
+                        <Link href="/signup">
                             <Icon svg="user" height="24" width="24" />
-                        </button>
+                        </Link>
                     </div>
                     <div onClick={() => openAndCloseCart(true)} className="cursor-pointer">
                         <Icon svg="cart2" height="24" width="24" />
@@ -138,9 +132,9 @@ const Navbar = () => {
                                 </button>
                                 <button className='h-12 cursor-pointer'>
                                     <div className='py-3 px-6'>
-                                        <button onClick={handleLoginRedirect}>
+                                        <Link href="/signup">
                                             <Icon svg='user' height='24' width='24' />
-                                        </button>
+                                        </Link>
                                     </div>
                                 </button>
                                 <button onClick={() => openCartAndCheckItems()} className='bg-green-700 rounded-full h-12 cursor-pointer flex items-center px-5'>

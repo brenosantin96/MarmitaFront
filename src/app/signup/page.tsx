@@ -8,6 +8,7 @@ import { useUserContext } from '@/context/UserContext';
 import { TokenResponse, useGoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
 import CartSideMenu from '@/components/CartSideMenu';
 import { SideMenu } from '@/components/SideMenu';
+import { useRouter } from 'next/navigation';
 
 //ALTERAR DINAMICAMENTE PRA USAR O REGISTERSERVICE NO FORM MAS VALIDAR SE ESTA NA PAGINA DE LOGIN OU REGISTER
 
@@ -22,6 +23,8 @@ const SignUp = () => {
     const [isOpenModalConfirmationRegister, setIsOpenModalConfirmationRegister] = useState(false);
 
     const { user, setUser } = useUserContext();
+    const router = useRouter();
+
 
 
     const handleRegister = async () => {
@@ -41,16 +44,14 @@ const SignUp = () => {
     };
 
     const handleLogout = async () => {
-        console.log("Entrou na funcao")
+
         try {
             const res2 = await axios.post("/api/logout")
-            console.log("RES2: ", res2);
             if (res2.status === 200) {
                 console.log("Logout feito com sucesso");
-
-                // Limpa o estado do usuário no frontend
-                setUser({ id: 0, name: "", email: "", isAdmin: false });
-
+                setUser(null);
+                router.refresh();
+                router.push("/login");
             }
 
         } catch (err) {
@@ -73,14 +74,10 @@ const SignUp = () => {
                 return;
             }
 
-            /*
-            //NAO FAZER O POST de momento, realizazr um console.log e executar desde o postman
-
             // Envia o code para o route handler do Next.js
             const res = await axios.post("/api/loginGoogle", { code });
 
             console.log("RESPOSTA DO NEXT:", res.data);
-
             // Aqui o Next já cuida de setar o cookie HTTP-only
             // Você só precisa salvar o usuário em contexto/estado
             if (res.data.success) {
@@ -88,7 +85,7 @@ const SignUp = () => {
                 setUser(res.data.user);
             }
 
-            */
+            
         } catch (err) {
             console.error("Erro ao autenticar com backend via Next:", err);
         }

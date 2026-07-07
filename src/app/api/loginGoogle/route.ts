@@ -32,7 +32,7 @@ export async function POST(request: Request) {
         code,
         clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        redirectUri: "http://breno.brenosantin.es:3000"   // o mesmo do Google Console //vou ter q mudar isso dps
+        redirectUri: "postmessage"   
       },
       {
         ...axiosConfig,

@@ -25,7 +25,7 @@ const LoginPage = () => {
 
     const router = useRouter();
 
-   
+
     useEffect(() => {
 
         console.log("CART:", cartContext.cart)
@@ -61,11 +61,8 @@ const LoginPage = () => {
                 console.error("Nenhum code retornado pelo Google");
                 return;
             }
-
             console.log(code);
 
-            /*
-            //NAO FAZER O POST de momento, realizazr um console.log e executar desde o postman
             // Envia o code para o route handler do Next.js
             const res = await axios.post("/api/loginGoogle", { code });
 
@@ -75,25 +72,25 @@ const LoginPage = () => {
                 setUser(res.data.user);
             }
 
-            */
+
 
         } catch (err) {
             console.error("Erro ao autenticar com backend via Next:", err);
         }
     };
 
-     //GOOGLE AUTH
+    //GOOGLE AUTH
     // Callback de sucesso
     const getCodeOnly = async (response: any) => {
-            console.log("RESPONSE DO GOOGLE:", response);
+        console.log("RESPONSE DO GOOGLE:", response);
 
-            // No flow "auth-code", o objeto vem com { code }
-            const { code } = response;
+        // No flow "auth-code", o objeto vem com { code }
+        const { code } = response;
 
-            if (!code) {
-                console.error("Nenhum code retornado pelo Google");
-                return;
-            }   
+        if (!code) {
+            console.error("Nenhum code retornado pelo Google");
+            return;
+        }
     };
 
     const handleGoogleError = () => {
@@ -102,7 +99,7 @@ const LoginPage = () => {
 
     // Hook do Google para usar com botão customizado
     const googleLogin = useGoogleLogin({
-        onSuccess: getCodeOnly,
+        onSuccess: handleGoogleSuccess,
         onError: handleGoogleError,
         flow: "auth-code",           // IMPORTANTE: flow auth-code retorna credential
         scope: "openid profile email",
@@ -110,16 +107,14 @@ const LoginPage = () => {
     });
 
     const handleLogout = async () => {
-        console.log("Entrou na funcao")
+
         try {
             const res2 = await axios.post("/api/logout")
-            console.log("RES2: ", res2);
             if (res2.status === 200) {
                 console.log("Logout feito com sucesso");
-
-                // Limpa o estado do usuário no frontend
-                setUser({ id: 0, name: "", email: "", isAdmin: false });
-
+                setUser(null);
+                router.refresh();
+                router.push("/login");
             }
 
         } catch (err) {

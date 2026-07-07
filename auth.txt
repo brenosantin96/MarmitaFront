@@ -1,0 +1,53 @@
+Fluxo autenticação APP.
+
+Ao acessar console.cloud.google.com > APIs e Servicos > Credenciais > Marminutri
+Origens JavaScript autorizadas
+Aqui deve entrar TODOS TENANTS que eu possuo, eles nao vao precisar pagar por dominio de primeiro momento.
+
+Para exemplificar o uso de subdominios eu fiz o seguinte:
+C:\Windows\System32\drivers\etc\hosts
+
+127.0.0.1   bruno.brenosantin.es
+127.0.0.1   breno.brenosantin.es
+127.0.0.1   juca.brenosantin.es
+127.0.0.1   auth.brenosantin.es
+
+ao fazer isso o pc vai direcionar tudo para localhost nessas direcoes, isso vai simular varios dominios distinto, como se fossem tenants distintos....
+
+Fluxo autenticação google
+
+React faz requisicao ao googleAuth usando componente do google
+   >
+Google OAuth
+   >
+recebe authorization_code
+   >
+ASP.NET recebe a requisicao com o code, sendo os campos da requisicao code, clientId, clientSecret, redirectUri
+   >
+POST https://oauth2.googleapis.com/token (requisicao realizada dentro do meu controller backend)
+   >
+Google devolve id_token + access_token 
+   >
+ASP.NET valida id_token
+   >
+cria JWT próprio
+   >
+React
+
+
+Atencao: 
+Ao usar useGoogleLogin com a propriedade flow: "auth-code" a biblioteca não faz um redirecionamento de página tradicional. Ela abre um pop-up e gerencia a comunicação internamente via JavaScript.
+Por causa disso, por baixo dos panos, a biblioteca envia para a Google uma URI de redirecionamento especial chamada implicitamente de postmessage (exatamente essa palavra, em letras minúsculas, sem URLs).
+
+Fluxo de Autenticação Google (OAuth2 Authorization Code com Pop-up)
+
+1.O Usuário Inicia o Login:Frontend - Next.js.No navegador, o usuário clica no botão de login. O hook useGoogleLogin do @react-oauth/google é disparado com a configuração flow: "auth-code". Isso abre uma janela pop-up oficial do Google.
+2.Consentimento e Geração do Código:Infraestrutura - Google.O usuário faz login na janela do Google e autoriza o acesso aos seus dados (openid profile email). O Google autentica o usuário e gera um Authorization Code (um código temporário que dura cerca de 30 segundos e só pode ser usado uma única vez).
+3.Captura do Code no Front-end:Frontend - Next.js.Como a biblioteca usa um pop-up JavaScript para se comunicar com o Google, ela intercepta o retorno usando a URI interna especial chamada postmessage. O callback onSuccess (sua função getCodeOnly) é disparado e captura esse code.
+4.Envio dos Dados para o Backend:Integração - Postman / Axios.O front-end envia um payload JSON para o endpoint C# api/users/google-login. Para o .NET aceitar esse formato, a requisição obrigatoriamente precisa conter o cabeçalho Content-Type: application/json. O payload leva o code, clientId, clientSecret e a redirectUri definida como "postmessage".
+5.Troca do Código por Tokens:Backend - C# (.NET).O seu controlador recebe o DTO fortemente tipado (GoogleLoginDto). Usando o HttpClient, o backend faz uma requisição interna via FormUrlEncodedContent (padrão x-www-form-urlencoded) para [https://oauth2.googleapis.com/token](https://oauth2.googleapis.com/token) enviando o código e as credenciais.
+6.Desserialização Tipada:Backend - C# (.NET).O Google responde com um JSON contendo os tokens. O código converte esse JSON brutos para a classe fortemente tipada GoogleLoginResponseDto através do JsonConvert.DeserializeObject. Isso elimina o uso de dynamic, garantindo segurança de tipos e autocompletar no código.
+7.Validação Criptográfica do ID Token:Backend - C# (.NET).O backend isola o id_token (que é um JWT) e usa a biblioteca GoogleJsonWebSignature.ValidateAsync. O C# busca as chaves públicas do Google na internet e valida se a assinatura é real, se o token não expirou e se o Audience bate exatamente com o seu ClientId (evitando ataques maliciosos).
+8.Filtro Multitenant e Banco de Dados:Backend - C# (.NET).Com o payload validado e seguro, o sistema extrai o e-mail do usuário. O Entity Framework busca no banco de dados filtrando pelo e-mail E pelo Tenant atual (_tenantProvider.TenantId). Se o usuário não existir naquele tenant, ele é criado na hora.
+9.Emissão do JWT Próprio:Backend - C# (.NET).Finalmente, o método GenerateJwtToken cria um token JWT customizado da sua aplicação. Esse token recebe os claims do usuário (Nome, E-mail, Id, Permissões) e o identificador do tenantId no miolo dele, devolvendo o acesso completo ao usuário no formato de resposta Ok().
+
