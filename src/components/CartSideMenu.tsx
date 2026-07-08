@@ -126,7 +126,7 @@ const CartSideMenu = () => {
 
 
     return (
-        <div className={` ${isOpen ? 'w-screen md:w-1/3' : 'w-0'}  bg-white fixed top-0 bottom-0 right-0 z-50 transition-all duration-200 ease-in overflow-hidden`}>
+        <div className={` ${isOpen ? 'w-screen md:w-1/2 min-[1201px]:w-1/3' : 'w-0'}  bg-white fixed top-0 bottom-0 right-0 z-50 transition-all duration-200 ease-in overflow-hidden`}>
             {/* Cabeçalho */}
             <div className='flex justify-end items-center pr-3.5 h-14 border-b border-gray-100'>
                 <div className='text-xs font-bold mr-[-3px]'>OCULTAR</div>
@@ -145,7 +145,7 @@ const CartSideMenu = () => {
 
                                 console.log(cart.cartItems)
                                 return (
-                                    <div key={idx} className="flex items-center p-2">
+                                    <div key={idx} className="flex items-center p-2 md:max-[1200px]:p-1.5">
                                         <CardItem01Cart
                                             id={item.lunchboxId ? item.lunchboxId : item.kitId as number}
                                             title={item.cartItem.name}
