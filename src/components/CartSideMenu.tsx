@@ -147,7 +147,7 @@ const CartSideMenu = () => {
                                 return (
                                     <div key={idx} className="flex items-center p-2 md:max-[1200px]:p-1.5">
                                         <CardItem01Cart
-                                            id={item.lunchboxId ? item.lunchboxId : item.kitId as number}
+                                            id={item.lunchboxId ?? item.kitId ?? item.cartItem.id}
                                             title={item.cartItem.name}
                                             price={item.cartItem.price}
                                             portionGram={"portionGram" in item.cartItem ? item.cartItem.portionGram : 0}

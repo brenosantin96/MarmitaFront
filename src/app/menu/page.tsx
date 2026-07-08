@@ -81,7 +81,12 @@ const MenuPage = () => {
           idx === existingItemIndex ? { ...ci, quantity: ci.quantity + 1 } : ci
         );
       } else {
-        updatedItems = [...prevCart.cartItems, { cartItem: marmitaToAdd, quantity: 1 }];
+        updatedItems = [...prevCart.cartItems, {
+          cartItem: marmitaToAdd,
+          quantity: 1,
+          kitId: null,
+          lunchboxId: marmitaToAdd.id,
+        }];
       }
 
       return {
