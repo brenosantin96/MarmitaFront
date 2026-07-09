@@ -1,3 +1,5 @@
+//src\types\Cart.ts
+
 import { CartItem } from "./CartItem";
 
 export type Cart = {
@@ -7,3 +9,6 @@ export type Cart = {
     isCheckedOut: boolean;
     cartItems: CartItem[];
 }
+
+//para um newCart que ainda nao possui ID
+export type NewCart = Omit<Cart, "id">;

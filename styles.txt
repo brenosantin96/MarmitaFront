@@ -1,0 +1,6 @@
+Palette Collors
+
+#d9224a
+#bd8182
+#fff5f5
+#f3eed9

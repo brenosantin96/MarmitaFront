@@ -86,11 +86,11 @@ const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, 
             </div>
             <div className='px-5 py-3'>
                 {countItems === 0 &&
-                    <Button01 onClick={() => addItemToCart(id)} outline={true} classes={`hover:bg-green-700 hover:text-white`}>Adicionar</Button01>
+                    <Button01 onClick={() => addItemToCart(id)} outline={true} classes={`hover:bg-green-700 border border-green-700 hover:text-white`}>Adicionar</Button01>
                 }
                 {countItems > 0 && (
                     <div className="flex gap-5 items-center">
-                        <Button01 onClick={() => addItemToCart(id)} outline={true} classes={`hover:bg-green-700 hover:text-white`}>+</Button01>
+                        <Button01 onClick={() => addItemToCart(id)} outline={true} classes={`hover:bg-green-700 text-3xl font-oswald font-semibold hover:text-white`}>+</Button01>
                         <div className="text-sm font-oswald font-semibold">{countItems}</div>
                         <Button01 onClick={() => removeItemToCart(id)} outline={true} classes={`hover:bg-green-700 hover:text-white`}>-</Button01>
                     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Icon } from './svg/Icon';
 import { useCartContext } from '@/context/CartContext';
 import { useUserContext } from '@/context/UserContext';
-import { Cart } from '@/types/Cart';
+import { Cart, NewCart } from '@/types/Cart';
 import CardItem01Cart from './CardItem01Cart';
 import Button01 from './Button01';
 import axios from 'axios';
@@ -173,7 +173,7 @@ const CartSideMenu = () => {
                                     textColor='text-white'
                                     width='w-1/3'
                                     classes='h-10'
-                                    onClick={() => confirmCart(cart)}
+                                    onClick={() => confirmCart(cart as Cart)}
                                 >
                                     Continuar
                                 </Button01>

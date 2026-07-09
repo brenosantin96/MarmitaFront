@@ -1,5 +1,5 @@
 "use client"
-import { Cart } from '@/types/Cart';
+import { Cart, NewCart } from '@/types/Cart';
 import { CartItem } from '@/types/CartItem';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { useUserContext } from './UserContext';
@@ -10,8 +10,8 @@ type CartContextType = {
     isOpen: boolean;
     openAndCloseCart: (state: boolean) => void;
     cartItems: CartItem[];
-    cart: Cart | null;  // <- carrinho do banco
-    setCart: React.Dispatch<React.SetStateAction<Cart | null>>; // aceita objeto ou função
+    cart: Cart | NewCart | null;  // <- carrinho do banco
+    setCart: React.Dispatch<React.SetStateAction<Cart | null | NewCart>>; // aceita objeto ou função
     setCartItems: (items: CartItem[]) => void; // expõe também
     getActualCart: () => Promise<void>;
 
@@ -25,7 +25,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [cart, setCart] = useState<Cart | null>(null);
+    const [cart, setCart] = useState<Cart | null | NewCart>(null);
     const { user } = useUserContext();
 
     useEffect(() => {
