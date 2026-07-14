@@ -10,15 +10,19 @@ import { Lunchbox } from '@/types/Lunchbox';
 import { useCartContext } from '@/context/CartContext';
 import { useUserContext } from '@/context/UserContext';
 import { CartItem } from '@/types/CartItem';
-import { NewCart } from '@/types/Cart';
+import { useCategorieContext } from '@/context/CategoryContext';
+import CategorySection from '@/components/CategorySection';
 
 const MenuPage = () => {
+
   const [marmitas, setMarmitas] = useState<Lunchbox[]>([]);
   const [loading, setLoading] = useState(true);
 
   const cartContext = useCartContext(); //inicializando cartContext
   const userContext = useUserContext();
 
+  const { categories } = useCategorieContext();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
 
 
   // Função para buscar marmitas do backend
@@ -39,6 +43,8 @@ const MenuPage = () => {
       setLoading(false);
     }
   };
+
+
 
   useEffect(() => {
     getMarmitas();
@@ -75,8 +81,8 @@ const MenuPage = () => {
         (ci) => ci.cartItem.id === marmitaToAdd.id
       );
 
-      let updatedItems : CartItem[];
-      
+      let updatedItems: CartItem[];
+
       if (existingItemIndex >= 0) {
         updatedItems = prevCart.cartItems.map((ci, idx) =>
           idx === existingItemIndex ? { ...ci, quantity: ci.quantity + 1 } : ci
@@ -99,7 +105,7 @@ const MenuPage = () => {
   };
 
 
-  //aqui a funcao é especificamente para lunchboxes ja que eesta na pagina de MENU....
+  //aqui a funcao é especificamente para lunchboxes ja que esta na pagina de MENU....
   const removeMarmita = (idMarmita: number) => {
     console.log("Id da marmita recebida do componente filho para ser removida: ", idMarmita);
 
@@ -138,27 +144,6 @@ const MenuPage = () => {
     }
   };
 
-  const getMarmitaId = async (id: number) => {
-    if (id) {
-
-
-      console.log("ID clicado: ", id);
-
-      /*
-            try {
-              const res = await axios.get(`/api/lunchboxes/${id}`);
-              if (res) {
-                console.log("Response ao clicar sobre CARD da marmita: ", res.data)
-              }
-      
-            } catch (err) {
-              console.log("Aconteceu algum erro:", err)
-            }
-          }
-      
-          */
-    }
-  }
 
 
   if (loading) {
@@ -171,27 +156,101 @@ const MenuPage = () => {
 
   return (
     <>
-      <SideMenu />
-      <CartSideMenu />
-      <div id="menuPage" className="pt-28 px-4 w-full">
-        <div
-          id="menuList"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 max-w-6xl mx-auto justify-items-center"
-        >
-          {marmitas.map((item) => (
-            <CardItem01
-              id={item.id}
-              key={item.id}
-              title={item.name}
-              price={item.price}
-              portionGram={item.portionGram}
-              imageUrl={`${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}${item.imageUrl}`}
-              onAdd={addMarmita}
-              onRemove={removeMarmita}
-              onClick={getMarmitaId}
-            />
+      <div
+        id="categoriesList"
+        className=" mt-[60px] md:mt-[100px] fixed left-0 w-full overflow-x-auto whitespace-nowrap px-3 py-2 md:flex md:justify-center"
+      >
+        <div className="flex gap-2 w-max md:w-auto md:mx-auto">
+          {categories?.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => {
+                setSelectedCategoryId(category.id);
+                document
+                  .getElementById(`category-${category.id}`)
+                  ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+              }}
+
+              className={`
+          shrink-0
+          cursor-pointer
+          font-hindmadurai
+          border
+          border-gray-300
+          rounded-3xl
+          px-4
+          py-2
+          transition-colors
+          duration-200
+          ${selectedCategoryId === category.id
+                  ? "bg-green-800 text-white"
+                  : "bg-white text-black hover:bg-gray-100"
+                }
+        `}
+            >
+              {category.name}
+            </button>
           ))}
         </div>
+      </div>
+
+      <SideMenu />
+      <CartSideMenu />
+      <div id="menuPage" className="pt-[146px] px-4 w-full">
+
+        {/* BANNER PRINCIPAL
+<div className="flex justify-center mb-[15px]">
+          <img
+            src="/images/banner-home.png"
+            alt="Banner Principal"
+            className="
+      w-full
+      max-w-full
+      md:max-w-[768px]
+      rounded-xl
+      object-cover
+    "
+          />
+        </div>
+
+*/}
+
+
+        <div
+          id="menuList"
+          className="mt-5 max-w-6xl mx-auto"
+        >
+
+          {categories.map((category) => (
+            <div
+              key={category.id}
+              className="
+            w-full
+            bg-gradient-to-b
+            from-[#f3eed9]
+            to-white
+            py-6
+            mb-6
+        "
+            >
+              <div className="max-w-6xl mx-auto px-4">
+                <CategorySection
+                  category={category}
+                  lunchboxes={marmitas.filter(
+                    (m) => m.categoryId === category.id
+                  )}
+                  onAdd={addMarmita}
+                  onRemove={removeMarmita}
+                />
+              </div>
+            </div>
+          ))}
+
+        </div>
+
       </div>
     </>
   );
@@ -199,6 +258,10 @@ const MenuPage = () => {
 
 export default MenuPage;
 
+//altura navbar devices md 96
+//altura navbar devices sm 56
+//altura categories devices md 50
+//altura categories devices sm 50
 
 /* {
   "userId": 16,

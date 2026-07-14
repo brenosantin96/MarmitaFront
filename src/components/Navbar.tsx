@@ -27,12 +27,13 @@ const Navbar = () => {
 
     const { user } = useUserContext();
 
+
     useEffect(() => {
         getAllCategories();
     }, [categories]);
 
     const openCartAndCheckItems = () => {
-        if(!isOpen){
+        if (!isOpen) {
             openAndCloseCart(true)
         }
     }

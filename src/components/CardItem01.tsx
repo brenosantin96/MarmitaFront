@@ -14,10 +14,9 @@ type PropsCardItem01 = {
     oldPrice?: number;
     onAdd: (id: number) => void;
     onRemove: (id: number) => void;
-    onClick: (id: number) => void;
 }
 
-const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, onRemove, onClick }: PropsCardItem01) => {
+const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, onRemove }: PropsCardItem01) => {
 
     const { user } = useUserContext(); // aqui você acessa o usuário logado
     const { cart } = useCartContext();
@@ -72,8 +71,7 @@ const CardItem01 = ({ id, title, price, imageUrl, portionGram, oldPrice, onAdd, 
     return (
 
         <div
-            onClick={() => onClick(id)}
-            className='inline-flex flex-col rounded-lg font-hindmadurai border border-gray-300 mb-3 pb-2 w-[200px] cursor-pointer transition'>
+            className='inline-flex flex-col rounded-lg font-hindmadurai border border-gray-300 mb-3 pb-2 w-full cursor-pointer transition'>
             <div className="overflow-hidden rounded-t-lg h-[150px]">
                 <img src={imageUrl as string} alt={title} className="object-cover w-full h-full" />
             </div>
