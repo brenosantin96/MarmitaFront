@@ -158,7 +158,7 @@ const MenuPage = () => {
     <>
       <div
         id="categoriesList"
-        className=" mt-[60px] md:mt-[100px] fixed left-0 w-full overflow-x-auto whitespace-nowrap px-3 py-2 md:flex md:justify-center"
+        className="mt-[60px] md:mt-[100px] fixed left-0 w-full overflow-x-auto whitespace-nowrap px-3 py-2 md:flex md:justify-center z-50"
       >
         <div className="flex gap-2 w-max md:w-auto md:mx-auto">
           {categories?.map((category) => (
@@ -173,23 +173,22 @@ const MenuPage = () => {
                     block: "start",
                   });
               }}
-
               className={`
-          shrink-0
-          cursor-pointer
-          font-hindmadurai
-          border
-          border-gray-300
-          rounded-3xl
-          px-4
-          py-2
-          transition-colors
-          duration-200
-          ${selectedCategoryId === category.id
+              shrink-0
+              cursor-pointer
+              font-hindmadurai
+              border
+              border-gray-300
+              rounded-3xl
+              px-4
+              py-2
+              transition-colors
+              duration-200
+              ${selectedCategoryId === category.id
                   ? "bg-green-800 text-white"
                   : "bg-white text-black hover:bg-gray-100"
                 }
-        `}
+            `}
             >
               {category.name}
             </button>
@@ -199,42 +198,34 @@ const MenuPage = () => {
 
       <SideMenu />
       <CartSideMenu />
-      <div id="menuPage" className="pt-[146px] px-4 w-full">
 
-        {/* BANNER PRINCIPAL
-<div className="flex justify-center mb-[15px]">
+      <div id="menuPage" className="pt-[146px] w-full">
+        <div className="flex justify-center mb-[15px]">
           <img
             src="/images/banner-home.png"
             alt="Banner Principal"
             className="
-      w-full
-      max-w-full
-      md:max-w-[768px]
-      rounded-xl
-      object-cover
-    "
+            w-full
+            max-w-full
+            md:max-w-[768px]
+            rounded-xl
+            object-cover
+          "
           />
         </div>
 
-*/}
-
-
-        <div
-          id="menuList"
-          className="mt-5 max-w-6xl mx-auto"
-        >
-
+        <div id="menuList" className="mt-5 w-full">
           {categories.map((category) => (
-            <div
+            <section
+              id={`category-${category.id}`}
               key={category.id}
               className="
-            w-full
-            bg-gradient-to-b
-            from-[#f3eed9]
-            to-white
-            py-6
-            mb-6
-        "
+              w-full
+              bg-gradient-to-b
+              from-[#f3eed9]
+              to-white
+              py-6
+            "
             >
               <div className="max-w-6xl mx-auto px-4">
                 <CategorySection
@@ -246,11 +237,9 @@ const MenuPage = () => {
                   onRemove={removeMarmita}
                 />
               </div>
-            </div>
+            </section>
           ))}
-
         </div>
-
       </div>
     </>
   );
