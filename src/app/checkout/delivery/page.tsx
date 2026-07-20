@@ -242,6 +242,8 @@ const DeliveryPage = () => {
 
   const goToNextStepDeliveryTime = async () => {
 
+    if (!cart || !("id" in cart) || !user) return;
+    
     if (cart) {
 
       setDeliveryInfo((prev) => {

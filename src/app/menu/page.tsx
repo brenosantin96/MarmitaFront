@@ -12,6 +12,7 @@ import { useUserContext } from '@/context/UserContext';
 import { CartItem } from '@/types/CartItem';
 import { useCategorieContext } from '@/context/CategoryContext';
 import CategorySection from '@/components/CategorySection';
+import AllMenuWithoutCategory from '@/components/AllMenuWithoutCategory';
 
 const MenuPage = () => {
 
@@ -160,7 +161,37 @@ const MenuPage = () => {
         id="categoriesList"
         className="mt-[60px] md:mt-[100px] fixed left-0 w-full overflow-x-auto whitespace-nowrap px-3 py-2 md:flex md:justify-center z-50"
       >
+
         <div className="flex gap-2 w-max md:w-auto md:mx-auto">
+
+          <button
+            onClick={() => {
+              setSelectedCategoryId(null);
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+            }}
+            className={`
+      shrink-0
+      cursor-pointer
+      font-hindmadurai
+      border
+      border-gray-300
+      rounded-3xl
+      px-4
+      py-2
+      transition-colors
+      duration-200
+      ${selectedCategoryId === null
+                ? "bg-green-800 text-white"
+                : "bg-white text-black hover:bg-gray-100"
+              }
+    `}
+          >
+            Todos
+          </button>
+
           {categories?.map((category) => (
             <button
               key={category.id}
@@ -215,30 +246,52 @@ const MenuPage = () => {
         </div>
 
         <div id="menuList" className="mt-5 w-full">
-          {categories.map((category) => (
-            <section
-              id={`category-${category.id}`}
-              key={category.id}
-              className="
-              w-full
-              bg-gradient-to-b
-              from-[#f3eed9]
-              to-white
-              py-6
-            "
-            >
-              <div className="max-w-6xl mx-auto px-4">
-                <CategorySection
-                  category={category}
-                  lunchboxes={marmitas.filter(
-                    (m) => m.categoryId === category.id
-                  )}
-                  onAdd={addMarmita}
-                  onRemove={removeMarmita}
-                />
-              </div>
-            </section>
-          ))}
+
+          {selectedCategoryId === null ? (
+
+            <div className="max-w-6xl mx-auto px-4">
+              <AllMenuWithoutCategory
+                marmitas={marmitas}
+                onAdd={addMarmita}
+                onRemove={removeMarmita}
+              />
+            </div>
+
+          ) : (
+
+            categories
+              .filter(
+                (category) =>
+                  category.id === selectedCategoryId &&
+                  marmitas.filter((m) => m.categoryId === category.id).length > 0
+              )
+              .map((category) => (
+                <section
+                  id={`category-${category.id}`}
+                  key={category.id}
+                  className="
+            w-full
+            bg-gradient-to-b
+            from-[#f3eed9]
+            to-white
+            py-6
+          "
+                >
+                  <div className="max-w-6xl mx-auto px-4">
+                    <CategorySection
+                      category={category}
+                      lunchboxes={marmitas.filter(
+                        (m) => m.categoryId === category.id
+                      )}
+                      onAdd={addMarmita}
+                      onRemove={removeMarmita}
+                    />
+                  </div>
+                </section>
+              ))
+
+          )}
+
         </div>
       </div>
     </>

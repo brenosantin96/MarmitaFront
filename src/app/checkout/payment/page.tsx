@@ -133,6 +133,7 @@ const PaymentPage = () => {
 
   const saveAddressOnPayment = async () => {
     if (!cart || !user || !idSelectedAddress) return;
+    if (!cart || !("id" in cart) || !user) return;
 
     // Atualiza o contexto localmente
     setDeliveryInfo((prev) => {
