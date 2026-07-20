@@ -42,7 +42,7 @@ const CartSideMenu = () => {
                 isCheckedOut: cart.isCheckedOut ?? false,
                 cartItems: cart.cartItems.map(item => ({
                     quantity: item.quantity,
-                    lunchboxId: item.lunchboxId ?? item.cartItem?.id ?? null,
+                    lunchboxId: item.lunchboxId ?? null,
                     kitId: item.kitId ?? null,
                 })),
             };
@@ -61,7 +61,7 @@ const CartSideMenu = () => {
                         lunchboxId: item.lunchboxId,
                         kitId: item.kitId,
                         cartItem: {
-                            id: item.lunchboxId ?? item.kitId ?? item.id,
+                            id: item.id,
                             name: item.name,
                             price: item.price,
                             portionGram: item.portionGram,
