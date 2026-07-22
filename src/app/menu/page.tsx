@@ -159,7 +159,7 @@ const MenuPage = () => {
     <>
       <div
         id="categoriesList"
-        className="mt-[60px] md:mt-[100px] fixed left-0 w-full overflow-x-auto whitespace-nowrap px-3 py-2 md:flex md:justify-center z-50"
+        className="mt-[55px] md:mt-[95px] bg-white fixed left-0 w-full shadow overflow-x-auto whitespace-nowrap px-3 py-2 md:flex md:justify-center z-50"
       >
 
         <div className="flex gap-2 w-max md:w-auto md:mx-auto">
@@ -192,38 +192,42 @@ const MenuPage = () => {
             Todos
           </button>
 
-          {categories?.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => {
-                setSelectedCategoryId(category.id);
-                document
-                  .getElementById(`category-${category.id}`)
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                  });
-              }}
-              className={`
-              shrink-0
-              cursor-pointer
-              font-hindmadurai
-              border
-              border-gray-300
-              rounded-3xl
-              px-4
-              py-2
-              transition-colors
-              duration-200
-              ${selectedCategoryId === category.id
-                  ? "bg-green-800 text-white"
-                  : "bg-white text-black hover:bg-gray-100"
-                }
-            `}
-            >
-              {category.name}
-            </button>
-          ))}
+          {categories
+            ?.filter((category) =>
+              marmitas.some((marmita) => marmita.categoryId === category.id)
+            )
+            .map((category) => (
+              <button
+                key={category.id}
+                onClick={() => {
+                  setSelectedCategoryId(category.id);
+                  document
+                    .getElementById(`category-${category.id}`)
+                    ?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                }}
+                className={`
+        shrink-0
+        cursor-pointer
+        font-hindmadurai
+        border
+        border-gray-300
+        rounded-3xl
+        px-4
+        py-2
+        transition-colors
+        duration-200
+        ${selectedCategoryId === category.id
+                    ? "bg-green-800 text-white"
+                    : "bg-white text-black hover:bg-gray-100"
+                  }
+      `}
+              >
+                {category.name}
+              </button>
+            ))}
         </div>
       </div>
 

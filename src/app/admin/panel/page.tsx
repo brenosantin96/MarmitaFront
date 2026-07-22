@@ -19,11 +19,19 @@ import AdminPanelMenuOptionJson from "../../../Data/AdminPanelMenuOptionJson.jso
 import MarmitasGridPanelAdmin from '@/components/MarmitasGridPanelAdmin';
 import CategoriesGridPanelAdmin from '@/components/CategoriesGridPanelAdmin';
 import ToTakeAwayAddreessPanelAdmin from '@/components/ToTakeAwayAddreessPanelAdmin';
+import KitsGridPanelAdmin from '@/components/KitsGridPanelAdmin';
 
 const AdminPanelPage = () => {
 
   const { user } = useUserContext();
-  const [menuOptions, setMenuOptions] = useState<MenuOption[]>(AdminPanelMenuOptionJson);
+
+  //Aplicando map na inicializacao para deixar o primeiro elemento como true
+  const [menuOptions, setMenuOptions] = useState<MenuOption[]>(
+    AdminPanelMenuOptionJson.map((item, index) => ({
+      ...item,
+      isSelected: index === 0,
+    }))
+  );
 
 
   if (user === null) {
@@ -61,16 +69,19 @@ const AdminPanelPage = () => {
         </div>
 
         {menuOptions[0].isSelected === true &&
-        <MarmitasGridPanelAdmin />
+          <MarmitasGridPanelAdmin />
         }
 
-        
+        {menuOptions[1].isSelected === true &&
+          <KitsGridPanelAdmin/>
+        }
+
         {menuOptions[2].isSelected === true &&
-        <CategoriesGridPanelAdmin />
+          <CategoriesGridPanelAdmin />
         }
 
         {menuOptions[3].isSelected === true &&
-        <ToTakeAwayAddreessPanelAdmin />
+          <ToTakeAwayAddreessPanelAdmin />
         }
 
       </div>
